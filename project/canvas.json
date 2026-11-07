@@ -4,7 +4,7 @@
   "boards": {
     "Statistiques.dc.html": {
       "expand": "fill",
-      "h": 3500,
+      "h": 2100,
       "is_interactive": true,
       "title": "Statistiques (Journal, onglet ouvert)",
       "w": 1440,

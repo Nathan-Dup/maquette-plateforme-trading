@@ -281,8 +281,8 @@ h1,h2,h3{text-wrap:balance}
 
 <div class="rv rd1" style="flex: 1 1 460px; min-width: 0; background: #0E131D; border: 1px solid rgba(61,220,151,.28); border-radius: 22px; padding: 24px; box-shadow: 0 30px 80px rgba(0,0,0,.35)">
 <div style="display: flex; justify-content: space-between; align-items: center; gap: 14px">
-<div><div style="font-size: 12px; color: #8A95AA">Bilan de la semaine · score de discipline</div><div class="h" style="font-size: 20px; font-weight: 600; margin-top: 4px">Du 2 au 6 novembre</div></div>
-<div style="position: relative; width: 70px; height: 70px; flex: none" role="img" aria-label="Score de discipline 82 sur 100">
+<div><div style="font-size: 12px; color: #8A95AA">Bilan de la semaine · score de régularité</div><div class="h" style="font-size: 20px; font-weight: 600; margin-top: 4px">Du 2 au 6 novembre</div></div>
+<div style="position: relative; width: 70px; height: 70px; flex: none" role="img" aria-label="Score de régularité 82 sur 100">
 <svg width="70" height="70" viewBox="0 0 62 62" aria-hidden="true"><circle cx="31" cy="31" r="26" fill="none" stroke="#1A2130" stroke-width="6"></circle><circle class="ring" cx="31" cy="31" r="26" fill="none" stroke="#3DDC97" stroke-width="6" stroke-linecap="round" stroke-dasharray="134 164" transform="rotate(-90 31 31)"></circle></svg>
 <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center"><span class="h num" style="font-size: 19px; font-weight: 700; line-height: 1">82</span><span class="num" style="font-size: 9px; color: #8A95AA; margin-top: 2px">/ 100</span></div>
 </div>
@@ -290,13 +290,13 @@ h1,h2,h3{text-wrap:balance}
 <div class="num" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 18px">
 <div style="padding: 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Trades</div><div class="h num" style="font-size: 18px; font-weight: 600; margin-top: 3px">11</div></div>
 <div style="padding: 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Résultat</div><div class="h num" style="font-size: 18px; font-weight: 600; margin-top: 3px; color: #3DDC97">+3,4 R</div></div>
-<div style="padding: 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Plan respecté</div><div class="h num" style="font-size: 18px; font-weight: 600; margin-top: 3px">9 / 11</div></div>
+<div style="padding: 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Meilleure session</div><div class="h" style="font-size: 18px; font-weight: 600; margin-top: 3px">Londres</div></div>
 </div>
 <div style="margin-top: 18px">
 <div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #7BEBB9">CE QUI A BIEN MARCHÉ</div>
 <ul style="list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; color: #DCE2EC">
 <li style="display: flex; gap: 10px"><span style="flex: none; margin-top: 7px; width: 6px; height: 6px; border-radius: 3px; background: #3DDC97"></span>Tes 4 trades en session de Londres sont tous gagnants.</li>
-<li style="display: flex; gap: 10px"><span style="flex: none; margin-top: 7px; width: 6px; height: 6px; border-radius: 3px; background: #3DDC97"></span>Aucun stop déplacé cette semaine, une première depuis un mois.</li>
+<li style="display: flex; gap: 10px"><span style="flex: none; margin-top: 7px; width: 6px; height: 6px; border-radius: 3px; background: #3DDC97"></span>Ton 1er trade de la journée est gagnant 4 fois sur 5.</li>
 </ul>
 </div>
 <div style="margin-top: 16px">
@@ -371,7 +371,7 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     var self = this;
-    this.state = { dim: 'setup', imp: 'all' };
+    this.state = { dim: 'actif', imp: 'all' };
     this.rootEl = null;
     this.rootRef = function (el) { self.rootEl = el; };
   }
@@ -407,15 +407,16 @@ class Component extends DCLogic {
       { l: 'Win rate', v: '58 %', c: '#EEF1F6' }, { l: 'Profit factor', v: '1,84', c: '#EEF1F6' },
       { l: 'Espérance', v: '+0,42 R', c: GAIN }, { l: 'Gain moyen', v: '+1,9 R', c: GAIN },
       { l: 'Drawdown max', v: '−3,1 %', c: '#FF9A8E' }, { l: 'Série gagnante', v: '7', c: '#EEF1F6' },
-      { l: 'Durée moyenne', v: '2 h 14', c: '#EEF1F6' }, { l: 'MAE moyen', v: '−0,38 R', c: '#FF9A8E' }
+      { l: 'Durée moyenne', v: '2 h 14', c: '#EEF1F6' }, { l: 'Série perdante max', v: '3', c: '#EEF1F6' }
     ];
     var DATA = {
-      setup: { l: 'Setup', rows: [['Cassure', 62, 0.58], ['Retest', 57, 0.41], ['Tendance', 54, 0.35], ['Gap résultats', 48, 0.08], ['Range', 41, -0.12]], ins: 'tes cassures rapportent 5 fois plus que tes trades en range. Tu pourrais arrêter le range.' },
+      actif: { l: 'Actif', rows: [['XAU/USD', 63, 0.55], ['EUR/USD', 58, 0.41], ['NAS100', 54, 0.28], ['GBP/USD', 49, 0.05], ['BTC/USD', 40, -0.31]], ins: 'le Bitcoin te coûte de l’argent alors que l’or est ton actif le plus rentable.' },
+      apres: { l: 'Après une perte', rows: [['Après un gain', 61, 0.52], ['Après une perte', 47, 0.08], ['Après 2 pertes', 33, -0.44]], ins: 'après 2 pertes d’affilée, ton espérance devient négative. C’est le moment de faire une pause.' },
       session: { l: 'Session', rows: [['Londres', 64, 0.61], ['New York', 55, 0.32], ['Asie', 39, -0.21]], ins: 'la session asiatique te coûte de l’argent alors que Londres est ta meilleure fenêtre.' },
       jour: { l: 'Jour', rows: [['Mercredi', 61, 0.52], ['Mardi', 59, 0.44], ['Jeudi', 57, 0.39], ['Vendredi', 49, 0.06], ['Lundi', 41, -0.18]], ins: 'le lundi est ton seul jour perdant. Réduis ta taille ce jour-là.' },
       emo: { l: 'Émotion', rows: [['Calme', 63, 0.62], ['Confiant', 58, 0.45], ['Stressé', 42, -0.15], ['Impatient', 34, -0.41], ['FOMO', 31, -0.58]], ins: 'en FOMO, ton espérance devient fortement négative. C’est ton plus gros levier de progression.' }
     };
-    var dims = ['setup', 'session', 'jour', 'emo'].map(function (k) {
+    var dims = ['actif', 'session', 'jour', 'emo', 'apres'].map(function (k) {
       var on = s.dim === k;
       return { l: DATA[k].l, pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.setState({ dim: k }); } };
     });
@@ -425,10 +426,10 @@ class Component extends DCLogic {
 
     var jfeat = [
       { t: 'Import automatique', d: 'MetaTrader 4 et 5, cTrader, TradingView ou fichier CSV. Tes trades arrivent sans saisie.', i: 'M12 16V4M6 10l6-6 6 6M4 20h16' },
-      { t: 'Plus de 30 statistiques', d: 'Win rate, profit factor, R-multiple, MAE / MFE, drawdown, séries, durée moyenne…', i: 'M4 20V10M10 20V4M16 20v-7M22 20H2' },
-      { t: 'Captures de setup', d: 'Ajoute ton screenshot et annote l’entrée, le stop et l’objectif.', i: 'M3 4h18v16H3zM9 10a2 2 0 1 0 0-.01M21 16l-5-5-9 9' },
-      { t: 'Émotions et discipline', d: 'Note ton état avant et pendant chaque trade, et si tu as respecté ton plan.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01' },
-      { t: 'Stratégies et playbook', d: 'Décris tes setups et compare leurs résultats entre eux.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 7a5 5 0 1 0 0 10a5 5 0 1 0 0-10M12 11.5v1' },
+      { t: 'Plus de 30 statistiques', d: 'Win rate, profit factor, R-multiple, drawdown, séries, frais, durée moyenne…', i: 'M4 20V10M10 20V4M16 20v-7M22 20H2' },
+      { t: 'Captures de graphique', d: 'Ajoute ton screenshot à chaque trade pour le revoir plus tard.', i: 'M3 4h18v16H3zM9 10a2 2 0 1 0 0-.01M21 16l-5-5-9 9' },
+      { t: 'Émotions et comportement', d: 'Note ton émotion en un clic. Le journal repère aussi tes trades pris après une perte ou en fin de journée.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01' },
+      { t: 'Heures et sessions', d: 'Découvre à quelle heure et dans quelle session tu gagnes vraiment.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 7v5l3 2' },
       { t: 'Calendrier de performance', d: 'Visualise tes gains et pertes jour par jour, mois par mois.', i: 'M3 5h18v16H3zM3 10h18M8 3v4M16 3v4' }
     ];
 
@@ -453,7 +454,7 @@ class Component extends DCLogic {
       { t: 'Ordres complets', d: 'Stop, objectif, taille de position, ratio.', i: 'M4 6h16M4 12h10M4 18h6' },
       { t: 'Sessions sauvegardées', d: 'Reprends exactement là où tu t’es arrêté.', i: 'M5 3h11l3 3v15H5zM8 3v6h8V3M8 21v-7h8v7' },
       { t: 'Résultats au journal', d: 'Chaque trade de test rejoint tes statistiques.', i: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6' },
-      { t: 'Réel vs backtest', d: 'Vérifie que tu appliques bien ta stratégie.', i: 'M4 20V10M10 20V4M16 20v-7M22 20H2' }
+      { t: 'Réel vs backtest', d: 'Compare tes résultats réels à ceux de tes tests.', i: 'M4 20V10M10 20V4M16 20v-7M22 20H2' }
     ];
     var markets = [
       { n: 'Forex', c: '#6E8BFF', e: 'Paires majeures et mineures : EUR/USD, GBP/USD, USD/JPY, AUD/USD…' },
@@ -489,10 +490,10 @@ class Component extends DCLogic {
       { t: 'Détection des biais', d: 'FOMO, revenge trading, surtrading : il les repère dans tes données.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 8v5M12 16h.01' },
       { t: 'Bilan chaque semaine', d: 'Ce qui a marché, ce qui coince, et un objectif concret.', i: 'M3 5h18v16H3zM3 10h18M8 3v4M16 3v4' },
       { t: 'Questions libres', d: '« Pourquoi je perds le lundi ? » Il répond à partir de tes vrais trades.', i: 'M4 5h16v11H8l-4 4z' },
-      { t: 'Rappels de discipline', d: 'Il te prévient quand tu dépasses tes propres règles.', i: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z' }
+      { t: 'Alertes de comportement', d: 'Il te prévient quand tu enchaînes les trades ou après plusieurs pertes d’affilée.', i: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z' }
     ];
     var extras = [
-      { t: 'Plusieurs comptes', d: 'Compte réel, compte démo, plusieurs brokers : tout au même endroit.', i: 'M3 7h18v13H3zM8 7V4h8v3', soon: false },
+      { t: 'Plusieurs comptes', d: 'Compte réel, challenges prop firm et démo : séparés ou cumulés.', i: 'M3 7h18v13H3zM8 7V4h8v3', soon: false },
       { t: 'Suivi des prop firms', d: 'Règles du challenge, drawdown max et objectif suivis en direct.', i: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7zM9 12l2 2 4-4', soon: true },
       { t: 'Export PDF et CSV', d: 'Tes rapports et ton historique, prêts à partager ou archiver.', i: 'M12 4v12M6 10l6 6 6-6M4 20h16', soon: false },
       { t: 'Données protégées', d: 'Connexions chiffrées et données qui restent les tiennes.', i: 'M6 10V7a6 6 0 0 1 12 0v3M5 10h14v11H5z', soon: false },

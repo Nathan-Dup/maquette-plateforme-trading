@@ -46,7 +46,7 @@ button:disabled{opacity:.4;cursor:default !important}
 <nav aria-label="Menu de l'application" style="display: flex; flex-direction: column; gap: 20px">
 <sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
 <div>
-<div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div>
+<sc-if value="{{g.title}}" hint-placeholder-val="{{true}}"><div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div></sc-if>
 <div style="display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{g.items}}" as="n" hint-placeholder-count="3">
 <a class="nav" href="{{n.href}}" aria-current="{{n.current}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; background: {{n.bg}}; color: {{n.fg}}; font-weight: {{n.fw}}">
@@ -104,6 +104,12 @@ button:disabled{opacity:.4;cursor:default !important}
 
 <sc-if value="{{s1}}" hint-placeholder-val="{{true}}">
 <h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Dépose ton fichier</h2>
+<div style="display: flex; flex-direction: column; gap: 6px; max-width: 420px">
+<label for="imp-acc" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Importer dans le compte</label>
+<select id="imp-acc" class="inp" value="{{impAcc}}" onChange="{{onImpAcc}}" style="height: 42px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark">
+<sc-for list="{{impAccOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.id}}">{{o.l}}</option></sc-for>
+</select>
+</div>
 <label class="drop" for="file" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 240px; padding: 24px; border-radius: 16px; border: 2px dashed #2A3346; background: #0B0F17; cursor: pointer; text-align: center">
 <span style="width: 56px; height: 56px; border-radius: 16px; background: {{accentSoft}}; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"></path></svg></span>
 <span style="font-size: 16px; font-weight: 600">Glisse ton fichier ici ou <span style="color: {{accent}}">parcours</span></span>
@@ -310,9 +316,39 @@ class Component extends DCLogic {
     this.cols().forEach(function (c) { map[c[0]] = c[3]; });
     this.state = { tab: 'csv', step: 1, file: '', map: map, tz: 'srv', skipDup: true, prog: 0, auto: true, br: { mt5: 'on', mt4: 'off', ct: 'off', tv: 'off', ib: 'off', nt: 'off' }, syncing: '', undone: {} };
   }
-  componentDidMount() { try { window.scrollTo(0, 0); } catch (e) {} }
-  componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.to); clearTimeout(this.to2); }
+  componentDidMount() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var self = this;
+    var check = function () {
+      try {
+        var g = window.sessionStorage.getItem('tj.go');
+        if (!g) return;
+        var o = JSON.parse(g);
+        if (o.to === 'importer' && Date.now() - o.t < 15000) { window.sessionStorage.removeItem('tj.go'); var up = {}; if (o.tab === 'broker' || o.tab === 'csv') up.tab = o.tab; if (o.acc) { up.impAcc = o.acc; up.step = 1; } self.setState(up); }
+      } catch (e) {}
+    };
+    check();
+    this.goIv = setInterval(check, 500);
+  }
+  componentWillUnmount() { clearInterval(this.iv); clearInterval(this.goIv); clearTimeout(this.to); clearTimeout(this.to2); }
   sset(k, v) { try { window.sessionStorage.setItem(k, v); } catch (e) {} }
+  sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
+  defAccounts() {
+    return [
+      { id: 'live', name: 'Compte réel', type: 'Réel', plat: 'MetaTrader 5', cap: 20000, c: '#3DDC97' },
+      { id: 'prop', name: 'Challenge prop firm', type: 'Prop firm', plat: 'MetaTrader 5', cap: 50000, c: '#F5C26B' },
+      { id: 'demo', name: 'Compte démo', type: 'Démo', plat: 'cTrader', cap: 10000, c: '#8FA6FF' }
+    ];
+  }
+  loadAccs() { try { var l = JSON.parse(this.sget('tj.accounts') || 'null'); if (l && l.length) return l; } catch (e) {} return this.defAccounts(); }
+  accOptsList() { return this.loadAccs().map(function (a) { return { id: a.id, l: a.name + ' · ' + a.plat + ' · ' + Math.round(a.cap).toLocaleString('fr-FR') + ' €' }; }); }
+  defAccId() {
+    var accs = this.loadAccs(), sel = [];
+    try { sel = JSON.parse(this.sget('tj.accSel') || '[]') || []; } catch (e) { sel = []; }
+    var ids = accs.map(function (a) { return a.id; });
+    var pick = sel.filter(function (x) { return x !== 'all' && ids.indexOf(x) >= 0; })[0];
+    return pick || ids[0];
+  }
   cols() {
     return [
       ['Symbol', 'EURUSD', 'Actif', 'sym'], ['Type', 'buy', 'Sens', 'dir'], ['Open Time', '2026.10.14 09:42:10', '', 'tIn'],
@@ -439,12 +475,12 @@ class Component extends DCLogic {
     });
 
     var navDef = [
-      { title: 'PRINCIPAL', items: [
-        ['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', 'Dashboard.dc.html'],
-        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
-        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html']
+      { title: '', items: [
+        ['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', 'Dashboard.dc.html']
       ] },
       { title: 'OUTILS', items: [
+        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
+        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html'],
         ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', '#top'],
         ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '#top', '2', 'warn'],
         ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', '#top', 'NOUVEAU', 'accent']
@@ -471,6 +507,7 @@ class Component extends DCLogic {
       fileName: s.file || 'historique_mt5_octobre.xlsx',
       onFile: function (e) { var f = e.target.files && e.target.files[0]; pickFile(f ? f.name : 'historique_mt5_octobre.xlsx'); },
       useSample: function () { pickFile('historique_mt5_octobre.xlsx'); },
+      impAccOpts: this.accOptsList(), impAcc: s.impAcc || this.defAccId(), onImpAcc: function (e) { self.setState({ impAcc: e.target.value }); },
       cols: cols, fieldOpts: fieldOpts, tz: s.tz, onTz: function (e) { self.setState({ tz: e.target.value }); },
       missingTxt: missing.length ? missing.map(function (m) { return FN[m]; }).join(', ') : '', cantGo: missing.length > 0,
       back: function () { self.setState({ step: 1, file: '' }); }, toStep2: function () { self.setState({ step: 2 }); },
