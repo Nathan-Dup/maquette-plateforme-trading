@@ -91,6 +91,17 @@ button:disabled{opacity:.4;cursor:default !important}
 
 <div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
 <section class="fu d1" aria-label="Graphique du replay" style="flex: 999 1 620px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<sc-if value="{{multi}}" hint-placeholder-val="{{false}}">
+<div role="tablist" aria-label="Actifs de la session" style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #151B27">
+<sc-for list="{{assets}}" as="a" hint-placeholder-count="2">
+<button class="chip" type="button" role="tab" aria-selected="{{a.pressed}}" onClick="{{a.pick}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; min-height: 40px; border-radius: 10px; border: 1px solid {{a.bd}}; background: {{a.bg}}; color: {{a.fg}}; font-size: 13px; font-weight: 700">
+<span>{{a.l}}</span><span class="num" style="font-size: 11px; font-weight: 600; color: {{a.cc}}">{{a.chg}}</span>
+<sc-if value="{{a.dot}}" hint-placeholder-val="{{false}}"><span title="Position ouverte" style="width: 7px; height: 7px; border-radius: 4px; background: #F5B87A"></span></sc-if>
+</button>
+</sc-for>
+<span class="num" style="margin-left: auto; font-size: 12px; color: #F5B87A">{{openTxt}}</span>
+</div>
+</sc-if>
 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px">
 <div role="group" aria-label="Unité de temps" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 10px; padding: 3px">
 <sc-for list="{{tfs}}" as="t" hint-placeholder-count="3"><button class="chip" type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="border: 0; cursor: pointer; font-size: 12px; font-weight: 700; padding: 0 12px; border-radius: 7px; min-height: 32px; background: {{t.bg}}; color: {{t.fg}}">{{t.l}}</button></sc-for>
@@ -277,20 +288,24 @@ class Component extends DCLogic {
       'BTC/USD': { p: 52000, v: 260, d: 0, mk: 'cr' }
     };
   }
-  mkSession(id, name, sym, tf, from, to, cap, risk, prog, n, p, seed, created) {
-    var r = this.rng(seed), r2 = this.rng(seed + 1000), trades = [], span = (to - from) * prog;
+  mkSession(id, name, syms, tf, from, to, cap, risk, prog, n, p, seed, created) {
+    var r = this.rng(seed), r2 = this.rng(seed + 1000), r3 = this.rng(seed + 2000), trades = [], span = (to - from) * prog;
     for (var i = 0; i < n; i++) {
       var win = r() < p, R = win ? Math.round((1.2 + r() * 1.4) * 10) / 10 : -1;
-      trades.push({ dir: r2() < 0.55 ? 'Long' : 'Short', R: R, t: Math.round(from + span * (i + 0.5) / n) });
+      var t = from + span * (i + 0.5) / n, d = new Date(t), wd = d.getUTCDay();
+      var day = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) + (wd === 6 ? 2 : wd === 0 ? 1 : 0) * 86400000;
+      var tt = day + (7 + (i * 5) % 11) * 3600000 + ((i * 3) % 4) * 900000;
+      trades.push({ dir: r2() < 0.55 ? 'Long' : 'Short', R: R, t: tt, sym: syms[Math.floor(r3() * syms.length)] });
     }
-    return { id: id, name: name, sym: sym, tf: tf, from: from, to: to, cap: cap, risk: risk, prog: prog, trades: trades, done: prog >= 1, created: created, last: created };
+    return { id: id, name: name, sym: syms[0], syms: syms, tf: tf, from: from, to: to, cap: cap, risk: risk, prog: prog, trades: trades, done: prog >= 1, created: created, last: created };
   }
+  symsOf(x) { return x.syms && x.syms.length ? x.syms : [x.sym]; }
   defSessions() {
     return [
-      this.mkSession('s1', 'Cassure de Londres', 'EUR/USD', 'M15', Date.UTC(2025, 2, 3), Date.UTC(2025, 5, 30), 10000, 1, 0.68, 142, 0.54, 19, Date.UTC(2026, 10, 6, 7, 40)),
-      this.mkSession('s2', 'Pullback sur l’or', 'XAU/USD', 'H1', Date.UTC(2025, 0, 6), Date.UTC(2025, 3, 30), 10000, 1, 1, 64, 0.5, 23, Date.UTC(2026, 10, 2, 20, 10)),
-      this.mkSession('s3', 'Range Nasdaq en session US', 'NAS100', 'M15', Date.UTC(2025, 8, 1), Date.UTC(2025, 10, 28), 10000, 0.5, 0.35, 40, 0.45, 31, Date.UTC(2026, 9, 28, 21, 0)),
-      this.mkSession('s4', 'Swing Bitcoin', 'BTC/USD', 'H4', Date.UTC(2024, 9, 1), Date.UTC(2025, 2, 31), 10000, 1, 1, 28, 0.43, 37, Date.UTC(2026, 9, 12, 18, 30))
+      this.mkSession('s1', 'Cassure de Londres', ['EUR/USD'], 'M15', Date.UTC(2025, 2, 3), Date.UTC(2025, 5, 30), 10000, 1, 0.68, 142, 0.54, 19, Date.UTC(2026, 10, 6, 7, 40)),
+      this.mkSession('s2', 'Pullback sur l’or', ['XAU/USD'], 'H1', Date.UTC(2025, 0, 6), Date.UTC(2025, 3, 30), 10000, 1, 1, 64, 0.5, 23, Date.UTC(2026, 10, 2, 20, 10)),
+      this.mkSession('s3', 'Indices en range, session US', ['NAS100', 'CAC 40'], 'M15', Date.UTC(2025, 8, 1), Date.UTC(2025, 10, 28), 10000, 0.5, 0.35, 40, 0.45, 31, Date.UTC(2026, 9, 28, 21, 0)),
+      this.mkSession('s4', 'Swing crypto et or', ['BTC/USD', 'XAU/USD', 'EUR/USD'], 'H4', Date.UTC(2024, 9, 1), Date.UTC(2025, 2, 31), 10000, 1, 1, 28, 0.43, 37, Date.UTC(2026, 9, 12, 18, 30))
     ];
   }
   loadSessions() { try { var l = JSON.parse(this.sget('bt.sessions') || 'null'); if (l && l.length !== undefined) return l; } catch (e) {} return this.defSessions(); }
@@ -313,9 +328,9 @@ class Component extends DCLogic {
     return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
   }
   tfK(tf) { return { M15: 1, H1: 4, H4: 16 }[tf] || 1; }
-  genCandles(sess) {
-    var sp = this.btSyms()[sess.sym] || { p: 1, v: 0.001, d: 4 };
-    var h = 7; for (var i = 0; i < sess.sym.length; i++) h = (h * 31 + sess.sym.charCodeAt(i)) % 100000;
+  genCandles(sess, sym) {
+    var sp = this.btSyms()[sym] || { p: 1, v: 0.001, d: 4 };
+    var h = 7; for (var i = 0; i < sym.length; i++) h = (h * 31 + sym.charCodeAt(i)) % 100000;
     var r = this.rng(h + Math.floor(sess.from / 86400000));
     var Q = 900000, out = [], t = sess.from - 1300 * Q, price = sp.p, drift = 0, n = 0;
     while (t <= sess.to + 86400000) {
@@ -335,10 +350,13 @@ class Component extends DCLogic {
   }
   initFor(sess) {
     if (!sess) return { none: true };
-    this.D = this.genCandles(sess);
+    var self = this, syms = this.symsOf(sess);
+    this.DS = {};
+    syms.forEach(function (sy) { self.DS[sy] = self.genCandles(sess, sy); });
+    this.D = this.DS[syms[0]];
     var len = this.D.length, st = this.startIdx;
     var cursor = Math.min(len - 1, st + Math.floor((sess.prog || 0) * (len - 1 - st)));
-    return { none: false, sess: sess, cursor: cursor, tf: sess.tf, playing: false, speed: 1, pos: null, slMode: 'n', ratio: 2, trades: (sess.trades || []).slice(), levels: [], tool: false, sum: false, flash: null, flashK: 0 };
+    return { none: false, sess: sess, syms: syms, sym: syms[0], cursor: cursor, tf: sess.tf, playing: false, speed: 1, poss: {}, slMode: 'n', ratio: 2, trades: (sess.trades || []).slice(), levels: [], tool: false, sum: false, flash: null, flashK: 0 };
   }
   componentDidMount() {
     try { window.scrollTo(0, 0); } catch (e) {}
@@ -370,7 +388,7 @@ class Component extends DCLogic {
   }
   closeAt(pos, px, t, why) {
     var sg = pos.dir === 'Long' ? 1 : -1;
-    return { dir: pos.dir, R: Math.round(sg * (px - pos.entry) / pos.rd * 100) / 100, t: t, t0: pos.t, entry: pos.entry, exit: px, why: why };
+    return { dir: pos.dir, R: Math.round(sg * (px - pos.entry) / pos.rd * 100) / 100, t: t, t0: pos.t, entry: pos.entry, exit: px, why: why, sym: pos.sym };
   }
   checkHit(pos, c) {
     if (pos.dir === 'Long') {
@@ -400,11 +418,16 @@ class Component extends DCLogic {
     if (s.cursor >= D.length - 1) { this.setState({ playing: false }); return; }
     var i = s.cursor + 1, key = Math.floor(D[i].t / (k * Q)), end = i;
     while (end + 1 < D.length && Math.floor(D[end + 1].t / (k * Q)) === key) end++;
-    var pos = s.pos, trades = s.trades, closed = null;
-    for (var j = i; j <= end; j++) {
-      if (pos) { var res = this.checkHit(pos, D[j]); if (res) { trades = trades.concat([res]); pos = null; closed = res; } }
-    }
-    var up = { cursor: end, pos: pos, trades: trades };
+    var poss = {}, trades = s.trades, closed = null, self = this;
+    for (var q in s.poss) poss[q] = s.poss[q];
+    Object.keys(poss).forEach(function (sy) {
+      var DD = self.DS[sy];
+      for (var j = i; j <= end && poss[sy]; j++) {
+        var res = self.checkHit(poss[sy], DD[j]);
+        if (res) { trades = trades.concat([res]); delete poss[sy]; closed = res; }
+      }
+    });
+    var up = { cursor: end, poss: poss, trades: trades };
     if (closed) { up.flash = closed; up.flashK = s.flashK + 1; }
     if (end >= D.length - 1) up.playing = false;
     this.setState(up);
@@ -444,7 +467,13 @@ class Component extends DCLogic {
     if (s.none) { base.sum = { show: false }; return base; }
 
     var ICO = { fx: ['rgba(110,139,255,.16)', '#A9BBFF'], co: ['rgba(245,194,107,.16)', '#F5C26B'], cr: ['rgba(183,148,246,.16)', '#CDB5FA'], st: ['rgba(61,220,151,.14)', '#7BEBB9'] };
-    var X = s.sess, sp = this.btSyms()[X.sym] || { d: 4, mk: 'fx' }, dec = sp.d;
+    var X = s.sess, sp = this.btSyms()[s.sym] || { d: 4, mk: 'fx' }, dec = sp.d;
+    this.D = this.DS[s.sym];
+    var multi = s.syms.length > 1;
+    var assets = s.syms.map(function (sy) {
+      var DD = self.DS[sy], c1 = DD[s.cursor], dayAgo = DD[Math.max(0, s.cursor - 96)], chg = (c1.c - dayAgo.c) / dayAgo.c * 100, on = sy === s.sym;
+      return { l: sy, chg: (chg >= 0 ? '+' : '−') + Math.abs(chg).toFixed(2).replace('.', ',') + ' %', cc: chg >= 0 ? '#7BEBB9' : '#FF9A8E', dot: !!s.poss[sy], pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', bd: on ? '#36415B' : '#1D2433', fg: on ? '#EEF1F6' : '#A3AEC2', pick: function () { self.setState({ sym: sy, levels: [], tool: false }); } };
+    });
     var D = this.D, k = this.tfK(s.tf), N = 70, cur = D[s.cursor];
     var px = function (v) { return self.fPx(v, dec); };
     var riskEur = X.cap * X.risk / 100;
@@ -458,7 +487,7 @@ class Component extends DCLogic {
     var atr = 0; w.slice(-14).forEach(function (c) { atr += c.h - c.l; }); atr /= Math.max(1, Math.min(14, n));
     var lo = Infinity, hi = -Infinity;
     w.forEach(function (c) { if (c.l < lo) lo = c.l; if (c.h > hi) hi = c.h; });
-    var pos = s.pos;
+    var pos = s.poss[s.sym] || null;
     if (pos) { lo = Math.min(lo, pos.sl, pos.tp); hi = Math.max(hi, pos.sl, pos.tp); }
     var pad = (hi - lo) * 0.08 || 1; lo -= pad; hi += pad;
     var Y = function (p) { return (hi - p) / (hi - lo) * 100; };
@@ -471,7 +500,7 @@ class Component extends DCLogic {
     for (var ti = 0; ti < 5; ti++) { var pv = hi - (hi - lo) * (0.1 + ti * 0.2); ticks.push({ y: Y(pv).toFixed(2), l: px(pv) }); }
     var xAt = function (t) { var kk = Math.floor(t / (k * 900000)); for (var q = 0; q < n; q++) if (w[q].key === kk) return (off + q + 0.5) * cw; return null; };
     var xl = []; [0, Math.floor(n / 3), Math.floor(2 * n / 3), n - 1].forEach(function (q) { if (w[q]) xl.push(fT(w[q].t, k < 16)); });
-    var marks = s.trades.filter(function (t) { return t.entry !== undefined; }).map(function (t) {
+    var marks = s.trades.filter(function (t) { return t.entry !== undefined && (t.sym || s.syms[0]) === s.sym; }).map(function (t) {
       var x = xAt(t.t0); return x === null ? null : { x: x.toFixed(2), y: Y(t.entry).toFixed(2), c: t.R > 0 ? GAIN : t.R < 0 ? LOSS : '#A3AEC2', title: t.dir + ' · ' + self.fR(t.R) + ' · ' + t.why };
     }).filter(function (m) { return m; });
     var ch = {
@@ -525,8 +554,8 @@ class Component extends DCLogic {
       buySub: 'Stop ' + px(cur.c - rd) + ' · Obj. ' + px(cur.c + rd * s.ratio),
       sellSub: 'Stop ' + px(cur.c + rd) + ' · Obj. ' + px(cur.c - rd * s.ratio),
       dis: atEnd,
-      buy: function () { self.setState({ pos: { dir: 'Long', entry: cur.c, sl: cur.c - rd, tp: cur.c + rd * s.ratio, rd: rd, t: cur.t, be: false }, tool: false }); },
-      sell: function () { self.setState({ pos: { dir: 'Short', entry: cur.c, sl: cur.c + rd, tp: cur.c - rd * s.ratio, rd: rd, t: cur.t, be: false }, tool: false }); }
+      buy: function () { var m = {}; for (var q in self.state.poss) m[q] = self.state.poss[q]; m[s.sym] = { sym: s.sym, dir: 'Long', entry: cur.c, sl: cur.c - rd, tp: cur.c + rd * s.ratio, rd: rd, t: cur.t, be: false }; self.setState({ poss: m, tool: false }); },
+      sell: function () { var m = {}; for (var q in self.state.poss) m[q] = self.state.poss[q]; m[s.sym] = { sym: s.sym, dir: 'Short', entry: cur.c, sl: cur.c + rd, tp: cur.c - rd * s.ratio, rd: rd, t: cur.t, be: false }; self.setState({ poss: m, tool: false }); }
     };
 
     /* Position */
@@ -541,8 +570,8 @@ class Component extends DCLogic {
         sl: px(pos.sl), en: px(pos.entry), tp: px(pos.tp),
         enP: pct(pos.entry).toFixed(1), nowP: pct(cur.c).toFixed(1),
         beDis: pos.be || live <= 0,
-        be: function () { var p = {}; for (var q in pos) p[q] = pos[q]; p.sl = pos.entry; p.be = true; self.setState({ pos: p }); },
-        close: function () { var res = self.closeAt(pos, cur.c, cur.t, 'Clôture manuelle'); var tr = self.state.trades.concat([res]); var st2 = {}; for (var q in self.state) st2[q] = self.state[q]; st2.trades = tr; st2.pos = null; self.setState({ pos: null, trades: tr, flash: res, flashK: self.state.flashK + 1 }); self.flashOff(); self.persist(st2, false); },
+        be: function () { var p = {}; for (var q in pos) p[q] = pos[q]; p.sl = pos.entry; p.be = true; var m = {}; for (var z in self.state.poss) m[z] = self.state.poss[z]; m[s.sym] = p; self.setState({ poss: m }); },
+        close: function () { var res = self.closeAt(pos, cur.c, cur.t, 'Clôture manuelle'); var tr = self.state.trades.concat([res]); var m = {}; for (var z in self.state.poss) if (z !== s.sym) m[z] = self.state.poss[z]; var st2 = {}; for (var q in self.state) st2[q] = self.state[q]; st2.trades = tr; st2.poss = m; self.setState({ poss: m, trades: tr, flash: res, flashK: self.state.flashK + 1 }); self.flashOff(); self.persist(st2, false); },
         hint: pos.be ? 'Ton stop est au point d’entrée : ce trade ne peut plus te faire perdre.' : 'Continue la lecture : la position se ferme toute seule au stop ou à l’objectif.'
       };
     }
@@ -559,11 +588,11 @@ class Component extends DCLogic {
       ],
       noTrades: st.n === 0,
       last: s.trades.slice(-6).reverse().map(function (t) {
-        return { dir: t.dir === 'Long' ? 'ACHAT' : 'VENTE', dBg: t.dir === 'Long' ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)', dFg: t.dir === 'Long' ? GAINT : LOSST, sub: fT(t.t, false) + (t.why ? ' · ' + t.why : ''), r: self.fR1(t.R), c: t.R > 0 ? GAINT : t.R < 0 ? LOSST : '#A3AEC2' };
+        return { dir: t.dir === 'Long' ? 'ACHAT' : 'VENTE', dBg: t.dir === 'Long' ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)', dFg: t.dir === 'Long' ? GAINT : LOSST, sub: (multi ? (t.sym || s.syms[0]) + ' · ' : '') + fT(t.t, false) + (t.why ? ' · ' + t.why : ''), r: self.fR1(t.R), c: t.R > 0 ? GAINT : t.R < 0 ? LOSST : '#A3AEC2' };
       })
     };
     var fl = s.flash;
-    var flash = { show: !!fl, txt: fl ? (fl.why + ' · ' + this.fR1(fl.R) + ' · ' + this.fEur(fl.R * riskEur)) : '', bg: fl && fl.R > 0 ? 'rgba(31,59,48,.95)' : fl && fl.R < 0 ? 'rgba(61,34,38,.95)' : 'rgba(26,33,48,.95)', bd: fl && fl.R > 0 ? 'rgba(61,220,151,.5)' : fl && fl.R < 0 ? 'rgba(255,122,107,.5)' : '#2A3346' };
+    var flash = { show: !!fl, txt: fl ? ((multi && fl.sym ? fl.sym + ' · ' : '') + fl.why + ' · ' + this.fR1(fl.R) + ' · ' + this.fEur(fl.R * riskEur)) : '', bg: fl && fl.R > 0 ? 'rgba(31,59,48,.95)' : fl && fl.R < 0 ? 'rgba(61,34,38,.95)' : 'rgba(26,33,48,.95)', bd: fl && fl.R > 0 ? 'rgba(61,220,151,.5)' : fl && fl.R < 0 ? 'rgba(255,122,107,.5)' : '#2A3346' };
 
     /* Bilan */
     var best = s.trades.reduce(function (a, t) { return Math.max(a, t.R); }, 0), worst = s.trades.reduce(function (a, t) { return Math.min(a, t.R); }, 0);
@@ -580,10 +609,12 @@ class Component extends DCLogic {
       saveTxt: X.done ? 'Retour à mes sessions' : 'Terminer et revenir à mes sessions',
       close: function () { self.setState({ sum: false }); }, stop: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
       key: function (e) { if (e && e.key === 'Escape') self.setState({ sum: false }); },
-      save: function () { var m = {}; for (var q in self.state) m[q] = self.state[q]; if (m.pos) { var c2 = self.D[m.cursor]; m.trades = m.trades.concat([self.closeAt(m.pos, c2.c, c2.t, 'Clôture à la fin de la session')]); m.pos = null; } self.persist(m, true); }
+      save: function () { var m = {}; for (var q in self.state) m[q] = self.state[q]; Object.keys(m.poss).forEach(function (sy) { var c2 = self.DS[sy][m.cursor]; m.trades = m.trades.concat([self.closeAt(m.poss[sy], c2.c, c2.t, 'Clôture à la fin de la session')]); }); m.poss = {}; self.persist(m, true); }
     };
 
-    base.hd = { name: X.name, sym: X.sym, per: X.tf + ' · ' + this.fMonth(X.from) + ' → ' + this.fMonth(X.to), ibg: ICO[sp.mk][0], ifg: ICO[sp.mk][1] };
+    var openN = Object.keys(s.poss).length;
+    base.assets = assets; base.multi = multi; base.openTxt = openN ? openN + ' position' + (openN > 1 ? 's' : '') + ' ouverte' + (openN > 1 ? 's' : '') : '';
+    base.hd = { name: X.name, sym: s.syms.join(' · '), per: X.tf + ' · ' + this.fMonth(X.from) + ' → ' + this.fMonth(X.to), ibg: ICO[(this.btSyms()[s.syms[0]] || sp).mk][0], ifg: ICO[(this.btSyms()[s.syms[0]] || sp).mk][1] };
     base.endBanner = (atEnd || X.done) && !s.sum;
     base.endTxt = X.done ? 'Cette session est terminée. Tu peux revoir tes trades sur le graphique.' : 'Tu es arrivé à la fin de la période testée. Bravo pour ta régularité !';
     base.finish = function () { self.setState({ sum: true, playing: false }); };

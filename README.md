@@ -48,9 +48,11 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 
 **Backtesting**
 - Liste des sessions (en cours ou terminées) avec progression, trades, réussite et résultat en R.
-- Nouvelle session : actif, unité de temps (M15, H1, H4), période, capital, risque par trade.
+- Nouvelle session : un ou plusieurs actifs (4 maximum), unité de temps (M15, H1, H4), période, capital, risque par trade.
 - Replay : lecture, pause, bougie suivante, vitesse ×1 à ×4. Ordres Acheter / Vendre avec stop (serré, normal, large) et objectif (1:1 à 1:3). Fermeture automatique au stop ou à l'objectif. Stop au point d'entrée, clôture manuelle, niveaux horizontaux, bilan de fin de session.
-- Réel vs backtest : comparaison d'une session avec les vrais trades sur le même actif.
+- Plusieurs actifs dans une session : un onglet par actif dans le replay, même ligne de temps pour tous, une position possible sur chaque actif.
+- Onglet Statistiques : chiffres clés, courbe des résultats en R, par actif, par session, long / short, par jour, distribution des résultats, conseils à partir de 15 trades de test, filtres par session et par actif.
+- Réel vs backtest : comparaison d'une session avec les vrais trades sur les mêmes actifs.
 - Les trades de test restent séparés des statistiques réelles. Dans la maquette, les prix sont simulés ; le vrai produit aura besoin de données historiques de marché.
 
 **Nouvel utilisateur** : un écran d'accueil propose de connecter son broker, d'importer un fichier ou de saisir un trade. Il est visible avec le réglage « nouvelUtilisateur ».
