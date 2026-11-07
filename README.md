@@ -61,7 +61,8 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 - Les trades de test restent séparés des statistiques réelles. Dans la maquette, les prix sont simulés ; le vrai produit aura besoin de données historiques de marché.
 
 **News**
-- Calendrier économique de la semaine (heures de Paris) : vue de la semaine avec les journées chargées, frise « zones à éviter » (sessions Asie / Londres / New York, ±15 min autour des news fortes et moyennes de mes actifs, réglable), compte à rebours sur chaque annonce à venir.
+- Onglet « À venir » : tout ce qui arrive (annonces économiques et résultats d'entreprises), du plus proche au plus lointain, groupé par jour, avec compte à rebours ; en haut, une case par jour avec le nombre de news fortes et moyennes sur mes actifs et les résultats, et les journées chargées.
+- Calendrier économique de la semaine (heures de Paris) : frise « zones à éviter » avec choix du jour (sessions Asie / Londres / New York, ±15 min autour des news fortes et moyennes de mes actifs, réglable), compte à rebours sur chaque annonce à venir.
 - Une fois le chiffre sorti : valeur réelle en vert ou rouge selon l'effet sur la devise, badge « forte surprise » et lecture courte (« Surprise positive : plutôt haussier USD, baissier or »).
 - En dépliant une annonce : « Pourquoi ça compte » et la réaction moyenne de chacun de mes actifs aux 12 dernières publications.
 - Résultats d'entreprises vus depuis le NAS100 : poids dans l'indice, mouvement attendu, effet potentiel sur l'indice, réaction moyenne du NAS100.

@@ -117,22 +117,13 @@ button,input,select{font-family:inherit}
 <sc-if value="{{isCal}}" hint-placeholder-val="{{true}}">
 <section aria-label="Calendrier économique" class="fu d2" style="display: flex; flex-direction: column; gap: 14px">
 
-<nav aria-label="Semaine" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px">
-<sc-for list="{{week}}" as="w" hint-placeholder-count="6">
-<a class="wk" href="{{w.href}}" onClick="{{w.pick}}" aria-current="{{w.current}}" aria-label="{{w.aria}}" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 14px; background: {{w.bg}}; border: 1px solid {{w.bd}}; color: #EEF1F6">
-<span style="display: flex; justify-content: space-between; align-items: center; gap: 6px"><span style="font-size: 13px; font-weight: 700">{{w.l}}</span><sc-if value="{{w.busy}}" hint-placeholder-val="{{false}}"><span style="font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 2px 6px; border-radius: 5px; background: rgba(255,122,107,.16); color: #FF9A8E">CHARGÉE</span></sc-if><sc-if value="{{w.today}}" hint-placeholder-val="{{false}}"><span style="font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 2px 6px; border-radius: 5px; background: {{accentSoft}}; color: #C9D3FF">AUJ.</span></sc-if></span>
-<span style="display: flex; gap: 12px; font-size: 12px; color: #A3AEC2">
-<span class="num" style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: {{w.fC}}"></span><b style="color: #EEF1F6">{{w.f}}</b> {{w.fL}}</span>
-<span class="num" style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: {{w.mC}}"></span><b style="color: #EEF1F6">{{w.m}}</b> {{w.mL}}</span>
-</span>
-</a>
-</sc-for>
-</nav>
-
 <sc-if value="{{tl.ok}}" hint-placeholder-val="{{true}}">
 <div style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 18px 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
-<div><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Zones à éviter · {{tl.title}}</h2><div style="font-size: 12px; color: #8A95AA; margin-top: 3px">Heure de Paris · news de tes actifs · clique un jour au-dessus pour changer</div></div>
+<div><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Zones à éviter · {{tl.title}}</h2><div style="font-size: 12px; color: #8A95AA; margin-top: 3px">Heure de Paris · news de tes actifs</div></div>
+<div role="group" aria-label="Jour affiché" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 10px; padding: 3px; flex-wrap: wrap">
+<sc-for list="{{tl.days}}" as="dj" hint-placeholder-count="6"><button class="chip" type="button" onClick="{{dj.pick}}" aria-pressed="{{dj.pressed}}" style="cursor: pointer; border: 0; border-radius: 7px; min-height: 32px; padding: 0 10px; font-size: 12px; font-weight: 600; background: {{dj.bg}}; color: {{dj.fg}}">{{dj.l}}</button></sc-for>
+</div>
 <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
 <label for="tl-av" style="font-size: 12px; color: #A3AEC2">Avant</label>
 <select id="tl-av" class="inp" value="{{tl.av}}" onChange="{{tl.onAv}}" style="height: 36px; padding: 0 8px; border-radius: 9px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark"><sc-for list="{{tl.opts}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.l}}</option></sc-for></select>
@@ -246,6 +237,69 @@ button,input,select{font-family:inherit}
 <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #FF9A8E"></span>Surprise défavorable</span>
 <span>« Forte surprise » : écart d'au moins {{forteTxt}} fois l'écart habituel de cette annonce</span>
 </div>
+</section>
+</sc-if>
+
+<sc-if value="{{isUp}}" hint-placeholder-val="{{false}}">
+<section aria-label="À venir" class="fu d2" style="display: flex; flex-direction: column; gap: 14px">
+<nav aria-label="Jours à venir" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px">
+<sc-for list="{{up.week}}" as="w" hint-placeholder-count="6">
+<a class="wk" href="{{w.href}}" onClick="{{w.pick}}" aria-current="{{w.current}}" aria-label="{{w.aria}}" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 14px; background: {{w.bg}}; border: 1px solid {{w.bd}}; color: #EEF1F6">
+<span style="display: flex; justify-content: space-between; align-items: center; gap: 6px"><span style="font-size: 13px; font-weight: 700">{{w.l}}</span><sc-if value="{{w.busy}}" hint-placeholder-val="{{false}}"><span style="font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 2px 6px; border-radius: 5px; background: rgba(255,122,107,.16); color: #FF9A8E">CHARGÉE</span></sc-if><sc-if value="{{w.today}}" hint-placeholder-val="{{false}}"><span style="font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 2px 6px; border-radius: 5px; background: {{accentSoft}}; color: #C9D3FF">AUJ.</span></sc-if></span>
+<span style="display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #A3AEC2">
+<sc-if value="{{w.f}}" hint-placeholder-val="{{true}}"><span class="num" style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: {{w.fC}}"></span><b style="color: #EEF1F6">{{w.f}}</b> {{w.fL}}</span></sc-if>
+<sc-if value="{{w.m}}" hint-placeholder-val="{{true}}"><span class="num" style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: {{w.mC}}"></span><b style="color: #EEF1F6">{{w.m}}</b> {{w.mL}}</span></sc-if>
+<sc-if value="{{w.none}}" hint-placeholder-val="{{false}}"><span>Rien sur tes actifs</span></sc-if>
+<sc-if value="{{w.r}}" hint-placeholder-val="{{false}}"><span class="num" style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: #7BEBB9"></span><b style="color: #EEF1F6">{{w.r}}</b> {{w.rL}}</span></sc-if>
+</span>
+</a>
+</sc-for>
+</nav>
+
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="font-size: 13px; color: #8A95AA">{{up.sub}}</div>
+<div role="group" aria-label="Type" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{up.types}}" as="p" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 34px; background: {{p.bg}}; color: {{p.fg}}">{{p.l}}</button>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{up.empty}}" hint-placeholder-val="{{false}}">
+<div style="padding: 40px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center; font-size: 14px; color: #A3AEC2">Rien à venir avec ces filtres.</div>
+</sc-if>
+
+<sc-for list="{{up.groups}}" as="g" hint-placeholder-count="3">
+<div id="{{g.anchor}}" style="scroll-margin-top: 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 10px; margin-top: 6px"><h2 class="h" style="font-size: 16px; margin: 0; font-weight: 600">{{g.label}}</h2><sc-if value="{{g.today}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 7px; border-radius: 6px; background: {{accentSoft}}; color: #C9D3FF">AUJOURD'HUI</span></sc-if><span class="num" style="font-size: 12px; color: #8A95AA">{{g.count}}</span></div>
+<sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
+<div style="background: #0E131D; border: 1px solid {{it.bd}}; border-radius: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<button class="row" type="button" onClick="{{it.pick}}" aria-expanded="{{it.expanded}}" style="width: 100%; text-align: left; cursor: pointer; border: 0; background: transparent; border-radius: 16px; color: #EEF1F6; display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px">
+<span class="num" style="flex: none; width: 76px; font-size: 11px; line-height: 1.4; color: {{it.cdC}}"><span style="display: block; color: #EEF1F6; font-weight: 600; font-size: 14px">{{it.time}}</span>{{it.cd}}</span>
+<span style="flex: 1; min-width: 0">
+<span style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 6px; background: {{it.catBg}}; color: {{it.catFg}}">{{it.cat}}</span><span style="font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 6px; background: #1A2130; color: #C9D3E6">{{it.code}}</span><sc-if value="{{it.mine}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 5px; background: {{accentSoft}}; color: #C9D3FF">tes actifs</span></sc-if><sc-if value="{{it.alert}}" hint-placeholder-val="{{false}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5B87A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Alerte active"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg></sc-if></span>
+<span style="display: block; font-size: 15px; font-weight: 600; margin-top: 6px; line-height: 1.4">{{it.title}}</span>
+<span class="num" style="display: block; font-size: 13px; color: #A3AEC2; margin-top: 4px; line-height: 1.45">{{it.line}}</span>
+</span>
+<span role="img" aria-label="{{it.aria}}" style="flex: none; display: flex; gap: 2px; align-items: flex-end; margin-top: 4px"><span style="width: 4px; height: 7px; border-radius: 1px; background: {{it.c1}}"></span><span style="width: 4px; height: 10px; border-radius: 1px; background: {{it.c2}}"></span><span style="width: 4px; height: 13px; border-radius: 1px; background: {{it.c3}}"></span></span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px; transform: {{it.rot}}"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{it.open}}" hint-placeholder-val="{{false}}">
+<div class="open" style="margin: 0 18px 16px 108px; padding-top: 12px; border-top: 1px solid #1D2433; display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end">
+<div style="flex: 1 1 320px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .06em; color: {{accent}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>POURQUOI ÇA COMPTE</div>
+<div style="font-size: 14px; line-height: 1.55; color: #C9D3E6; margin-top: 6px">{{it.sum}}</div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<button class="ghost" type="button" onClick="{{it.alertPick}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600; padding: 0 14px; height: 40px; border-radius: 10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg>{{it.alertL}}</button>
+<sc-if value="{{it.canSurp}}" hint-placeholder-val="{{false}}"><button class="ghost" type="button" onClick="{{it.surpPick}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600; padding: 0 14px; height: 40px; border-radius: 10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"></path></svg>Alerte sur la surprise</button></sc-if>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-for>
 </section>
 </sc-if>
 
@@ -452,7 +506,7 @@ class Component extends DCLogic {
     var mesActifs = null;
     try { mesActifs = window.sessionStorage.getItem('tj.mesActifs'); } catch (e) {}
     this.histo = {};
-    this.state = { tab: 'cal', imp: 'all', mine: mesActifs === '1', open: 'e3', nf: 'all', nAsset: 'all', nOpen: 0, el: 0, form: null, flash: '', alerts: this.defAlerts(), seq: 5, tlDay: 0, zAv: 15, zAp: 15, histoV: 0 };
+    this.state = { tab: 'cal', imp: 'all', mine: mesActifs === '1', open: 'e3', upType: 'all', upOpen: null, upDay: null, nf: 'all', nAsset: 'all', nOpen: 0, el: 0, form: null, flash: '', alerts: this.defAlerts(), seq: 5, tlDay: 0, zAv: 15, zAp: 15, histoV: 0 };
   }
   defAlerts() {
     return [
@@ -601,7 +655,8 @@ class Component extends DCLogic {
       var SC = { Asie: ['rgba(183,148,246,.30)', '#DCCCFB'], Londres: ['rgba(110,139,255,.32)', '#C9D3FF'], 'New York': ['rgba(61,220,151,.26)', '#BDF5DC'] };
       var opts = [5, 10, 15, 30, 60].map(function (v) { return { v: String(v), l: v + ' min' }; });
       tl = {
-        ok: true, title: DAYS[s.tlDay][0].toLowerCase(), av: String(s.zAv), ap: String(s.zAp), opts: opts,
+        ok: true, title: DAYS[s.tlDay][0].toLowerCase(),
+        days: DAYS.map(function (D, di) { var on = s.tlDay === di; return { l: D[1], pressed: on ? 'true' : 'false', bg: on ? '#1A2130' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.setState({ tlDay: di }); } }; }), av: String(s.zAv), ap: String(s.zAp), opts: opts,
         onAv: function (ev) { self.setState({ zAv: Number(ev.target.value) }); },
         onAp: function (ev) { self.setState({ zAp: Number(ev.target.value) }); },
         sessions: TJ.sessionsJour(2026, 10, dd).map(function (se) { var l = pos(se.debut), r = pos(se.fin); return { nom: se.nom, h: F.heureParis(se.debut) + '–' + F.heureParis(se.fin), l: l.toFixed(2), w: (r - l).toFixed(2), bg: SC[se.nom][0], fg: SC[se.nom][1] }; }),
@@ -690,6 +745,71 @@ class Component extends DCLogic {
       var sp = (self.num(x.act) / self.num(x.eps) - 1) * 100, up = x.react.charAt(0) === '+';
       return { co: x.co, tick: x.tick, day: x.day, poids: '≈ ' + fp(x.poids, 1) + ' %', eps: x.eps, act: x.act, surp: (sp >= 0 ? '+' : '−') + fp(Math.abs(sp), 1) + ' %', sc: sp >= 0 ? GAINT : LOSST,
         react: x.react, rc: up ? GAINT : LOSST, rBg: up ? 'rgba(61,220,151,.12)' : 'rgba(255,122,107,.12)', ndx: x.ndx, nc: x.ndx.charAt(0) === '+' ? GAINT : LOSST };
+    });
+
+    // ---- à venir : annonces économiques et résultats d'entreprises, du plus proche au plus lointain
+    var JOURS_L = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    var dateDe = function (t) { return new Date(t + 3600000).getUTCDate(); }; // Paris = UTC+1 en novembre
+    var upItems = [];
+    EV.forEach(function (e) {
+      if (e.reelN !== null || e.ts <= now - 15 * 60000) return;
+      var b = self.impBars(e.lvl), al = alerteSur(e);
+      upItems.push({ kind: 'eco', id: e.id, ts: e.ts, lvl: e.lvl, mine: e.mine, title: e.title, code: e.cur, cat: 'ÉCO', catBg: 'rgba(110,139,255,.16)', catFg: '#A9BBFF', b: b, sum: e.sum, alert: al,
+        line: 'Prévision ' + e.fc + ' · précédent ' + e.prev + ' · ' + e.assets,
+        alertL: al ? 'Alerte déjà active' : 'Me prévenir avant', canSurp: e.fcN !== null && !!TJ,
+        alertPick: function () { if (!al) openForm('eco', e.title, { when: 'avant', min: '15' }); else self.setState({ tab: 'alerts' }); },
+        surpPick: function () { openForm('surp', e.title, { seuil: defSeuil(e) }); } });
+    });
+    EARN.forEach(function (x) {
+      var dd = Number((/(\d+)/.exec(x.day) || [0, 0])[1]);
+      var ts = x.when === 'avant ouverture' ? Date.UTC(2026, 10, dd, 12, 0) : Date.UTC(2026, 10, dd, 21, 5); // 13:00 ou 22:05 à Paris
+      if (ts <= now) return;
+      var lvl = x.poids >= 5 ? 3 : x.poids >= 1 ? 2 : 1, subj = x.co + ' (' + x.tick + ')', al = actives.some(function (a) { return a.subj === subj; });
+      upItems.push({ kind: 'earn', id: 'r-' + x.tick, ts: ts, lvl: lvl, mine: MES.indexOf('NAS100') >= 0, title: 'Résultats ' + x.co, code: x.tick, cat: 'RÉSULTATS', catBg: 'rgba(61,220,151,.12)', catFg: '#7BEBB9', b: self.impBars(lvl), sum: x.sum, alert: al,
+        line: x.when.charAt(0).toUpperCase() + x.when.slice(1) + ' · BPA attendu ' + x.eps + ' · ≈ ' + fp(x.poids, 1) + ' % du NAS100 · mouvement attendu ±' + fp(x.move, 1) + ' %',
+        alertL: al ? 'Alerte active' : 'Me prévenir la veille', canSurp: false,
+        alertPick: function () { if (!al) openForm('earn', subj); else self.setState({ tab: 'alerts' }); }, surpPick: null });
+    });
+    upItems.sort(function (a, b) { return a.ts - b.ts || b.lvl - a.lvl; });
+    var upVisibles = upItems.filter(function (it) { return (s.upType === 'all' || it.kind === s.upType) && (!s.mine || it.mine); });
+    var upJours = [];
+    upItems.forEach(function (it) { var d = dateDe(it.ts); if (upJours.indexOf(d) < 0) upJours.push(d); });
+    var up = {
+      total: upItems.length,
+      sub: 'Heures de Paris · du plus proche au plus lointain · ' + upVisibles.length + ' événement' + (upVisibles.length > 1 ? 's' : ''),
+      empty: upVisibles.length === 0,
+      types: [['all', 'Tout'], ['eco', 'Annonces'], ['earn', 'Résultats']].map(function (p) {
+        var on = s.upType === p[0];
+        return { l: p[1], pressed: on ? 'true' : 'false', bg: on ? '#1A2130' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.setState({ upType: p[0] }); } };
+      }),
+      week: upJours.map(function (d) {
+        var mesEco = upItems.filter(function (it) { return it.kind === 'eco' && it.mine && dateDe(it.ts) === d; });
+        var f = mesEco.filter(function (it) { return it.lvl === 3; }).length, m = mesEco.filter(function (it) { return it.lvl === 2; }).length;
+        var r = upItems.filter(function (it) { return it.kind === 'earn' && dateDe(it.ts) === d; }).length;
+        var busy = TJ ? (f >= TJ.SEUILS.JOURNEE_CHARGEE_FORTES || f + m >= TJ.SEUILS.JOURNEE_CHARGEE_TOTAL) : f >= 2;
+        var on = s.upDay === d, wd = new Date(Date.UTC(2026, 10, d)).getUTCDay();
+        return { l: JOURS_L[wd].slice(0, 3) + '. ' + d, f: f, m: m, r: r, fL: f > 1 ? 'fortes' : 'forte', mL: m > 1 ? 'moyennes' : 'moyenne', rL: r > 1 ? 'résultats' : 'résultat',
+          busy: busy, none: !f && !m && !r, today: d === 6, href: '#av-jour-' + d, current: on ? 'true' : 'false',
+          aria: JOURS_L[wd] + ' ' + d + ' novembre : ' + f + ' news fortes et ' + m + ' moyennes sur tes actifs' + (r ? ', ' + r + ' résultat' + (r > 1 ? 's' : '') + ' d’entreprise' : '') + (busy ? ', journée chargée' : ''),
+          fC: f ? '#FF7A6B' : '#2A3346', mC: m ? '#F5A65B' : '#2A3346',
+          bg: on ? '#111724' : '#0E131D', bd: on ? accent : (busy ? 'rgba(255,122,107,.35)' : '#1D2433'),
+          pick: function () { self.setState({ upDay: d }); } };
+      }),
+      groups: []
+    };
+    upJours.forEach(function (d) {
+      var items = upVisibles.filter(function (it) { return dateDe(it.ts) === d; }).map(function (it) {
+        var op = s.upOpen === it.id, dans = TJ ? F.dansCombien(it.ts, now) : '', proche = it.ts - now < 3600000;
+        return { title: it.title, code: it.code, cat: it.cat, catBg: it.catBg, catFg: it.catFg, mine: it.mine && !s.mine, alert: it.alert, line: it.line, sum: it.sum,
+          time: pad2(new Date(it.ts + 3600000).getUTCHours()) + ':' + pad2(new Date(it.ts + 3600000).getUTCMinutes()), cd: dans, cdC: proche ? '#F5B87A' : '#8A95AA',
+          c1: it.b.c1, c2: it.b.c2, c3: it.b.c3, aria: it.b.aria,
+          open: op, expanded: op ? 'true' : 'false', bd: op ? '#2A3346' : (proche ? 'rgba(245,166,91,.35)' : '#1D2433'), rot: op ? 'rotate(180deg)' : 'none',
+          alertL: it.alertL, canSurp: it.canSurp, alertPick: it.alertPick, surpPick: it.surpPick,
+          pick: function () { self.setState({ upOpen: self.state.upOpen === it.id ? null : it.id }); } };
+      });
+      if (!items.length) return;
+      var wd = new Date(Date.UTC(2026, 10, d)).getUTCDay();
+      up.groups.push({ label: JOURS_L[wd] + ' ' + d + ' novembre', today: d === 6, anchor: 'av-jour-' + d, items: items, count: items.length + ' événement' + (items.length > 1 ? 's' : '') });
     });
 
     // ---- actualités
@@ -824,7 +944,7 @@ class Component extends DCLogic {
       { l: 'Résultats à suivre (NAS100)', v: String(EARN.length), s: 'NVIDIA le 18 nov. : ≈ 9 % de l’indice', c: '#EEF1F6' },
       { l: 'Alertes actives', v: String(onCount), s: onCount ? 'sur ' + s.alerts.length + ' créée' + (s.alerts.length > 1 ? 's' : '') : 'aucune pour l’instant', c: onCount ? '#EEF1F6' : '#8A95AA' }
     ];
-    var tabs = [['cal', 'Calendrier économique', 'M4 5h16v15H4zM4 9h16M9 3v4M15 3v4', ''], ['earn', "Résultats d'entreprises", 'M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6', ''], ['news', 'Actualités', 'M5 4h12v16H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1M17 8h3v10a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3', ''], ['alerts', 'Alertes', 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0', String(onCount)]].map(function (x) {
+    var tabs = [['cal', 'Calendrier économique', 'M4 5h16v15H4zM4 9h16M9 3v4M15 3v4', ''], ['up', 'À venir', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 7v5l3 2', String(up.total)], ['earn', "Résultats d'entreprises", 'M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6', ''], ['news', 'Actualités', 'M5 4h12v16H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1M17 8h3v10a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3', ''], ['alerts', 'Alertes', 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0', String(onCount)]].map(function (x) {
       var on = s.tab === x[0];
       return { label: x[1], icon: x[2], count: x[3], sel: on ? 'true' : 'false', fg: on ? '#EEF1F6' : '#8A95AA', bar: on ? accent : 'transparent', pick: function () { self.setState({ tab: x[0] }); } };
     });
@@ -859,7 +979,7 @@ class Component extends DCLogic {
     return {
       accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
       cd: cd, nfpAlert: nfpAlert, kpis: kpis, flash: s.flash, tabs: tabs, mine: mine, showMine: s.tab !== 'alerts',
-      isCal: s.tab === 'cal', isEarn: s.tab === 'earn', isNews: s.tab === 'news', isAlerts: s.tab === 'alerts',
+      isCal: s.tab === 'cal', isUp: s.tab === 'up', up: up, isEarn: s.tab === 'earn', isNews: s.tab === 'news', isAlerts: s.tab === 'alerts',
       week: week, tl: tl, impChips: impChips, days: days, calEmpty: days.length === 0,
       forteTxt: TJ ? F.nombre(TJ.SEUILS.FORTE_SURPRISE_Z, 1) : '1,5',
       earnUp: earnUp, earnDone: earnDone,
