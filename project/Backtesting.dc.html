@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <title>Backtesting</title>
 <script src="./support.js"></script>
+<script src="./news-logic.js"></script>
+<script src="./donnees-exemple.js"></script>
 </head>
 <body>
 <x-dc>
@@ -27,6 +29,12 @@ button:disabled{opacity:.4;cursor:default !important}
 .chip{transition:background .2s,color .2s,border-color .2s}
 .btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
 .ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28;border-color:#36415B}
+.stab{transition:border-color .2s,background .2s}.stab:hover{border-color:#36415B !important}
+.hm{transition:transform .15s,box-shadow .15s}.hm:hover{transform:scale(1.12);box-shadow:0 0 0 1px #EEF1F6;position:relative;z-index:2}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.grow{transform-origin:bottom;animation:grow .8s cubic-bezier(.2,.7,.2,1) .2s both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.area{animation:fadein 1s ease .8s both}
 .scard{transition:border-color .25s,transform .25s}.scard:hover{border-color:#36415B !important;transform:translateY(-2px)}
 .inp:focus{outline:none;border-color:#6E8BFF !important;box-shadow:0 0 0 3px rgba(110,139,255,.2)}
 .noanim *{animation:none !important;transition:none !important}
@@ -151,119 +159,148 @@ button:disabled{opacity:.4;cursor:default !important}
 </sc-if>
 
 <sc-if value="{{isStats}}" hint-placeholder-val="{{false}}">
-<div class="fu d1" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end">
-<div style="display: flex; flex-direction: column; gap: 6px; min-width: 240px">
-<label for="bs-sess" style="font-size: 12px; font-weight: 600; color: #C9D3E6">Sessions analysées</label>
-<select id="bs-sess" class="inp" value="{{bs.sess}}" onChange="{{bs.onSess}}" style="height: 40px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark">
-<sc-for list="{{bs.sessOpts}}" as="o" hint-placeholder-count="5"><option value="{{o.id}}">{{o.l}}</option></sc-for>
-</select>
-</div>
-<div role="group" aria-label="Actif" style="display: flex; gap: 6px; flex-wrap: wrap">
-<sc-for list="{{bs.symChips}}" as="c" hint-placeholder-count="4">
-<button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; font-size: 12px; font-weight: 600; padding: 0 12px; min-height: 36px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}">{{c.l}}</button>
+<div role="tablist" aria-label="Sections des statistiques du backtest" class="fu d2" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px">
+<sc-for list="{{j.stSubs}}" as="t" hint-placeholder-count="5">
+<button type="button" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}" class="stab" style="flex: 1 1 0; min-width: 158px; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid {{t.bd}}; background: {{t.bg}}; text-align: left; cursor: pointer">
+<span style="flex: none; width: 34px; height: 34px; border-radius: 10px; background: {{t.ibg}}; color: {{t.ic}}; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg></span>
+<span style="min-width: 0"><span style="display: block; font-size: 14px; font-weight: 600; color: {{t.fg}}; white-space: nowrap">{{t.l}}</span><span style="display: block; font-size: 11px; color: #8A95AA; margin-top: 2px; white-space: nowrap">{{t.hint}}</span></span>
+</button>
 </sc-for>
 </div>
+<div class="fu d2" style="position: relative; z-index: 20; display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+<label for="bs-sess" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Sessions analysées</label>
+<select id="bs-sess" class="inp" value="{{j.sessSel.v}}" onChange="{{j.sessSel.on}}" style="height: 42px; padding: 0 12px; border-radius: 11px; background: #0E131D; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; font-weight: 600; color-scheme: dark; min-width: 220px">
+<sc-for list="{{j.sessSel.opts}}" as="o" hint-placeholder-count="5"><option value="{{o.id}}">{{o.l}}</option></sc-for>
+</select>
+<div style="position: relative">
+<button class="ghost" type="button" onClick="{{j.fp.toggle}}" aria-haspopup="true" aria-expanded="{{j.fp.expanded}}" style="display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 14px; border-radius: 11px; border: 1px solid {{j.fp.bd}}; background: {{j.fp.bg}}; color: #EEF1F6; font-size: 13px; font-weight: 600; cursor: pointer">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>Filtres
+<sc-if value="{{j.fp.count}}" hint-placeholder-val="{{false}}"><span class="num" style="min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; background: {{accent}}; color: #0A0D14; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center">{{j.fp.count}}</span></sc-if>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: rotate({{j.fp.rot}}deg); transition: transform .2s ease"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{j.fp.open}}" hint-placeholder-val="{{false}}">
+<div onClick="{{j.fp.close}}" style="position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 34"></div>
+<div role="group" aria-label="Filtres" style="position: absolute; left: 0; top: 50px; z-index: 35; width: 400px; max-width: calc(100vw - 32px); box-sizing: border-box; background: #0E131D; border: 1px solid #2A3346; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.55); padding: 18px; display: flex; flex-direction: column; gap: 18px">
+<div><div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; margin-bottom: 8px">ACTIF</div><div style="display: flex; gap: 6px; flex-wrap: wrap"><sc-for list="{{j.symChips}}" as="c" hint-placeholder-count="4"><button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; font-size: 12px; font-weight: 600; padding: 0 12px; min-height: 34px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}">{{c.l}}</button></sc-for></div></div>
+<div><div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; margin-bottom: 8px">SENS</div><div role="group" aria-label="Sens" style="display: inline-flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px"><sc-for list="{{j.dirs}}" as="p" hint-placeholder-count="3"><button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 34px; background: {{p.bg}}; color: {{p.fg}}">{{p.l}}</button></sc-for></div></div>
+<div><div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; margin-bottom: 8px">RÉSULTAT</div><div style="display: flex; gap: 6px; flex-wrap: wrap"><sc-for list="{{j.results}}" as="c" hint-placeholder-count="3"><button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; font-size: 12px; font-weight: 600; padding: 0 12px; min-height: 34px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}">{{c.l}}</button></sc-for></div></div>
+<div style="display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid #1A2130; padding-top: 14px">
+<button class="ghost" type="button" onClick="{{j.clear}}" style="cursor: pointer; border: 1px solid transparent; background: transparent; color: #A3AEC2; font-size: 13px; font-weight: 600; padding: 0 12px; height: 38px; border-radius: 10px">Réinitialiser</button>
+<button class="btn" type="button" onClick="{{j.fp.close}}" style="cursor: pointer; border: 0; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700; padding: 0 18px; height: 38px; border-radius: 10px">Voir les résultats</button>
 </div>
-
-<sc-if value="{{bs.empty}}" hint-placeholder-val="{{false}}">
-<div style="padding: 40px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center; font-size: 14px; color: #A3AEC2">Aucun trade de test dans cette sélection. Lance une session et prends tes premières positions.</div>
+</div>
 </sc-if>
-
-<sc-if value="{{bs.has}}" hint-placeholder-val="{{true}}">
-<sc-if value="{{bs.showIns}}" hint-placeholder-val="{{false}}">
-<div class="fu d2" style="display: flex; flex-wrap: wrap; gap: 12px">
-<sc-for list="{{bs.ins}}" as="i" hint-placeholder-count="3">
-<div style="flex: 1 1 230px; padding: 14px 16px; border-radius: 14px; background: #0E131D; border: 1px solid {{accentLine}}; display: flex; flex-direction: column; gap: 6px">
+</div>
+<sc-for list="{{j.fp.chips}}" as="c" hint-placeholder-count="0"><button class="chip" type="button" onClick="{{c.clear}}" aria-label="Retirer le filtre {{c.l}}" style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px 0 12px; border-radius: 999px; border: 1px solid {{accentLine}}; background: {{accentSoft}}; color: #EEF1F6; font-size: 12px; font-weight: 600; cursor: pointer">{{c.l}}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-for>
+<sc-if value="{{j.fp.count}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{j.clear}}" style="cursor: pointer; border: 0; background: transparent; color: #A3AEC2; font-size: 12px; font-weight: 600; padding: 0 6px; height: 32px; text-decoration: underline">Tout effacer</button></sc-if>
+</div>
+<sc-if value="{{j.empty}}" hint-placeholder-val="{{false}}">
+<div style="padding: 40px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center; font-size: 14px; color: #A3AEC2">Aucun trade de test dans cette sélection. Change de session ou retire un filtre.</div>
+</sc-if>
+<sc-if value="{{j.has}}" hint-placeholder-val="{{true}}">
+<sc-if value="{{j.stOv}}" hint-placeholder-val="{{true}}">
+<sc-if value="{{j.noIns}}" hint-placeholder-val="{{false}}">
+<div class="fu d2" style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #8A95AA"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg><span class="num">{{j.advNote}}</span></div>
+</sc-if>
+<sc-if value="{{j.showIns}}" hint-placeholder-val="{{true}}">
+<section class="fu d2" style="background: #0E131D; border: 1px solid {{accentLine}}; border-radius: 20px; padding: 20px 22px; display: flex; gap: 18px; flex-wrap: wrap; align-items: stretch; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 36px; height: 36px; border-radius: 11px; background: {{accentSoft}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span>
+<h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">L'essentiel en 3 chiffres</h2>
+<div style="font-size: 12px; color: #8A95AA">Calculé sur {{j.periodLabel}}</div>
+</div>
+<sc-for list="{{j.insights}}" as="i" hint-placeholder-count="3">
+<div style="flex: 1 1 230px; padding: 14px 16px; border-radius: 14px; background: #111622; border: 1px solid #1D2433; display: flex; flex-direction: column; gap: 6px">
 <div style="font-size: 12px; color: #94A0B4">{{i.t}}</div>
-<div class="h" style="font-size: 20px; font-weight: 600">{{i.v}}</div>
+<div class="h num" style="font-size: 20px; font-weight: 600; color: {{i.c}}">{{i.v}}</div>
 <div class="num" style="font-size: 13px; line-height: 1.5; color: #C9D3E6">{{i.d}}</div>
 </div>
 </sc-for>
-</div>
+</section>
 </sc-if>
-<sc-if value="{{bs.noIns}}" hint-placeholder-val="{{false}}"><div style="font-size: 13px; color: #8A95AA">{{bs.insNote}}</div></sc-if>
-
-<div class="fu d2" style="display: flex; flex-wrap: wrap; gap: 12px">
-<sc-for list="{{bs.tiles}}" as="k" hint-placeholder-count="8">
-<div style="flex: 1 1 200px; background: #0E131D; border: 1px solid #1D2433; border-radius: 16px; padding: 14px 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div class="fu d3" style="display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{j.hero}}" as="k" hint-placeholder-count="4">
+<div style="flex: 1 1 220px; background: #0E131D; border: 1px solid #1D2433; border-radius: 16px; padding: 16px 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
 <div style="font-size: 12px; color: #94A0B4">{{k.l}}</div>
-<div class="h num" style="font-size: 24px; font-weight: 600; margin-top: 6px; color: {{k.c}}">{{k.v}}</div>
+<div class="h num" style="font-size: 28px; font-weight: 600; margin-top: 6px; color: {{k.c}}">{{k.v}}</div>
 <div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{k.s}}</div>
 </div>
 </sc-for>
 </div>
-
-<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
-<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Courbe des résultats</h2><span class="num" style="font-size: 12px; color: #8A95AA">{{bs.eqSub}}</span></div>
-<div style="position: relative; margin-top: 14px; padding-right: 64px">
-<svg viewBox="0 0 800 200" preserveAspectRatio="none" style="width: 100%; height: 200px; display: block" aria-hidden="true">
-<line x1="0" y1="{{bs.zeroY}}" x2="800" y2="{{bs.zeroY}}" stroke="#2A3346" stroke-width="1" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"></line>
-<path d="{{bs.eqArea}}" fill="rgba(245,166,91,.10)"></path>
-<path class="draw" d="{{bs.eqLine}}" fill="none" stroke="#F5B87A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+<section class="fu d3" style="flex: 999 1 600px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Courbe des résultats</h2><span class="num" style="font-size: 12px; color: #8A95AA">{{j.eq.range}}</span></div>
+<div style="position: relative; margin-top: 16px; padding-right: 64px">
+<svg viewBox="0 0 800 220" preserveAspectRatio="none" style="width: 100%; height: 220px; display: block" aria-hidden="true">
+<g stroke="#161C29" stroke-width="1" vector-effect="non-scaling-stroke"><line x1="0" y1="14" x2="800" y2="14"></line><line x1="0" y1="110" x2="800" y2="110"></line><line x1="0" y1="206" x2="800" y2="206"></line></g>
+<path class="area" d="{{j.eq.area}}" fill="{{accentSoft}}"></path>
+<path class="draw" d="{{j.eq.line}}" fill="none" stroke="{{accent}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
 </svg>
-<span class="num" style="position: absolute; right: 0; top: 0; font-size: 11px; color: #8A95AA">{{bs.yTop}}</span>
-<span class="num" style="position: absolute; right: 0; bottom: 0; font-size: 11px; color: #8A95AA">{{bs.yBot}}</span>
+<span class="num" style="position: absolute; right: 0; top: 14px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{j.eq.yTop}}</span>
+<span class="num" style="position: absolute; right: 0; top: 110px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{j.eq.yMid}}</span>
+<span class="num" style="position: absolute; right: 0; top: 206px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{j.eq.yBot}}</span>
 </div>
-<div style="font-size: 11px; color: #6F7A90; margin-top: 8px">En R cumulés, trade après trade (1 R = le risque pris sur un trade).</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; padding-right: 64px"><span style="font-size: 12px; font-weight: 600; color: #C9D3E6">Drawdown</span><span class="num" style="font-size: 11px; color: #FF9A8E">max {{j.eq.ddTxt}}</span></div>
+<div style="position: relative; margin-top: 6px; padding-right: 64px">
+<svg viewBox="0 0 800 70" preserveAspectRatio="none" style="width: 100%; height: 70px; display: block" aria-hidden="true">
+<line x1="0" y1="2" x2="800" y2="2" stroke="#2A3346" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+<path class="area" d="{{j.eq.dd}}" fill="rgba(255,122,107,.22)" stroke="#FF7A6B" stroke-width="1.4" vector-effect="non-scaling-stroke"></path>
+</svg>
+<span class="num" style="position: absolute; right: 0; top: 2px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">0 €</span>
+<span class="num" style="position: absolute; right: 0; top: 66px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{j.eq.ddBot}}</span>
+</div>
+<div class="num" style="display: flex; justify-content: space-between; padding-right: 64px; margin-top: 10px; font-size: 11px; color: #8A95AA"><span>{{j.eq.x0}}</span><span>{{j.eq.x1}}</span><span>{{j.eq.x2}}</span></div>
 </section>
-
 <div style="display: flex; flex-wrap: wrap; gap: 18px">
-<sc-for list="{{bs.groups}}" as="g" hint-placeholder-count="2">
-<section class="fu d3" style="flex: 1 1 380px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
-<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">{{g.title}}</h2><span style="font-size: 11px; color: #8A95AA">résultat en R</span></div>
-<div style="margin-top: 12px">
-<sc-for list="{{g.rows}}" as="r" hint-placeholder-count="4">
-<div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 76px; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #151B27">
-<div style="min-width: 0"><div style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">{{r.meta}}</div></div>
-<div style="position: relative; height: 10px; border-radius: 5px; background: #121826"><span style="position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: #2A3346"></span><span style="position: absolute; top: 0; bottom: 0; left: {{r.l}}%; width: {{r.w}}%; border-radius: 5px; background: {{r.c}}"></span></div>
-<div class="num" style="text-align: right; font-size: 13px; font-weight: 700; color: {{r.vc}}">{{r.v}}</div>
-</div>
-</sc-for>
-</div>
-</section>
-</sc-for>
-</div>
-
-<div style="display: flex; flex-wrap: wrap; gap: 18px">
-<section class="fu d4" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
-<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Long ou short</h2>
-<div style="display: flex; gap: 10px; margin-top: 14px">
-<sc-for list="{{bs.ls}}" as="x" hint-placeholder-count="2">
-<div style="flex: 1; min-width: 0; padding: 14px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
-<span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{x.bg}}; color: {{x.fg}}">{{x.l}}</span>
-<div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 10px; color: {{x.vc}}">{{x.v}}</div>
-<div class="num" style="font-size: 12px; color: #8A95AA; margin-top: 6px">{{x.meta}}</div>
-</div>
-</sc-for>
-</div>
-</section>
-<section class="fu d4" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
-<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Par jour de la semaine</h2><span style="font-size: 11px; color: #8A95AA">résultat en R</span></div>
-<div style="position: relative; height: 150px; margin-top: 16px; display: flex; gap: 10px">
-<span style="position: absolute; left: 0; right: 0; top: 75px; border-top: 1px solid #2A3346"></span>
-<sc-for list="{{bs.wd}}" as="w" hint-placeholder-count="5">
-<div style="flex: 1; position: relative; height: 150px"><span style="position: absolute; left: 16%; right: 16%; top: {{w.top}}px; height: {{w.h}}px; border-radius: {{w.rad}}; background: {{w.c}}"></span></div>
-</sc-for>
-</div>
-<div style="display: flex; gap: 10px; margin-top: 8px">
-<sc-for list="{{bs.wd}}" as="w" hint-placeholder-count="5">
-<div style="flex: 1; min-width: 0; text-align: center"><div style="font-size: 12px; font-weight: 600">{{w.l}}</div><div class="num" style="font-size: 11px; font-weight: 700; margin-top: 3px; color: {{w.vc}}">{{w.v}}</div><div class="num" style="font-size: 10px; color: #8A95AA; margin-top: 2px">{{w.meta}}</div></div>
-</sc-for>
-</div>
-</section>
 <section class="fu d4" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
 <h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Distribution des résultats</h2>
-<div style="display: flex; align-items: flex-end; gap: 8px; height: 140px; margin-top: 16px; border-bottom: 1px solid #222A3A">
-<sc-for list="{{bs.hist}}" as="b" hint-placeholder-count="5">
-<div style="flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px"><span class="num" style="font-size: 12px; font-weight: 600; color: #C9D3E6">{{b.n}}</span><span style="display: block; width: 100%; max-width: 44px; height: {{b.h}}px; border-radius: 6px 6px 0 0; background: {{b.c}}"></span></div>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Nombre de trades par résultat (1 R = le risque pris)</div>
+<div style="display: flex; align-items: flex-end; gap: 8px; height: 160px; margin-top: 14px; border-bottom: 1px solid #222A3A">
+<sc-for list="{{j.hist}}" as="b" hint-placeholder-count="6">
+<div style="flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px">
+<span class="num" style="font-size: 12px; font-weight: 600; color: #C9D3E6">{{b.n}}</span>
+<span class="grow" style="display: block; width: 100%; max-width: 44px; height: {{b.h}}px; border-radius: 6px 6px 0 0; background: {{b.c}}"></span>
+</div>
 </sc-for>
 </div>
 <div style="display: flex; gap: 8px; margin-top: 8px">
-<sc-for list="{{bs.hist}}" as="b" hint-placeholder-count="5"><span class="num" style="flex: 1; min-width: 0; text-align: center; font-size: 10px; color: #8A95AA">{{b.l}}</span></sc-for>
+<sc-for list="{{j.hist}}" as="b" hint-placeholder-count="6">
+<span class="num" style="flex: 1; min-width: 0; text-align: center; font-size: 10px; color: #8A95AA">{{b.l}}</span>
+</sc-for>
 </div>
 </section>
+<sc-if value="{{j.cmp.show}}" hint-placeholder-val="{{false}}">
+<section class="fu d4" style="flex: 1 1 420px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Comparaison des sessions</h2>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Résultat de chaque session sur la sélection, en R et en euros.</div>
+<div style="overflow-x: auto; margin-top: 12px">
+<div style="min-width: 480px">
+<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 56px 96px 84px 72px 90px; gap: 10px; padding: 6px 0; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #8A95AA"><span>SESSION</span><span style="text-align: right">TRADES</span><span style="text-align: right">RÉSULTAT</span><span style="text-align: right">EN EUROS</span><span style="text-align: right">RÉUSSITE</span><span style="text-align: right">DRAWDOWN</span></div>
+<sc-for list="{{j.cmp.rows}}" as="r" hint-placeholder-count="2">
+<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 56px 96px 84px 72px 90px; gap: 10px; align-items: center; padding: 10px 0; border-top: 1px solid #151B27; font-size: 13px">
+<span style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="flex: none; width: 9px; height: 9px; border-radius: 5px; background: {{r.c}}"></span><span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.name}}</span></span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{r.n}}</span>
+<span class="num" style="text-align: right; font-weight: 700; color: {{r.pc}}">{{r.pnl}}</span>
+<span class="num" style="text-align: right; font-weight: 600; color: {{r.pc}}">{{r.ret}}</span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{r.wr}}</span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{r.dd}}</span>
 </div>
+</sc-for>
+</div>
+</div>
+</section>
 </sc-if>
+</div>
+<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Toutes les statistiques</h2>
+<div style="display: flex; flex-wrap: wrap; column-gap: 28px; margin-top: 10px">
+<sc-for list="{{j.metrics}}" as="m" hint-placeholder-count="20">
+<div style="flex: 1 1 230px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 11px 0; border-bottom: 1px solid #151B27">
+<span style="font-size: 13px; color: #A3AEC2">{{m.l}}</span>
+<span class="num" style="font-size: 14px; font-weight: 600; color: {{m.c}}; white-space: nowrap">{{m.v}}</span>
+</div>
+</sc-for>
+</div>
+</section>
 <sc-if value="{{cmp.show}}" hint-placeholder-val="{{true}}">
 <section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
 <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap">
@@ -293,8 +330,266 @@ button:disabled{opacity:.4;cursor:default !important}
 </section>
 </sc-if>
 </sc-if>
+<sc-if value="{{j.stHr}}" hint-placeholder-val="{{false}}">
+<section class="fu d4" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div><h2 id="heures" class="h" style="font-size: 17px; margin: 0; font-weight: 600; scroll-margin-top: 24px">Heures de trading</h2><div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Jour × heure d'entrée de tes trades de test. Survole une case pour le détail.</div></div>
+<div role="group" aria-label="Valeur affichée" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{j.hmModes}}" as="p" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 34px; background: {{p.bg}}; color: {{p.fg}}">{{p.label}}</button>
+</sc-for>
+</div>
+</div>
+<div style="overflow-x: auto; margin-top: 16px">
+<div style="min-width: 920px; display: flex; flex-direction: column; gap: 3px">
+<div style="display: grid; grid-template-columns: 52px repeat(24, minmax(0, 1fr)); gap: 3px; margin-bottom: 4px">
+<sc-for list="{{j.hm.bands}}" as="b" hint-placeholder-count="3">
+<span style="grid-column: {{b.col}}; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: {{b.bg}}; color: {{b.fg}}; white-space: nowrap">{{b.l}}</span>
+</sc-for>
+</div>
+<sc-for list="{{j.hm.rows}}" as="r" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: 52px repeat(24, minmax(0, 1fr)); gap: 3px">
+<span style="font-size: 12px; font-weight: 600; color: #A3AEC2; align-self: center">{{r.l}}</span>
+<sc-for list="{{r.cells}}" as="c" hint-placeholder-count="24">
+<span class="hm num" title="{{c.title}}" style="height: 34px; border-radius: 5px; background: {{c.bg}}; color: {{c.fg}}; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; overflow: hidden">{{c.txt}}</span>
+</sc-for>
+</div>
+</sc-for>
+<div style="display: grid; grid-template-columns: 52px repeat(24, minmax(0, 1fr)); gap: 3px; margin-top: 4px">
+<span></span>
+<sc-for list="{{j.hm.hours}}" as="h" hint-placeholder-count="24">
+<span class="num" style="font-size: 10px; color: #8A95AA; text-align: center">{{h}}</span>
+</sc-for>
+</div>
+<div style="font-size: 12px; font-weight: 600; color: #C9D3E6; margin-top: 18px">Résultat par heure d'entrée</div>
+<div style="position: relative; display: grid; grid-template-columns: 52px repeat(24, minmax(0, 1fr)); gap: 3px; margin-top: 8px">
+<span style="position: absolute; left: 55px; right: 0; top: 60px; border-top: 1px solid #2A3346"></span>
+<span></span>
+<sc-for list="{{j.hm.bars}}" as="b" hint-placeholder-count="24">
+<div title="{{b.title}}" style="position: relative; height: 120px"><span style="position: absolute; left: 18%; right: 18%; top: {{b.top}}px; height: {{b.h}}px; border-radius: {{b.rad}}; background: {{b.c}}"></span></div>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: 52px repeat(24, minmax(0, 1fr)); gap: 3px; margin-top: 6px">
+<span style="font-size: 10px; color: #8A95AA">Trades</span>
+<sc-for list="{{j.hm.bars}}" as="b" hint-placeholder-count="24">
+<span class="num" style="font-size: 10px; color: #A3AEC2; text-align: center">{{b.n}}</span>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; font-size: 11px; color: #8A95AA">
+<span>{{j.hm.legend}}</span>
+<span style="display: flex; gap: 3px"><sc-for list="{{j.hm.scale}}" as="sc" hint-placeholder-count="5"><span style="width: 16px; height: 10px; border-radius: 3px; background: {{sc}}"></span></sc-for></span>
+<span>{{j.hm.legend2}}</span></div>
+</section>
+<div style="display: flex; flex-wrap: wrap; gap: 18px">
+<section class="fu d3" style="flex: 1 1 340px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 12px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Par session</h2><div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Selon l'heure d'entrée (heure de Paris)</div></div>
+<sc-for list="{{j.sessions}}" as="se" hint-placeholder-count="3">
+<div style="padding: 14px; border-radius: 14px; background: #111622; border: 1px solid {{se.bd}}">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+<div><div style="display: flex; align-items: center; gap: 8px"><span style="font-size: 15px; font-weight: 600">{{se.l}}</span><sc-if value="{{se.best}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 5px; background: rgba(61,220,151,.16); color: #7BEBB9">MEILLEURE</span></sc-if></div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">{{se.hours}}</div></div>
+<div class="h num" style="font-size: 20px; font-weight: 600; color: {{se.vc}}">{{se.v}}</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px">
+<div><div style="font-size: 10px; color: #8A95AA">Trades</div><div class="num" style="font-size: 13px; font-weight: 600; margin-top: 2px">{{se.n}}</div></div>
+<div><div style="font-size: 10px; color: #8A95AA">Réussite</div><div class="num" style="font-size: 13px; font-weight: 600; margin-top: 2px">{{se.wr}}</div></div>
+<div><div style="font-size: 10px; color: #8A95AA">Profit f.</div><div class="num" style="font-size: 13px; font-weight: 600; margin-top: 2px">{{se.pf}}</div></div>
+<div><div style="font-size: 10px; color: #8A95AA">Espérance</div><div class="num" style="font-size: 13px; font-weight: 600; margin-top: 2px; color: {{se.vc}}">{{se.exp}}</div></div>
+</div>
+<div style="height: 5px; border-radius: 3px; background: #1A2130; margin-top: 10px; overflow: hidden"><div class="growx" style="width: {{se.wrN}}%; height: 100%; border-radius: 3px; background: {{se.bar}}"></div></div>
+</div>
+</sc-for>
+</section>
+<section class="fu d4" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Par jour de la semaine</h2><span style="font-size: 11px; color: #8A95AA">P&amp;L net</span></div>
+<div style="position: relative; height: 180px; margin-top: 18px; display: flex; gap: 10px">
+<span style="position: absolute; left: 0; right: 0; top: 90px; border-top: 1px solid #2A3346"></span>
+<sc-for list="{{j.wd}}" as="w" hint-placeholder-count="5">
+<div style="flex: 1; position: relative; height: 180px"><span class="grow" style="position: absolute; left: 14%; right: 14%; top: {{w.top}}px; height: {{w.h}}px; border-radius: {{w.rad}}; background: {{w.c}}"></span></div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; margin-top: 10px">
+<sc-for list="{{j.wd}}" as="w" hint-placeholder-count="5">
+<div style="flex: 1; min-width: 0; text-align: center"><div style="font-size: 12px; font-weight: 600">{{w.l}}</div><div class="num" style="font-size: 11px; font-weight: 700; margin-top: 3px; color: {{w.vc}}; white-space: nowrap">{{w.v}}</div><div class="num" style="font-size: 10px; color: #8A95AA; margin-top: 2px">{{w.meta}}</div></div>
+</sc-for>
+</div>
+</section>
+</div>
+</sc-if>
+<sc-if value="{{j.stAs}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 18px">
+<section class="fu d4" style="flex: 999 1 560px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Par actif</h2>
+<div style="overflow-x: auto; margin-top: 12px">
+<div style="min-width: 600px">
+<div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 60px 72px 96px 70px 82px 74px; gap: 10px; padding: 6px 0; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #8A95AA">
+<span>ACTIF</span><span style="text-align: right">TRADES</span><span style="text-align: right">RÉUSSITE</span><span style="text-align: right">P&amp;L</span><span style="text-align: right">PROFIT F.</span><span style="text-align: right">ESPÉRANCE</span><span style="text-align: right">MEILLEUR</span>
+</div>
+<sc-for list="{{j.assets}}" as="a" hint-placeholder-count="10">
+<div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 60px 72px 96px 70px 82px 74px; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid #151B27; font-size: 13px">
+<span style="display: flex; align-items: center; gap: 10px; min-width: 0"><span style="flex: none; width: 28px; height: 28px; border-radius: 8px; background: {{a.ibg}}; color: {{a.ifg}}; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800">{{a.ini}}</span><span style="font-weight: 600; white-space: nowrap">{{a.l}}</span></span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{a.n}}</span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{a.wr}}</span>
+<span class="num" style="text-align: right; font-weight: 700; color: {{a.vc}}">{{a.v}}</span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{a.pf}}</span>
+<span class="num" style="text-align: right; color: {{a.vc}}">{{a.exp}}</span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{a.dur}}</span>
+</div>
+</sc-for>
+</div>
+</div></section>
 
-<div style="font-size: 11px; color: #6F7A90">Sessions et résultats d'exemple pour la maquette · les trades de test restent séparés de tes statistiques réelles.</div>
+<section class="fu d4" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Long ou short</h2>
+<div style="display: flex; gap: 10px">
+<sc-for list="{{j.ls}}" as="x" hint-placeholder-count="2">
+<div style="flex: 1; min-width: 0; padding: 14px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
+<span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{x.bg}}; color: {{x.fg}}">{{x.l}}</span>
+<div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 10px; color: {{x.vc}}">{{x.v}}</div>
+<div style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px; font-size: 12px">
+<div style="display: flex; justify-content: space-between"><span style="color: #8A95AA">Trades</span><span class="num" style="font-weight: 600">{{x.n}}</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #8A95AA">Réussite</span><span class="num" style="font-weight: 600">{{x.wr}}</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #8A95AA">Profit factor</span><span class="num" style="font-weight: 600">{{x.pf}}</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #8A95AA">Espérance</span><span class="num" style="font-weight: 600; color: {{x.vc}}">{{x.exp}}</span></div>
+</div>
+</div>
+</sc-for>
+</div>
+<div>
+<div style="display: flex; justify-content: space-between; font-size: 12px; color: #A3AEC2"><span>Répartition des trades</span><span class="num">{{j.lsShare.txt}}</span></div>
+<div style="display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px; background: #F5B87A"><div class="growx" style="width: {{j.lsShare.long}}%; height: 100%; background: #8FA6FF"></div></div>
+</div>
+</section>
+</div>
+</sc-if>
+<sc-if value="{{j.stBe}}" hint-placeholder-val="{{false}}">
+<sc-if value="{{j.noIns}}" hint-placeholder-val="{{false}}"><div style="font-size: 13px; color: #8A95AA">{{j.advNote}}</div></sc-if>
+<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Quand tu enchaînes les trades</h2>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Ton résultat moyen selon que c'est ton 1er, 2e, 3e… trade de la journée.</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px">
+<sc-for list="{{j.be.day}}" as="c" hint-placeholder-count="3">
+<div style="flex: 1 1 150px; padding: 14px 16px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
+<div style="font-size: 12px; color: #94A0B4">{{c.l}}</div>
+<div class="h num" style="font-size: 24px; font-weight: 600; margin-top: 6px; color: {{c.c}}">{{c.v}}</div>
+<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{c.meta}}</div>
+<div style="height: 5px; border-radius: 3px; background: #1A2130; margin-top: 10px; overflow: hidden"><div class="growx" style="width: {{c.w}}%; height: 100%; border-radius: 3px; background: {{c.bar}}"></div></div>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{j.be.dayTxt}}" hint-placeholder-val="{{false}}"><div style="display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: {{accentSoft}}; border: 1px solid {{accentLine}}; font-size: 14px; line-height: 1.5; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg><span class="num">{{j.be.dayTxt}}</span></div></sc-if>
+</section>
+<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Après un gain ou une perte</h2>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Ton résultat moyen sur le trade suivant. Utile pour repérer quand tu cherches à te refaire.</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px">
+<sc-for list="{{j.be.after}}" as="c" hint-placeholder-count="4">
+<div style="flex: 1 1 150px; padding: 14px 16px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
+<div style="font-size: 12px; color: #94A0B4">{{c.l}}</div>
+<div class="h num" style="font-size: 24px; font-weight: 600; margin-top: 6px; color: {{c.c}}">{{c.v}}</div>
+<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{c.meta}}</div>
+<div class="num" style="font-size: 11px; color: #6F7A90; margin-top: 2px">{{c.vs}}</div>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{j.be.afterTxt}}" hint-placeholder-val="{{false}}"><div style="display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: {{accentSoft}}; border: 1px solid {{accentLine}}; font-size: 14px; line-height: 1.5; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg><span class="num">{{j.be.afterTxt}}</span></div></sc-if>
+</section>
+<section class="fu d2" aria-labelledby="bn-t" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap">
+<div>
+<h2 id="bn-t" class="h" style="font-size: 17px; margin: 0; font-weight: 600">Trades près des news fortes</h2>
+<div style="font-size: 13px; color: #8A95AA; margin-top: 4px">{{bn.sub}}</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<label for="bn-min" style="font-size: 12px; font-weight: 600; color: #C9D3E6">Fenêtre autour de la news</label>
+<select id="bn-min" class="inp" value="{{bn.min}}" onChange="{{bn.onMin}}" style="height: 40px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark">
+<sc-for list="{{bn.opts}}" as="o" hint-placeholder-count="4"><option value="{{o.v}}">{{o.l}}</option></sc-for>
+</select>
+</div>
+</div>
+<sc-if value="{{bn.ok}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{bn.groups}}" as="g" hint-placeholder-count="2">
+<div style="flex: 1 1 280px; min-width: 0; padding: 16px; border-radius: 14px; background: #111622; border: 1px solid {{g.bd}}">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: {{g.fg}}"><span style="width: 8px; height: 8px; border-radius: 4px; background: {{g.dot}}"></span>{{g.l}}</span>
+<sc-if value="{{g.faible}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 2px 6px; border-radius: 5px; background: rgba(245,166,91,.14); color: #F5B87A">ÉCHANTILLON FAIBLE</span></sc-if>
+</div>
+<div style="display: flex; gap: 10px; margin-top: 12px">
+<div style="flex: 1; min-width: 0"><div style="font-size: 11px; color: #8A95AA">Trades</div><div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 3px">{{g.n}}</div></div>
+<div style="flex: 1; min-width: 0"><div style="font-size: 11px; color: #8A95AA">Réussite</div><div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 3px">{{g.wr}}</div></div>
+<div style="flex: 1; min-width: 0"><div style="font-size: 11px; color: #8A95AA">Expectancy</div><div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 3px; color: {{g.ec}}">{{g.exp}}</div></div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: {{bn.boxBg}}; border: 1px solid {{bn.boxBd}}; font-size: 14px; line-height: 1.5; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{bn.icC}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="{{bn.icon}}"></path></svg><span class="num">{{bn.phrase}}</span></div>
+<sc-if value="{{bn.hasTop}}" hint-placeholder-val="{{false}}"><div class="num" style="font-size: 12px; color: #8A95AA">{{bn.top}}</div></sc-if>
+</sc-if>
+<sc-if value="{{bn.off}}" hint-placeholder-val="{{false}}"><div style="font-size: 13px; color: #8A95AA">{{bn.offMsg}}</div></sc-if>
+</section>
+</sc-if>
+<sc-if value="{{j.stEv}}" hint-placeholder-val="{{false}}">
+<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Début vs fin de ta sélection</h2>
+<div class="num" style="font-size: 12px; color: #8A95AA; margin-top: 4px">{{j.evo.sub}}</div>
+<sc-if value="{{j.evo.hasPrev}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px">
+<sc-for list="{{j.evo.tiles}}" as="k" hint-placeholder-count="4">
+<div style="flex: 1 1 200px; padding: 14px 16px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
+<div style="font-size: 12px; color: #94A0B4">{{k.l}}</div>
+<div style="display: flex; align-items: baseline; gap: 8px; margin-top: 6px; flex-wrap: wrap"><span class="h num" style="font-size: 24px; font-weight: 600; color: {{k.c}}">{{k.v}}</span><span class="num" style="font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 6px; background: {{k.dBg}}; color: {{k.dFg}}">{{k.d}}</span></div>
+<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">au début : {{k.prev}}</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{j.evo.noPrev}}" hint-placeholder-val="{{false}}"><div style="margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433; font-size: 13px; color: #A3AEC2">{{j.evo.noPrevTxt}}</div></sc-if>
+</section>
+<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Ta progression</h2>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Moyenne de tes 20 derniers trades, recalculée à chaque trade : la courbe monte si tu t'améliores.</div>
+<sc-if value="{{j.roll.ok}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px">
+<sc-for list="{{j.roll.charts}}" as="ch" hint-placeholder-count="2">
+<div style="flex: 1 1 360px; min-width: 0; padding: 16px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #C9D3E6; font-weight: 600">{{ch.t}}</span><span style="display: flex; align-items: baseline; gap: 8px"><span class="h num" style="font-size: 22px; font-weight: 600">{{ch.v}}</span><span class="num" style="font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 6px; background: {{ch.dBg}}; color: {{ch.dFg}}">{{ch.d}}</span></span></div>
+<div style="position: relative; height: 160px; margin-top: 12px">
+<svg viewBox="0 0 600 160" preserveAspectRatio="none" style="position: absolute; left: 0; top: 0; width: 100%; height: 160px" aria-hidden="true">
+<path class="area" d="{{ch.area}}" fill="{{accentSoft}}"></path>
+<path class="draw" d="{{ch.line}}" fill="none" stroke="{{accent}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+</svg>
+<div style="position: absolute; left: 0; right: 0; top: {{ch.refY}}px; border-top: 1px dashed #3A4458"></div>
+<span class="num" style="position: absolute; right: 4px; top: {{ch.refY}}px; transform: translateY(-120%); font-size: 10px; color: #8A95AA">{{ch.refL}}</span>
+</div>
+<div class="num" style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #8A95AA"><span>{{j.roll.x0}}</span><span>{{j.roll.x1}}</span></div>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{j.roll.txt}}" hint-placeholder-val="{{false}}"><div style="display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: {{accentSoft}}; border: 1px solid {{accentLine}}; font-size: 14px; line-height: 1.5; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg><span class="num">{{j.roll.txt}}</span></div></sc-if>
+</sc-if>
+<sc-if value="{{j.roll.no}}" hint-placeholder-val="{{false}}"><div style="margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433; font-size: 13px; color: #A3AEC2">{{j.roll.need}}</div></sc-if>
+</section>
+<section class="fu d4" style="flex: 2 1 560px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Résultat par mois</h2><span style="font-size: 11px; color: #8A95AA">résultat en R · réussite · trades</span></div>
+<div style="position: relative; height: 180px; margin-top: 18px; display: flex; gap: 10px">
+<span style="position: absolute; left: 0; right: 0; top: 90px; border-top: 1px solid #2A3346"></span>
+<sc-for list="{{j.monthly}}" as="w" hint-placeholder-count="7">
+<div style="flex: 1; position: relative; height: 180px"><span class="grow" style="position: absolute; left: 18%; right: 18%; top: {{w.top}}px; height: {{w.h}}px; border-radius: {{w.rad}}; background: {{w.c}}"></span></div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; margin-top: 10px">
+<sc-for list="{{j.monthly}}" as="w" hint-placeholder-count="7">
+<div style="flex: 1; min-width: 0; text-align: center"><div style="font-size: 12px; font-weight: 600">{{w.l}}</div><div class="num" style="font-size: 11px; font-weight: 700; margin-top: 3px; color: {{w.vc}}; white-space: nowrap">{{w.v}}</div><div class="num" style="font-size: 10px; color: #8A95AA; margin-top: 2px; white-space: nowrap">{{w.meta}}</div></div>
+</sc-for>
+</div>
+</section>
+</sc-if>
+</sc-if>
+</sc-if>
+
+<div style="font-size: 11px; color: #6F7A90">Données d'exemple · sessions, résultats et calendrier des news générés pour la maquette · les trades de test restent séparés de tes statistiques réelles.</div>
 </main>
 
 <sc-if value="{{nw.isOpen}}" hint-placeholder-val="{{false}}">
@@ -378,7 +673,11 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.lastSess = this.sget('bt.sessions') || '';
-    this.state = { tab: 'sess', sessions: this.loadSessions(), flt: 'all', del: null, nw: null, cmpId: null, bsSess: 'all', bsSym: 'all' };
+    var nm = parseInt(this.sget('tj.newsProche'), 10);
+    // depuis le replay (« Comparer ») : ouvrir les statistiques de la session en cours
+    var versStats = this.sget('bt.tab') === 'stats', cur = this.sget('bt.current');
+    if (versStats) this.sset('bt.tab', null);
+    this.state = { tab: versStats ? 'stats' : 'sess', sessions: this.loadSessions(), flt: 'all', del: null, nw: null, cmpId: null, bsSess: versStats && cur ? cur : 'all', bsSym: 'all', newsMin: nm > 0 ? nm : 30 };
   }
   sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
   sset(k, v) { try { if (v === null) window.sessionStorage.removeItem(k); else window.sessionStorage.setItem(k, v); } catch (e) {} }
@@ -395,14 +694,21 @@ class Component extends DCLogic {
     };
   }
   mkSession(id, name, syms, tf, from, to, cap, risk, prog, n, p, seed, created) {
-    var r = this.rng(seed), r2 = this.rng(seed + 1000), r3 = this.rng(seed + 2000), trades = [], span = (to - from) * prog;
+    var r = this.rng(seed), r2 = this.rng(seed + 1000), r3 = this.rng(seed + 2000), r4 = this.rng(seed + 3000), trades = [], span = (to - from) * prog;
+    // Données d'exemple : environ 1 trade sur 3 est pris autour d'une news forte (calendrier de donnees-exemple.js),
+    // avec un peu moins de réussite, comme c'est souvent le cas en vrai.
+    var TJ = window.TJNews, news = TJ && TJ.exemple ? TJ.exemple.newsFortesPeriode(syms, from, from + span) : [];
     for (var i = 0; i < n; i++) {
-      var win = r() < p, R = win ? Math.round((1.2 + r() * 1.4) * 10) / 10 : -1;
+      var nw = news.length && r4() < 0.32 ? news[Math.floor(r4() * news.length)] : null;
+      var win = r() < (nw ? p - 0.16 : p), R = win ? Math.round((1.2 + r() * 1.4) * 10) / 10 : -1;
       var t = from + span * (i + 0.5) / n, d = new Date(t), wd = d.getUTCDay();
       var day = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) + (wd === 6 ? 2 : wd === 0 ? 1 : 0) * 86400000;
       var tt = day + (7 + (i * 5) % 11) * 3600000 + ((i * 3) % 4) * 900000;
-      trades.push({ dir: r2() < 0.55 ? 'Long' : 'Short', R: R, t: tt, sym: syms[Math.floor(r3() * syms.length)] });
+      var sym = syms[Math.floor(r3() * syms.length)];
+      if (nw) { tt = Math.floor(nw.t / 900000) * 900000 + (Math.floor(r4() * 3) - 1) * 900000; sym = nw.actif; }
+      trades.push({ dir: r2() < 0.55 ? 'Long' : 'Short', R: R, t: tt, sym: sym });
     }
+    trades.sort(function (a, b) { return a.t - b.t; });
     return { id: id, name: name, sym: syms[0], syms: syms, tf: tf, from: from, to: to, cap: cap, risk: risk, prog: prog, trades: trades, done: prog >= 1, created: created, last: created };
   }
   symsOf(x) { return x.syms && x.syms.length ? x.syms : [x.sym]; }
@@ -595,67 +901,244 @@ class Component extends DCLogic {
       nw.go = function () { if (nwS.id) self.sset('bt.current', nwS.id); };
     }
 
-    /* ===== Statistiques du backtest ===== */
-    var bsSess = s.bsSess || 'all', bsSym = s.bsSym || 'all';
+    /* ===== Statistiques du backtest (même présentation que le Journal) ===== */
+    var bsSess = s.bsSess || 'all', bsSym = s.bsSym || 'all', bsDir = s.bsDir || 'all', bsRes = s.bsRes || 'all', stSub = s.bsSub || 'ov';
     var pool = L.filter(function (x) { return bsSess === 'all' || x.id === bsSess; });
     var TT = [];
-    pool.forEach(function (x) { var sy0 = self.symsOf(x)[0]; x.trades.forEach(function (t) { TT.push({ dir: t.dir, R: t.R, t: t.t, sym: t.sym || sy0, sname: x.name, sid: x.id }); }); });
+    pool.forEach(function (x) { var sy0 = self.symsOf(x)[0], re = x.cap * x.risk / 100; x.trades.forEach(function (t) { TT.push({ dir: t.dir, R: t.R, t: t.t, t0: t.t0, sym: t.sym || sy0, sname: x.name, sid: x.id, eur: t.R * re }); }); });
+    TT.sort(function (a, b) { return a.t - b.t; });
     var symsAvail = []; TT.forEach(function (t) { if (symsAvail.indexOf(t.sym) < 0) symsAvail.push(t.sym); });
     if (bsSym !== 'all' && symsAvail.indexOf(bsSym) < 0) bsSym = 'all';
-    var FT = TT.filter(function (t) { return bsSym === 'all' || t.sym === bsSym; }).sort(function (a, b) { return a.t - b.t; });
-    var g2 = this.sStats(FT, 10000, 1);
-    var gw = 0, gl = 0, cw = 0, cl = 0, bw = 0, bl = 0, best = 0, worst = 0;
-    FT.forEach(function (t) { if (t.R > 0) { gw += t.R; cw++; cl = 0; } else { gl -= t.R; cl++; cw = 0; } if (cw > bw) bw = cw; if (cl > bl) bl = cl; if (t.R > best) best = t.R; if (t.R < worst) worst = t.R; });
-    var pf = gl ? gw / gl : (gw ? 99 : 0);
+    var FT = TT.filter(function (t) { return (bsSym === 'all' || t.sym === bsSym) && (bsDir === 'all' || t.dir === bsDir) && (bsRes === 'all' || (bsRes === 'win' ? t.R > 0 : t.R <= 0)); });
+    var W = '#EEF1F6', DAYMS = 86400000;
     var colR = function (v) { return v >= 0 ? GAINT : LOSST; };
-    var barsR = function (rows) {
-      var mxA = Math.max.apply(null, rows.map(function (r) { return Math.abs(r.x.tot); }).concat([1]));
-      return rows.map(function (r) { var w = Math.abs(r.x.tot) / mxA * 50; return { label: r.label, meta: r.x.n + ' trade' + (r.x.n > 1 ? 's' : '') + ' · ' + Math.round(r.x.wr) + ' % · ' + self.fR(r.x.exp) + ' / trade', v: self.fR1(r.x.tot), vc: colR(r.x.tot), l: (r.x.tot >= 0 ? 50 : 50 - w).toFixed(2), w: Math.max(w, 0.6).toFixed(2), c: r.x.tot >= 0 ? GAIN : LOSS }; });
+    var fR1 = function (v) { return self.fR1(v); }, fR = function (v) { return self.fR(v); };
+    var pf2 = function (v) { return v >= 99 ? '∞' : v.toFixed(2).replace('.', ','); };
+    var S2 = function (L2) {
+      var n = L2.length, w = 0, sr = 0, cum = 0, peak = 0, dd = 0, gw = 0, gl = 0, cw = 0, cl = 0, bw = 0, bl = 0, big = 0, worst = 0, eur = 0;
+      L2.forEach(function (t) {
+        if (t.R > 0) { w++; gw += t.R; cw++; cl = 0; if (cw > bw) bw = cw; } else { gl -= t.R; cl++; cw = 0; if (cl > bl) bl = cl; }
+        if (t.R > big) big = t.R; if (t.R < worst) worst = t.R;
+        sr += t.R; cum += t.R; eur += t.eur || 0; if (cum > peak) peak = cum; if (peak - cum > dd) dd = peak - cum;
+      });
+      var l = n - w;
+      return { n: n, w: w, l: l, wr: n ? w / n * 100 : 0, exp: n ? sr / n : 0, tot: sr, eur: eur, dd: dd, gw: gw, gl: gl, pf: gl ? gw / gl : (gw ? 99 : 0), avgW: w ? gw / w : 0, avgL: l ? gl / l : 0, bw: bw, bl: bl, big: big, worst: worst };
     };
-    var bySym = symsAvail.map(function (sy) { return { label: sy, x: self.sStats(FT.filter(function (t) { return t.sym === sy; }), 10000, 1) }; }).filter(function (r) { return r.x.n; }).sort(function (a, b) { return b.x.tot - a.x.tot; });
-    var bySess = pool.map(function (x) { return { label: x.name, x: self.sStats(FT.filter(function (t) { return t.sid === x.id; }), 10000, 1) }; }).filter(function (r) { return r.x.n; }).sort(function (a, b) { return b.x.tot - a.x.tot; });
-    var groups = [{ title: 'Par actif', rows: barsR(bySym) }];
-    if (bsSess === 'all') groups.push({ title: 'Par session', rows: barsR(bySess) });
-    var E = g2.eq.length > 1 ? g2.eq : [0, 0], mnE = Math.min.apply(null, E.concat([0])), mxE2 = Math.max.apply(null, E.concat([0])); if (mxE2 === mnE) mxE2 = mnE + 1;
-    var EYb = function (v) { return 8 + (mxE2 - v) / (mxE2 - mnE) * 184; };
-    var eqLine = 'M' + E.map(function (v, i) { return (i / (E.length - 1) * 800).toFixed(1) + ',' + EYb(v).toFixed(1); }).join(' L');
-    var lsB = ['Long', 'Short'].map(function (d) { var x = self.sStats(FT.filter(function (t) { return t.dir === d; }), 10000, 1); return { l: d === 'Long' ? 'ACHAT' : 'VENTE', bg: d === 'Long' ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)', fg: d === 'Long' ? GAINT : LOSST, v: x.n ? self.fR1(x.tot) : '—', vc: colR(x.tot), meta: x.n + ' trades · ' + Math.round(x.wr) + ' % · ' + self.fR(x.exp) + ' / trade', x: x }; });
-    var JL = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-    var wdS = [1, 2, 3, 4, 5].map(function (k) { return { k: k, x: self.sStats(FT.filter(function (t) { return new Date(t.t).getUTCDay() === k; }), 10000, 1) }; });
-    var wdMax = Math.max.apply(null, wdS.map(function (o) { return Math.abs(o.x.tot); }).concat([1]));
-    var wdB = wdS.map(function (o) { var h = o.x.n ? Math.max(2, Math.abs(o.x.tot) / wdMax * 66) : 0, up = o.x.tot >= 0; return { l: JL[o.k].slice(0, 3) + '.', v: o.x.n ? self.fR1(o.x.tot) : '—', vc: o.x.n ? colR(o.x.tot) : '#8A95AA', meta: o.x.n + ' tr.', h: h.toFixed(1), top: (up ? 75 - h : 75).toFixed(1), rad: up ? '5px 5px 0 0' : '0 0 5px 5px', c: up ? GAIN : LOSS }; });
-    var BN = [['−1 R', function (r) { return r < 0; }, LOSS], ['0 R', function (r) { return r === 0; }, '#3A4458'], ['1–1,5', function (r) { return r > 0 && r < 1.5; }, GAIN], ['1,5–2', function (r) { return r >= 1.5 && r < 2; }, GAIN], ['2 R +', function (r) { return r >= 2; }, GAIN]];
-    var hcB = BN.map(function (b) { return FT.filter(function (t) { return b[1](t.R); }).length; }), hmB = Math.max.apply(null, hcB.concat([1]));
-    var ADVB = FT.length >= 15;
-    var bestSym = bySym[0], bestWd = wdS.filter(function (o) { return o.x.n >= 3; }).sort(function (a, b) { return b.x.exp - a.x.exp; })[0];
-    var lsBest = lsB[0].x.n >= 3 && lsB[1].x.n >= 3 ? (lsB[0].x.exp >= lsB[1].x.exp ? lsB[0] : lsB[1]) : null;
-    var bs = {
-      sess: bsSess, sessOpts: [{ id: 'all', l: 'Toutes les sessions' }].concat(L.map(function (x) { return { id: x.id, l: x.name }; })),
-      onSess: function (e) { self.setState({ bsSess: e.target.value, bsSym: 'all' }); },
-      symChips: [{ id: 'all', l: 'Tous les actifs' }].concat(symsAvail.map(function (sy) { return { id: sy, l: sy }; })).map(function (c) { var on = bsSym === c.id; return { l: c.l, pressed: on ? 'true' : 'false', bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2', pick: function () { self.setState({ bsSym: c.id }); } }; }),
-      empty: FT.length === 0, has: FT.length > 0,
-      showIns: ADVB, noIns: !ADVB && FT.length > 0, insNote: 'Les conseils automatiques apparaissent à partir de 15 trades de test (encore ' + Math.max(0, 15 - FT.length) + ').',
-      ins: [
-        { t: 'Ton meilleur actif en test', v: bestSym ? bestSym.label : '—', d: bestSym ? self.fR1(bestSym.x.tot) + ' sur ' + bestSym.x.n + ' trades · ' + Math.round(bestSym.x.wr) + ' % de réussite' : '' },
-        { t: 'Ton meilleur jour', v: bestWd ? JL[bestWd.k] : '—', d: bestWd ? self.fR(bestWd.x.exp) + ' par trade sur ' + bestWd.x.n + ' trades' : 'Pas encore assez de trades par jour' },
-        { t: 'Le sens qui marche le mieux', v: lsBest ? (lsBest.l === 'ACHAT' ? 'À l’achat' : 'À la vente') : '—', d: lsBest ? self.fR(lsBest.x.exp) + ' par trade, contre ' + self.fR((lsBest === lsB[0] ? lsB[1] : lsB[0]).x.exp) + ' dans l’autre sens' : 'Il faut au moins 3 trades dans chaque sens' }
-      ],
+    var G = S2(FT), ADV = FT.length >= 15;
+    var MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    var MOISC = ['Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'];
+    var JOURS = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
+    var JOURSL = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    var fDayS = function (t) { var d = new Date(t); return d.getUTCDate() + ' ' + MOIS[d.getUTCMonth()] + ' ' + String(d.getUTCFullYear()).slice(2); };
+    var hourOf = function (t) { return new Date(t.t0 || t.t).getUTCHours(); };
+    var sesOf = function (t) { var h = hourOf(t); return h >= 9 && h < 14 ? 'Londres' : h >= 14 && h < 22 ? 'New York' : 'Asie'; };
+    var periodLabel = bsSess === 'all' ? 'toutes tes sessions de test' : (pool[0] ? '« ' + pool[0].name + ' »' : '');
+    var seg = function (on) { return { bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pressed: on ? 'true' : 'false' }; };
+    var pill = function (on) { return { bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2', pressed: on ? 'true' : 'false' }; };
+    var grpBy = function (keys, fn) { return keys.map(function (k) { var x = S2(FT.filter(function (t) { return fn(t) === k[0]; })); x.label = k[1]; x.key = k[0]; return x; }); };
+    var cols = function (list, mid) {
+      var mxA = Math.max.apply(null, list.map(function (o) { return Math.abs(o.tot); }).concat([1]));
+      return list.map(function (o) { var h = o.n ? Math.max(2, Math.abs(o.tot) / mxA * (mid - 8)) : 0, pos = o.tot >= 0; return { l: o.label, v: o.n ? fR1(o.tot) : '—', vc: o.n ? colR(o.tot) : '#8A95AA', meta: o.meta, h: h.toFixed(1), top: (pos ? mid - h : mid).toFixed(1), rad: pos ? '5px 5px 0 0' : '0 0 5px 5px', c: pos ? GAIN : LOSS }; });
+    };
+    var pickBest = function (list, key, asc) { var L3 = list.filter(function (o) { return o.n >= 3; }); return L3.sort(function (a, b) { return asc ? a[key] - b[key] : b[key] - a[key]; })[0]; };
+
+    /* Sous-onglets */
+    var SUBS = [
+      ['ov', 'Vue d’ensemble', 'Chiffres clés et courbe', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z'],
+      ['hr', 'Heures et sessions', 'Quand tu gagnes', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 7v5l3 2'],
+      ['as', 'Actifs et sens', 'Sur quoi tu gagnes', 'M4 20V10M10 20V4M16 20v-7M22 20H2'],
+      ['be', 'Comportement', 'Tes habitudes', 'M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8M4 21a8 8 0 0 1 16 0'],
+      ['ev', 'Évolution', 'Ta progression', 'M3 17l6-6 4 4 8-8M15 7h6v6']
+    ];
+    var stSubs = SUBS.map(function (x) { var on = stSub === x[0]; return { l: x[1], hint: x[2], icon: x[3], sel: on ? 'true' : 'false', bd: on ? aLine : '#1D2433', bg: on ? soft : '#0E131D', fg: on ? '#EEF1F6' : '#C9D3E6', ibg: on ? accent : '#1A2130', ic: on ? '#0A0D14' : '#A3AEC2', pick: function () { self.setState({ bsSub: x[0] }); } }; });
+
+    /* Filtres */
+    var fchips = [];
+    if (bsSym !== 'all') fchips.push({ l: bsSym, clear: function () { self.setState({ bsSym: 'all' }); } });
+    if (bsDir !== 'all') fchips.push({ l: bsDir, clear: function () { self.setState({ bsDir: 'all' }); } });
+    if (bsRes !== 'all') fchips.push({ l: bsRes === 'win' ? 'Gagnants' : 'Perdants', clear: function () { self.setState({ bsRes: 'all' }); } });
+    var fp = { open: !!s.bsFp, expanded: s.bsFp ? 'true' : 'false', rot: s.bsFp ? 180 : 0, toggle: function () { self.setState({ bsFp: !self.state.bsFp }); }, close: function () { self.setState({ bsFp: false }); }, count: fchips.length ? String(fchips.length) : '', chips: fchips, bd: fchips.length ? aLine : '#2A3346', bg: fchips.length ? soft : '#0E131D' };
+    var symChips = [['all', 'Tous les actifs']].concat(symsAvail.map(function (sy) { return [sy, sy]; })).map(function (c) { var o = pill(bsSym === c[0]); o.l = c[1]; o.pick = function () { self.setState({ bsSym: c[0] }); }; return o; });
+    var dirs = [['all', 'Long + short'], ['Long', 'Long'], ['Short', 'Short']].map(function (p) { var o = seg(bsDir === p[0]); o.l = p[1]; o.pick = function () { self.setState({ bsDir: p[0] }); }; return o; });
+    var results = [['all', 'Tous'], ['win', 'Gagnants'], ['loss', 'Perdants']].map(function (p) { var o = pill(bsRes === p[0]); o.l = p[1]; o.pick = function () { self.setState({ bsRes: p[0] }); }; return o; });
+    var sessSel = { v: bsSess, opts: [{ id: 'all', l: 'Toutes les sessions' }].concat(L.map(function (x) { return { id: x.id, l: x.name }; })), on: function (e) { self.setState({ bsSess: e.target.value, bsSym: 'all' }); } };
+
+    /* Vue d'ensemble */
+    var SES = [['Asie', 'Asie', '01 h – 09 h'], ['Londres', 'Londres', '09 h – 14 h'], ['New York', 'New York', '14 h – 22 h']];
+    var sesS = grpBy(SES, sesOf);
+    var bestSes = ADV ? pickBest(sesS, 'tot', false) : null;
+    var hS = []; for (var hh = 0; hh < 24; hh++) { (function (h) { var x = S2(FT.filter(function (t) { return hourOf(t) === h; })); x.h = h; hS.push(x); })(hh); }
+    var asS = grpBy(symsAvail.map(function (x) { return [x, x]; }), function (t) { return t.sym; }).filter(function (o) { return o.n; }).sort(function (a, b) { return b.tot - a.tot; });
+    var bestH = ADV ? pickBest(hS, 'exp', false) : null, worstA = ADV ? pickBest(asS, 'tot', true) : null;
+    var insights = !ADV ? [] : [
+      { t: 'Ta meilleure session de marché', v: bestSes ? bestSes.label : '—', d: bestSes ? fR1(bestSes.tot) + ' · ' + Math.round(bestSes.wr) + ' % de réussite sur ' + bestSes.n + ' trades' : '' },
+      { t: 'Ton meilleur créneau horaire', v: bestH ? bestH.h + ' h – ' + (bestH.h + 1) + ' h' : '—', d: bestH ? fR(bestH.exp) + ' par trade · ' + Math.round(bestH.wr) + ' % de réussite sur ' + bestH.n + ' trades' : '' },
+      { t: worstA && worstA.tot < 0 ? 'Ton actif le plus coûteux' : 'Ton actif le moins rentable', v: worstA ? worstA.label : '—', d: worstA ? fR1(worstA.tot) + ' sur ' + worstA.n + ' trades · ' + Math.round(worstA.wr) + ' % de réussite' : '' }
+    ].map(function (i) { i.c = W; return i; });
+    var hero = [
+      { l: 'Résultat total', v: fR1(G.tot), s: this.fEur(G.eur) + ' avec le risque de chaque session', c: G.tot >= 0 ? GAIN : LOSS },
+      { l: 'Taux de réussite', v: Math.round(G.wr) + ' %', s: G.w + ' gagnants · ' + G.l + ' perdants', c: W },
+      { l: 'Profit factor', v: pf2(G.pf), s: 'Au-dessus de 1,5 : très solide', c: W },
+      { l: 'Espérance', v: fR(G.exp), s: 'ce que rapporte un trade de test', c: G.exp >= 0 ? GAIN : LOSS }
+    ];
+    var E = [0], cum = 0; FT.forEach(function (t) { cum += t.R; E.push(cum); });
+    var me = E.length, emn = Math.min.apply(null, E), emx = Math.max.apply(null, E); if (emx === emn) emx = emn + 1;
+    var EY = function (x) { return 14 + (emx - x) / (emx - emn) * 192; };
+    var eLine = 'M' + E.map(function (x, k) { return (k / Math.max(1, me - 1) * 800).toFixed(1) + ',' + EY(x).toFixed(1); }).join(' L');
+    var pk = 0, DD = E.map(function (x) { if (x > pk) pk = x; return x - pk; }), ddMin = Math.min.apply(null, DD.concat([-1]));
+    var ddPath = 'M0,2 L' + DD.map(function (x, k) { return (k / Math.max(1, me - 1) * 800).toFixed(1) + ',' + (2 + x / ddMin * 64).toFixed(1); }).join(' L') + ' L800,2 Z';
+    var eq = { line: eLine, area: eLine + ' L800,220 L0,220 Z', dd: ddPath, yTop: fR1(emx), yMid: fR1((emx + emn) / 2), yBot: fR1(emn), ddBot: '−' + Math.abs(ddMin).toFixed(1).replace('.', ',') + ' R', ddTxt: '−' + G.dd.toFixed(1).replace('.', ',') + ' R',
+      x0: FT.length ? fDayS(FT[0].t) : '', x1: FT.length ? fDayS(FT[Math.floor(FT.length / 2)].t) : '', x2: FT.length ? fDayS(FT[FT.length - 1].t) : '', range: FT.length + ' trades de test · en R cumulés' };
+    var BINS = [['−1 R', function (r) { return r <= -0.75; }, LOSS], ['−0,75 à 0', function (r) { return r > -0.75 && r <= 0; }, '#5A6478'], ['0 à 1,5', function (r) { return r > 0 && r < 1.5; }, GAIN], ['1,5 à 2', function (r) { return r >= 1.5 && r < 2; }, GAIN], ['2 à 2,5', function (r) { return r >= 2 && r < 2.5; }, GAIN], ['2,5 R +', function (r) { return r >= 2.5; }, GAIN]];
+    var hc = BINS.map(function (b) { return FT.filter(function (t) { return b[1](t.R); }).length; }), hMx = Math.max.apply(null, hc.concat([1]));
+    var hist = BINS.map(function (b, k) { return { l: b[0], n: hc[k], h: Math.max(2, hc[k] / hMx * 120).toFixed(1), c: b[2] }; });
+    var PAL = ['#F5B87A', '#8FA6FF', '#3DDC97', '#CDB5FA', '#7FD1E8', '#F5A3C7'];
+    var bcRows = pool.map(function (x, k) { var y = S2(FT.filter(function (t) { return t.sid === x.id; })); return { name: x.name, c: PAL[k % PAL.length], n: y.n, pnl: fR1(y.tot), pc: colR(y.tot), ret: self.fEur(y.eur), wr: y.n ? Math.round(y.wr) + ' %' : '—', dd: y.n ? '−' + y.dd.toFixed(1).replace('.', ',') + ' R' : '—' }; }).filter(function (r) { return r.n; });
+    var dayMap = {}; FT.forEach(function (t) { var k = Math.floor(t.t / DAYMS); dayMap[k] = (dayMap[k] || 0) + t.R; });
+    var dVals = Object.keys(dayMap).map(function (k) { return dayMap[k]; }), nD = dVals.length, gD = dVals.filter(function (x) { return x > 0; }).length;
+    var metrics = [
+      { l: 'Résultat total', v: fR1(G.tot), c: colR(G.tot) }, { l: 'Résultat en euros', v: this.fEur(G.eur), c: colR(G.eur) },
+      { l: 'Gains bruts', v: '+' + G.gw.toFixed(1).replace('.', ',') + ' R', c: GAINT }, { l: 'Pertes brutes', v: '−' + G.gl.toFixed(1).replace('.', ',') + ' R', c: LOSST },
+      { l: 'Espérance par trade', v: fR(G.exp), c: colR(G.exp) }, { l: 'Gain moyen', v: fR(G.avgW), c: GAINT }, { l: 'Perte moyenne', v: '−' + G.avgL.toFixed(2).replace('.', ',') + ' R', c: LOSST },
+      { l: 'Ratio gain / perte moyen', v: G.avgL ? (G.avgW / G.avgL).toFixed(2).replace('.', ',') : '—', c: W },
+      { l: 'Plus gros gain', v: fR1(G.big), c: GAINT }, { l: 'Plus grosse perte', v: fR1(G.worst), c: LOSST },
+      { l: 'Drawdown max', v: '−' + G.dd.toFixed(1).replace('.', ',') + ' R', c: LOSST }, { l: 'Recovery factor', v: G.dd ? (G.tot / G.dd).toFixed(2).replace('.', ',') : '—', c: W },
+      { l: 'Série gagnante max', v: G.bw + ' trades', c: W }, { l: 'Série perdante max', v: G.bl + ' trades', c: W },
+      { l: 'Trades testés', v: String(G.n), c: W }, { l: 'Jours testés', v: String(nD), c: W },
+      { l: 'Jours gagnants', v: gD + ' · ' + (nD ? Math.round(gD / nD * 100) : 0) + ' %', c: W }, { l: 'Trades par jour testé', v: nD ? (G.n / nD).toFixed(1).replace('.', ',') : '—', c: W },
+      { l: 'Meilleur jour', v: nD ? fR1(Math.max.apply(null, dVals)) : '—', c: GAINT }, { l: 'Pire jour', v: nD ? fR1(Math.min.apply(null, dVals)) : '—', c: LOSST },
+      { l: 'Sessions analysées', v: String(pool.length), c: W }, { l: 'Actifs testés', v: String(symsAvail.length), c: W }
+    ];
+
+    /* Heures et sessions */
+    var cellsH = {}; FT.forEach(function (t) { var k = new Date(t.t0 || t.t).getUTCDay() + '-' + hourOf(t); if (!cellsH[k]) cellsH[k] = []; cellsH[k].push(t); });
+    var cS = {}, mxC = 1, mxN = 1; Object.keys(cellsH).forEach(function (k) { var x = S2(cellsH[k]); cS[k] = x; if (Math.abs(x.tot) > mxC) mxC = Math.abs(x.tot); if (x.n > mxN) mxN = x.n; });
+    var hmMode = s.bsHm || 'pnl';
+    var hmRows = [1, 2, 3, 4, 5].map(function (dw) {
+      var cs = [];
+      for (var h = 0; h < 24; h++) {
+        var x = cS[dw + '-' + h];
+        if (!x) { cs.push({ bg: '#0B0F17', fg: '#3A4458', txt: '', title: JOURSL[dw] + ' ' + h + ' h : aucun trade' }); continue; }
+        var bg, txt;
+        if (hmMode === 'pnl') { var a1 = 0.14 + 0.5 * Math.min(1, Math.abs(x.tot) / mxC); bg = x.tot >= 0 ? 'rgba(61,220,151,' + a1.toFixed(2) + ')' : 'rgba(255,122,107,' + a1.toFixed(2) + ')'; txt = (x.tot >= 0 ? '+' : '−') + Math.abs(x.tot).toFixed(1).replace('.', ','); }
+        else if (hmMode === 'wr') { var a2 = 0.14 + 0.5 * Math.min(1, Math.abs(x.wr - 50) / 50); bg = x.wr >= 50 ? 'rgba(61,220,151,' + a2.toFixed(2) + ')' : 'rgba(255,122,107,' + a2.toFixed(2) + ')'; txt = Math.round(x.wr) + '%'; }
+        else { bg = self.soft(accent, (0.14 + 0.6 * x.n / mxN).toFixed(2)); txt = String(x.n); }
+        cs.push({ bg: bg, fg: W, txt: txt, title: JOURSL[dw] + ' ' + h + ' h : ' + fR1(x.tot) + ' · ' + x.n + ' trade' + (x.n > 1 ? 's' : '') + ' · ' + Math.round(x.wr) + ' % de réussite' });
+      }
+      return { l: JOURS[dw], cells: cs };
+    });
+    var mxHB = Math.max.apply(null, hS.map(function (o) { return Math.abs(o.tot); }).concat([1]));
+    var hm = {
+      rows: hmRows, hours: (function () { var a = []; for (var q = 0; q < 24; q++) a.push(q + 'h'); return a; })(),
+      bars: hS.map(function (o) { var h = o.n ? Math.max(2, Math.abs(o.tot) / mxHB * 56) : 0, pos = o.tot >= 0; return { n: o.n || '', h: h.toFixed(1), top: (pos ? 60 - h : 60).toFixed(1), rad: pos ? '4px 4px 0 0' : '0 0 4px 4px', c: pos ? GAIN : LOSS, title: o.h + ' h : ' + (o.n ? fR1(o.tot) + ' · ' + o.n + ' trades · ' + Math.round(o.wr) + ' %' : 'aucun trade') }; }),
+      bands: [{ l: 'Asie', col: '3 / 11', bg: 'rgba(183,148,246,.12)', fg: '#CDB5FA' }, { l: 'Londres', col: '11 / 16', bg: 'rgba(110,139,255,.14)', fg: '#A9BBFF' }, { l: 'New York', col: '16 / 24', bg: 'rgba(245,194,107,.12)', fg: '#F5C26B' }],
+      legend: hmMode === 'n' ? 'Peu de trades' : hmMode === 'wr' ? 'Réussite faible' : 'Perte forte', legend2: hmMode === 'n' ? 'beaucoup de trades' : hmMode === 'wr' ? 'réussite élevée' : 'gain fort',
+      scale: hmMode === 'n' ? [self.soft(accent, 0.15), self.soft(accent, 0.3), self.soft(accent, 0.45), self.soft(accent, 0.6), self.soft(accent, 0.75)] : ['rgba(255,122,107,.6)', 'rgba(255,122,107,.25)', '#0B0F17', 'rgba(61,220,151,.25)', 'rgba(61,220,151,.6)']
+    };
+    var hmModes = [['pnl', 'Résultat (R)'], ['wr', 'Réussite'], ['n', 'Nb de trades']].map(function (p) { var o = seg(hmMode === p[0]); o.label = p[1]; o.pick = function () { self.setState({ bsHm: p[0] }); }; return o; });
+    var sessions = sesS.map(function (o, k) { var isB = bestSes && o.key === bestSes.key; return { l: o.label, hours: SES[k][2], v: o.n ? fR1(o.tot) : '—', vc: colR(o.tot), n: o.n, wr: Math.round(o.wr) + ' %', wrN: Math.round(o.wr), pf: pf2(o.pf), exp: fR(o.exp), best: !!isB, bd: isB ? 'rgba(61,220,151,.35)' : '#1D2433', bar: o.wr >= 50 ? GAIN : '#F5B87A' }; });
+    var wdS = grpBy([[1, 'Lun.'], [2, 'Mar.'], [3, 'Mer.'], [4, 'Jeu.'], [5, 'Ven.']], function (t) { return new Date(t.t0 || t.t).getUTCDay(); });
+    wdS.forEach(function (o) { o.meta = o.n + ' tr. · ' + Math.round(o.wr) + ' %'; });
+    var wd = cols(wdS, 90);
+
+    /* Actifs et sens */
+    var ICO2 = { fx: ['rgba(110,139,255,.16)', '#A9BBFF'], co: ['rgba(245,194,107,.16)', '#F5C26B'], cr: ['rgba(183,148,246,.16)', '#CDB5FA'], st: ['rgba(61,220,151,.14)', '#7BEBB9'] };
+    var assets = asS.map(function (o) { var mk = (SY[o.label] || { mk: 'fx' }).mk; return { l: o.label, ini: o.label.replace(/[^A-Z0-9]/g, '').slice(0, 2), ibg: ICO2[mk][0], ifg: ICO2[mk][1], n: o.n, wr: Math.round(o.wr) + ' %', v: fR1(o.tot), vc: colR(o.tot), pf: pf2(o.pf), exp: fR(o.exp), dur: fR1(o.big) }; });
+    var lsS = grpBy([['Long', 'Long'], ['Short', 'Short']], function (t) { return t.dir; });
+    var DIRC2 = { Long: ['rgba(110,139,255,.16)', '#A9BBFF'], Short: ['rgba(245,166,91,.16)', '#F5B87A'] };
+    var ls = lsS.map(function (o) { return { l: o.label, bg: DIRC2[o.key][0], fg: DIRC2[o.key][1], v: fR1(o.tot), vc: colR(o.tot), n: o.n, wr: Math.round(o.wr) + ' %', pf: pf2(o.pf), exp: fR(o.exp) }; });
+    var lsShare = { long: FT.length ? Math.round(lsS[0].n / FT.length * 100) : 0 }; lsShare.txt = lsShare.long + ' % long · ' + (100 - lsShare.long) + ' % short';
+
+    /* Comportement */
+    var ctx = {}, dayCnt = {}, lastBy = {};
+    FT.forEach(function (t) {
+      var Lb = lastBy[t.sid] || [], dk = Math.floor(t.t / DAYMS) + '|' + t.sid;
+      dayCnt[dk] = (dayCnt[dk] || 0) + 1;
+      ctx[t.t + '|' + t.sid + '|' + t.sym + '|' + t.R] = { nd: dayCnt[dk], p1: Lb[0] || null, p2: Lb[1] || null };
+      lastBy[t.sid] = [t].concat(Lb).slice(0, 2);
+    });
+    var cx = function (t) { return ctx[t.t + '|' + t.sid + '|' + t.sym + '|' + t.R]; };
+    var cardOf = function (label, list, vs) { var x = S2(list); return { l: label, v: x.n ? fR(x.exp) : '—', c: !x.n ? '#8A95AA' : colR(x.exp), meta: x.n ? x.n + ' trade' + (x.n > 1 ? 's' : '') + ' · ' + Math.round(x.wr) + ' % de réussite' : 'aucun trade', w: Math.round(x.wr), bar: x.wr >= 50 ? GAIN : '#F5B87A', vs: vs && x.n ? 'Moyenne générale : ' + fR(G.exp) : '', x: x }; };
+    var dayCards = [[1, '1er trade du jour'], [2, '2e trade du jour'], [3, '3e trade et plus']].map(function (d) { return cardOf(d[1], FT.filter(function (t) { var n = cx(t).nd; return d[0] === 3 ? n >= 3 : n === d[0]; })); });
+    var isLoss = function (t) { return !!t && t.R <= 0; };
+    var afterCards = [
+      ['Après un gain', function (c) { return !!c.p1 && c.p1.R > 0; }], ['Après une perte', function (c) { return isLoss(c.p1); }],
+      ['Après 2 pertes d’affilée', function (c) { return isLoss(c.p1) && isLoss(c.p2); }],
+      ['Moins de 30 min après une perte', function (c, t) { return isLoss(c.p1) && ((t.t0 || t.t) - c.p1.t) < 30 * 60000; }]
+    ].map(function (a) { return cardOf(a[0], FT.filter(function (t) { return a[1](cx(t), t); }), true); });
+    var f1 = dayCards[0].x, many = S2(FT.filter(function (t) { return cx(t).nd >= 3; }));
+    var dayTxt = '', afterTxt = '';
+    if (ADV && f1.n >= 3 && many.n >= 3) dayTxt = many.exp < f1.exp - 0.15 ? 'À partir du 3e trade de la journée, ton résultat moyen tombe à ' + fR(many.exp) + ', contre ' + fR(f1.exp) + ' sur ton 1er trade. En réel, fixe-toi un nombre maximum de trades par jour.' : many.exp > f1.exp + 0.15 ? 'Tu fais mieux quand tu enchaînes : ' + fR(many.exp) + ' à partir du 3e trade, contre ' + fR(f1.exp) + ' sur le 1er.' : 'Ton résultat reste stable même quand tu enchaînes les trades.';
+    var a2 = afterCards[2].x, aL = afterCards[1].x;
+    if (ADV) afterTxt = a2.n >= 3 && a2.exp < G.exp - 0.15 ? 'Après 2 pertes d’affilée, ton résultat moyen passe à ' + fR(a2.exp) + ', contre ' + fR(G.exp) + ' en général. Prévois une pause dans ces cas-là.' : aL.n >= 3 && aL.exp < G.exp - 0.15 ? 'Après une perte, ton résultat moyen passe à ' + fR(aL.exp) + ', contre ' + fR(G.exp) + ' en général.' : aL.n >= 3 ? 'Tes pertes ne semblent pas perturber tes trades suivants : bon point.' : '';
+    var be = { day: dayCards, after: afterCards, dayTxt: dayTxt, afterTxt: afterTxt };
+
+    /* Évolution */
+    var half = Math.floor(FT.length / 2), A1 = S2(FT.slice(0, half)), A2 = S2(FT.slice(half));
+    var dT = function (l, cur, prev, delta, fmtD, good, curC) { var z = Math.abs(delta) < 1e-9; return { l: l, v: cur, prev: prev, c: curC || W, d: z ? '=' : fmtD, dBg: good === null || z ? '#1A2130' : (good ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)'), dFg: good === null || z ? '#A3AEC2' : (good ? GAINT : LOSST) }; };
+    var dW = Math.round(A2.wr) - Math.round(A1.wr), dE = A2.exp - A1.exp, dTt = A2.tot - A1.tot;
+    var evo = {
+      hasPrev: FT.length >= 8, noPrev: FT.length < 8,
+      sub: 'Tes ' + (FT.length - half) + ' derniers trades de test comparés aux ' + half + ' premiers. Montre si tu progresses en pratiquant.',
+      noPrevTxt: 'Il faut au moins 8 trades de test pour comparer le début et la fin.',
       tiles: [
-        { l: 'Trades testés', v: String(g2.n), s: g2.w + ' gagnants · ' + (g2.n - g2.w) + ' perdants', c: '#EEF1F6' },
-        { l: 'Taux de réussite', v: Math.round(g2.wr) + ' %', s: 'sur la sélection', c: '#EEF1F6' },
-        { l: 'Profit factor', v: pf >= 99 ? '∞' : pf.toFixed(2).replace('.', ','), s: 'gains / pertes', c: '#EEF1F6' },
-        { l: 'Espérance', v: this.fR(g2.exp), s: 'ce que rapporte un trade en moyenne', c: g2.exp >= 0 ? GAIN : LOSS },
-        { l: 'Résultat total', v: this.fR1(g2.tot), s: 'en R cumulés', c: g2.tot >= 0 ? GAIN : LOSS },
-        { l: 'Drawdown max', v: '−' + g2.dd.toFixed(1).replace('.', ',') + ' R', s: 'plus forte baisse', c: LOSST },
-        { l: 'Meilleure série', v: bw + ' gagnants', s: 'd’affilée', c: '#EEF1F6' },
-        { l: 'Pire série', v: bl + ' perdants', s: 'd’affilée', c: '#EEF1F6' }
-      ],
-      eqLine: eqLine, eqArea: eqLine + ' L800,200 L0,200 Z', zeroY: EYb(0).toFixed(1), yTop: this.fR1(mxE2), yBot: this.fR1(mnE),
-      eqSub: FT.length + ' trades · ' + (FT.length ? this.fDate(FT[0].t) + ' → ' + this.fDate(FT[FT.length - 1].t) : ''),
-      groups: groups, ls: lsB, wd: wdB,
-      hist: BN.map(function (b, i) { return { l: b[0], n: hcB[i], h: Math.max(2, hcB[i] / hmB * 104).toFixed(1), c: b[2] }; })
+        dT('Résultat', fR1(A2.tot), fR1(A1.tot), dTt, (dTt >= 0 ? '+' : '−') + Math.abs(dTt).toFixed(1).replace('.', ',') + ' R', dTt > 0, colR(A2.tot)),
+        dT('Taux de réussite', Math.round(A2.wr) + ' %', Math.round(A1.wr) + ' %', dW, (dW > 0 ? '+' : '−') + Math.abs(dW) + ' pts', dW > 0),
+        dT('Espérance', fR(A2.exp), fR(A1.exp), dE, (dE >= 0 ? '+' : '−') + Math.abs(dE).toFixed(2).replace('.', ',') + ' R', dE > 0, colR(A2.exp)),
+        dT('Drawdown max', '−' + A2.dd.toFixed(1).replace('.', ',') + ' R', '−' + A1.dd.toFixed(1).replace('.', ',') + ' R', A1.dd - A2.dd, (A2.dd <= A1.dd ? '−' : '+') + Math.abs(A2.dd - A1.dd).toFixed(1).replace('.', ',') + ' R', A2.dd < A1.dd)
+      ]
+    };
+    var RW = 20, roll = { ok: FT.length >= RW, no: FT.length < RW, need: 'Il faut au moins 20 trades de test sur ta sélection pour voir ta progression (tu en as ' + FT.length + ').', charts: [], txt: '', x0: '', x1: '' };
+    if (roll.ok) {
+      var wrS = [], exS = [];
+      for (var i3 = RW - 1; i3 < FT.length; i3++) { var wn = 0, sr2 = 0; for (var j3 = i3 - RW + 1; j3 <= i3; j3++) { if (FT[j3].R > 0) wn++; sr2 += FT[j3].R; } wrS.push(wn / RW * 100); exS.push(sr2 / RW); }
+      var mkC = function (arr, ref, lo, hi) { var mn = Math.min.apply(null, arr.concat([ref, lo])), mx = Math.max.apply(null, arr.concat([ref, hi])); if (mx === mn) mx = mn + 1; var Y = function (v) { return 10 + (mx - v) / (mx - mn) * 140; }; var line = 'M' + arr.map(function (v, k) { return (k / Math.max(1, arr.length - 1) * 600).toFixed(1) + ',' + Y(v).toFixed(1); }).join(' L'); return { line: line, area: line + ' L600,160 L0,160 Z', refY: Y(ref).toFixed(1) }; };
+      var chip = function (dlt, txt) { var z = Math.abs(dlt) < 1e-9; return { d: z ? '=' : txt, dBg: z ? '#1A2130' : dlt > 0 ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)', dFg: z ? '#A3AEC2' : dlt > 0 ? GAINT : LOSST }; };
+      var w0 = wrS[0], w1 = wrS[wrS.length - 1], e0 = exS[0], e1 = exS[exS.length - 1], cW = mkC(wrS, 50, 30, 70), cE = mkC(exS, 0, -0.5, 0.8);
+      var kW = chip(Math.round(w1) - Math.round(w0), ((Math.round(w1) - Math.round(w0)) >= 0 ? '+' : '−') + Math.abs(Math.round(w1) - Math.round(w0)) + ' pts'), kE = chip(e1 - e0, (e1 - e0 >= 0 ? '+' : '−') + Math.abs(e1 - e0).toFixed(2).replace('.', ',') + ' R');
+      roll.charts = [{ t: 'Taux de réussite', v: Math.round(w1) + ' %', d: kW.d, dBg: kW.dBg, dFg: kW.dFg, line: cW.line, area: cW.area, refY: cW.refY, refL: '50 %' }, { t: 'Espérance par trade', v: fR(e1), d: kE.d, dBg: kE.dBg, dFg: kE.dFg, line: cE.line, area: cE.area, refY: cE.refY, refL: '0 R' }];
+      roll.x0 = fDayS(FT[RW - 1].t); roll.x1 = fDayS(FT[FT.length - 1].t);
+      if (ADV) roll.txt = w1 - w0 > 2 || e1 - e0 > 0.1 ? 'Tu progresses : sur tes 20 derniers trades de test, ' + Math.round(w1) + ' % de réussite et ' + fR(e1) + ' par trade, contre ' + Math.round(w0) + ' % et ' + fR(e0) + ' au début.' : w1 - w0 < -2 || e1 - e0 < -0.1 ? 'Tes 20 derniers trades de test sont moins bons qu’au début (' + Math.round(w1) + ' % de réussite contre ' + Math.round(w0) + ' %). Regarde l’onglet Comportement pour comprendre pourquoi.' : 'Tes résultats de test sont globalement stables.';
+    }
+    var mList = [];
+    if (FT.length) {
+      var d0 = new Date(FT[0].t), d1 = new Date(FT[FT.length - 1].t), m0 = d0.getUTCFullYear() * 12 + d0.getUTCMonth(), m1 = d1.getUTCFullYear() * 12 + d1.getUTCMonth();
+      for (var mm2 = Math.max(m0, m1 - 11); mm2 <= m1; mm2++) { (function (m) { var x = S2(FT.filter(function (t) { var d = new Date(t.t); return d.getUTCFullYear() * 12 + d.getUTCMonth() === m; })); x.label = MOISC[m % 12]; x.meta = x.n ? Math.round(x.wr) + ' % · ' + x.n + ' tr.' : 'aucun trade'; mList.push(x); })(mm2); }
+    }
+    var monthly = cols(mList, 90);
+
+    var j = {
+      stSubs: stSubs, stOv: stSub === 'ov', stHr: stSub === 'hr', stAs: stSub === 'as', stBe: stSub === 'be', stEv: stSub === 'ev',
+      fp: fp, symChips: symChips, dirs: dirs, results: results, sessSel: sessSel, clear: function () { self.setState({ bsSym: 'all', bsDir: 'all', bsRes: 'all' }); },
+      has: FT.length > 0, empty: FT.length === 0, periodLabel: periodLabel,
+      showIns: ADV, noIns: !ADV, advNote: 'Les conseils automatiques apparaissent à partir de 15 trades de test (encore ' + Math.max(0, 15 - FT.length) + ').', insights: insights,
+      hero: hero, eq: eq, hist: hist, cmp: { show: bsSess === 'all' && bcRows.length >= 2, rows: bcRows }, metrics: metrics,
+      hm: hm, hmModes: hmModes, sessions: sessions, wd: wd, assets: assets, ls: ls, lsShare: lsShare, be: be, evo: evo, roll: roll, monthly: monthly
     };
 
+    // Trades près des news fortes (module news-logic.js + calendrier de donnees-exemple.js)
+    var TJ = window.TJNews, nMin = s.newsMin;
+    var bn = { ok: false, off: true, offMsg: 'Comparaison indisponible : le module de calcul des news n’a pas pu être chargé.', min: String(nMin), sub: '', groups: [], phrase: '', hasTop: false, top: '',
+      opts: [15, 30, 45, 60].map(function (v) { return { v: String(v), l: '± ' + v + ' min' }; }),
+      onMin: function (e) { var v = Number(e.target.value); self.sset('tj.newsProche', String(v)); self.setState({ newsMin: v }); } };
+    if (TJ && TJ.exemple && FT.length) {
+      var pubsBT = TJ.exemple.publicationsPeriode(FT[0].t - 2 * 86400000, FT[FT.length - 1].t + 2 * 86400000);
+      var CN = TJ.comparerProcheNews(FT, pubsBT, nMin), MINI = TJ.SEUILS.ECHANTILLON_MIN;
+      var fR1n = function (v) { return v === null ? '—' : self.fR1(v); };
+      var grp = function (g, l, dot) { return { l: l, dot: dot, n: String(g.n), wr: g.reussite === null ? '—' : Math.round(g.reussite) + ' %', exp: fR1n(g.esperance), ec: g.esperance === null ? '#8A95AA' : g.esperance >= 0 ? GAINT : LOSST, faible: g.n < MINI, bd: g.n < MINI ? 'rgba(245,166,91,.3)' : '#1D2433', fg: '#EEF1F6' }; };
+      var compte = {};
+      CN.tags.forEach(function (x) { if (x.proche) compte[x.proche.nom] = (compte[x.proche.nom] || 0) + 1; });
+      var topK = Object.keys(compte).sort(function (a, b) { return compte[b] - compte[a]; });
+      bn.ok = true; bn.off = false;
+      bn.sub = 'Entrée à moins de ' + nMin + ' min d’une news à fort impact sur l’actif du trade · ' + (s.bsSess === 'all' ? 'toutes les sessions' : 'session sélectionnée');
+      bn.groups = [grp(CN.avec, 'Près d’une news forte', '#FF7A6B'), grp(CN.sans, 'Sans news forte à proximité', accent)];
+      bn.phrase = CN.phrase;
+      bn.boxBg = CN.suffisant ? soft : 'rgba(245,166,91,.08)'; bn.boxBd = CN.suffisant ? aLine : 'rgba(245,166,91,.3)';
+      bn.icC = CN.suffisant ? accent : '#F5B87A';
+      bn.icon = CN.suffisant ? 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z' : 'M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0';
+      bn.hasTop = topK.length > 0;
+      bn.top = topK.length ? 'News les plus présentes près de tes trades : ' + topK.slice(0, 3).map(function (k) { return k + ' (' + compte[k] + ')'; }).join(', ') + '. Les heures viennent du calendrier d’exemple.' : '';
+    } else if (TJ && TJ.exemple) { bn.offMsg = 'Pas encore de trade de test dans cette sélection.'; }
     var tabs = [['sess', 'Mes sessions', 'M4 6h16M4 12h16M4 18h10', String(L.length)], ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', '']].map(function (x) {
       var on = s.tab === x[0];
       return { label: x[1], icon: x[2], count: x[3], sel: on ? 'true' : 'false', fg: on ? '#EEF1F6' : '#8A95AA', bar: on ? accent : 'transparent', pick: function () { self.setState({ tab: x[0] }); } };
@@ -668,7 +1151,7 @@ class Component extends DCLogic {
         ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
         ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html'],
         ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', 'Backtesting.dc.html'],
-        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '#top', '2', 'warn'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', 'News.dc.html', '2', 'warn'],
         ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', '#top', 'NOUVEAU', 'accent']
       ] },
       { title: 'COMPTE', items: [
@@ -686,7 +1169,7 @@ class Component extends DCLogic {
     return {
       accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
       kpis: kpis, flt: flt, sess: sess, noSess: sess.length === 0, emptyT: L.length ? 'Aucune session dans cette catégorie' : 'Aucune session pour l’instant',
-      cmp: cmp, nw: nw, bs: bs, tabs: tabs, isSess: s.tab === 'sess', isStats: s.tab === 'stats'
+      cmp: cmp, nw: nw, j: j, bn: bn, tabs: tabs, isSess: s.tab === 'sess', isStats: s.tab === 'stats'
     };
   }
 }

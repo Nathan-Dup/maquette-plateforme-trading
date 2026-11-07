@@ -2,65 +2,13 @@
   "v": 3,
   "attachments": {},
   "boards": {
-    "Statistiques.dc.html": {
+    "Backtesting.dc.html": {
       "expand": "fill",
-      "h": 2100,
+      "h": 1260,
       "is_interactive": true,
-      "title": "Statistiques (Journal, onglet ouvert)",
+      "title": "Backtesting : mes sessions",
       "w": 1440,
-      "x": 9240,
-      "y": 0
-    },
-    "Journal.dc.html": {
-      "expand": "fill",
-      "h": 1380,
-      "is_interactive": true,
-      "title": "Journal : Trades, Statistiques, Calendrier",
-      "w": 1440,
-      "x": 7720,
-      "y": 0
-    },
-    "Dashboard.dc.html": {
-      "expand": "fill",
-      "h": 1340,
-      "is_interactive": true,
-      "title": "Tableau de bord (après connexion)",
-      "w": 1440,
-      "x": 1520,
-      "y": 0
-    },
-    "Main.dc.html": {
-      "expand": "fill",
-      "h": 6640,
-      "is_interactive": true,
-      "title": "Page d'accueil (site public)",
-      "w": 1440,
-      "x": 0,
-      "y": 0
-    },
-    "Structure.dc.html": {
-      "h": 1000,
-      "title": "Structure du site",
-      "w": 1440,
-      "x": 1624,
-      "y": 1933
-    },
-    "Fonctionnalites.dc.html": {
-      "expand": "fill",
-      "h": 5580,
-      "is_interactive": true,
-      "title": "Fonctionnalités (site public)",
-      "w": 1440,
-      "x": 3160,
-      "y": 0
-    },
-    "Tarifs.dc.html": {
-      "expand": "fill",
-      "h": 4260,
-      "is_interactive": true,
-      "title": "Tarifs (site public)",
-      "w": 1440,
-      "x": 4680,
+      "x": 13800,
       "y": 0
     },
     "Connexion.dc.html": {
@@ -72,6 +20,24 @@
       "x": 6200,
       "y": 0
     },
+    "Dashboard.dc.html": {
+      "expand": "fill",
+      "h": 1340,
+      "is_interactive": true,
+      "title": "Tableau de bord (après connexion)",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "Fonctionnalites.dc.html": {
+      "expand": "fill",
+      "h": 5580,
+      "is_interactive": true,
+      "title": "Fonctionnalités (site public)",
+      "w": 1440,
+      "x": 3160,
+      "y": 0
+    },
     "Importer.dc.html": {
       "expand": "fill",
       "h": 1200,
@@ -79,6 +45,33 @@
       "title": "Importer des trades",
       "w": 1440,
       "x": 10760,
+      "y": 0
+    },
+    "Journal.dc.html": {
+      "expand": "fill",
+      "h": 1380,
+      "is_interactive": true,
+      "title": "Journal : Trades, Statistiques, Calendrier",
+      "w": 1440,
+      "x": 7720,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "expand": "fill",
+      "h": 6640,
+      "is_interactive": true,
+      "title": "Page d'accueil (site public)",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "News.dc.html": {
+      "expand": "fill",
+      "h": 1500,
+      "is_interactive": true,
+      "title": "News : calendrier, résultats, actualités, alertes",
+      "w": 1440,
+      "x": 16840,
       "y": 0
     },
     "NouveauTrade.dc.html": {
@@ -90,15 +83,6 @@
       "x": 12280,
       "y": 0
     },
-    "Backtesting.dc.html": {
-      "expand": "fill",
-      "h": 1260,
-      "is_interactive": true,
-      "title": "Backtesting : mes sessions",
-      "w": 1440,
-      "x": 13800,
-      "y": 0
-    },
     "Replay.dc.html": {
       "expand": "fill",
       "h": 1000,
@@ -106,6 +90,31 @@
       "title": "Backtesting : replay",
       "w": 1440,
       "x": 15320,
+      "y": 0
+    },
+    "Statistiques.dc.html": {
+      "expand": "fill",
+      "h": 2100,
+      "is_interactive": true,
+      "title": "Statistiques (Journal, onglet ouvert)",
+      "w": 1440,
+      "x": 9240,
+      "y": 0
+    },
+    "Structure.dc.html": {
+      "h": 1000,
+      "title": "Structure du site",
+      "w": 1440,
+      "x": 1624,
+      "y": 1933
+    },
+    "Tarifs.dc.html": {
+      "expand": "fill",
+      "h": 4260,
+      "is_interactive": true,
+      "title": "Tarifs (site public)",
+      "w": 1440,
+      "x": 4680,
       "y": 0
     }
   },
@@ -139,7 +148,8 @@
     "Importer.dc.html",
     "NouveauTrade.dc.html",
     "Backtesting.dc.html",
-    "Replay.dc.html"
+    "Replay.dc.html",
+    "News.dc.html"
   ],
   "pages": [],
   "title": "Maquette plateforme trading"

@@ -20,6 +20,9 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 | `project/NouveauTrade.dc.html` | Ajouter un trade à la main |
 | `project/Backtesting.dc.html` | Backtesting : mes sessions, nouvelle session, réel vs backtest |
 | `project/Replay.dc.html` | Backtesting : replay bougie par bougie avec prise de positions |
+| `project/News.dc.html` | News : calendrier économique, résultats d'entreprises, actualités, alertes |
+| `project/news-logic.js` | Calculs communs liés aux news (surprises, trades près des news) |
+| `project/donnees-exemple.js` | Données d'exemple du calendrier et des prix (à remplacer par une vraie source) |
 | `project/canvas.json` | Disposition des écrans sur le canevas |
 
 ## Ce que fait l'application
@@ -51,7 +54,7 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 - Nouvelle session : un ou plusieurs actifs (4 maximum), unité de temps (M15, H1, H4), période, capital, risque par trade.
 - Replay : lecture, pause, bougie suivante, vitesse ×1 à ×4. Ordres Acheter / Vendre avec stop (serré, normal, large) et objectif (1:1 à 1:3). Fermeture automatique au stop ou à l'objectif. Stop au point d'entrée, clôture manuelle, niveaux horizontaux, bilan de fin de session.
 - Plusieurs actifs dans une session : un onglet par actif dans le replay, même ligne de temps pour tous, une position possible sur chaque actif.
-- Onglet Statistiques : chiffres clés, courbe des résultats en R, par actif, par session, long / short, par jour, distribution des résultats, conseils à partir de 15 trades de test, filtres par session et par actif.
+- Onglet Statistiques : même présentation que les statistiques du Journal, en 5 sections (vue d'ensemble, heures et sessions, actifs et sens, comportement, évolution), avec filtres par session, actif, sens et résultat, et le bloc « Trades près des news fortes ».
 - Réel vs backtest : comparaison d'une session avec les vrais trades sur les mêmes actifs.
 - Les trades de test restent séparés des statistiques réelles. Dans la maquette, les prix sont simulés ; le vrai produit aura besoin de données historiques de marché.
 

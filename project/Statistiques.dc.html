@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <title>Statistiques</title>
 <script src="./support.js"></script>
+<script src="./news-logic.js"></script>
+<script src="./donnees-exemple.js"></script>
 </head>
 <body>
 <x-dc>
@@ -274,7 +276,7 @@ button:disabled{opacity:.35;cursor:default !important}
 <span style="flex: none; width: 30px; height: 30px; border-radius: 9px; background: {{t.ibg}}; color: {{t.ifg}}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800">{{t.ini}}</span>
 <span style="min-width: 0"><span style="display: block; font-size: 13px; font-weight: 600; white-space: nowrap">{{t.sym}}</span><span style="display: block; font-size: 11px; font-weight: 700; margin-top: 2px; color: {{t.dirFg}}">{{t.dir}}</span></span>
 </span>
-<span style="font-size: 13px; color: #C9D3E6">{{t.ses}}</span>
+<span style="font-size: 13px; color: #C9D3E6">{{t.ses}}<sc-if value="{{t.news}}" hint-placeholder-val="{{false}}"><span role="img" aria-label="Pris près d'une news forte : {{t.newsTxt}}" title="{{t.newsTxt}}" style="display: block; width: fit-content; margin-top: 3px; font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 2px 5px; border-radius: 4px; background: rgba(255,122,107,.16); color: #FF9A8E">NEWS</span></sc-if></span>
 <span class="num" style="font-size: 13px; color: #C9D3E6">{{t.dur}}</span>
 <span style="display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: #C9D3E6"><span style="flex: none; width: 7px; height: 7px; border-radius: 4px; background: {{t.emoC}}"></span>{{t.emo}}</span>
 <span class="num" style="text-align: right; font-size: 13px; font-weight: 600; color: {{t.rc}}">{{t.r}}</span>
@@ -334,6 +336,7 @@ button:disabled{opacity:.35;cursor:default !important}
 
 <div style="display: flex; gap: 6px; flex-wrap: wrap">
 <span style="font-size: 12px; padding: 6px 10px; border-radius: 999px; background: #151B28; color: #C9D3E6; border: 1px solid #2A3346">Session {{d.ses}}</span>
+<sc-if value="{{d.news}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 6px 10px; border-radius: 999px; background: rgba(255,122,107,.10); color: #FFC2BA; border: 1px solid rgba(255,122,107,.35)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg>{{d.newsTxt}}</span></sc-if>
 <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 6px 10px; border-radius: 999px; background: #151B28; color: #C9D3E6; border: 1px solid #2A3346"><span style="width: 7px; height: 7px; border-radius: 4px; background: {{d.emoC}}"></span>{{d.emo}}</span>
 </div>
 
@@ -1222,6 +1225,22 @@ class Component extends DCLogic {
       }
       day -= 86400000;
     }
+    // Données d'exemple : les jours de news fortes, une partie des trades de la séance de New York est prise
+    // autour de l'annonce (calendrier de donnees-exemple.js). Seule l'heure change : jour, session et résultat restent les mêmes.
+    var TJ = window.TJNews;
+    if (TJ && TJ.exemple && out.length) {
+      var lo = Infinity, hi = -Infinity, rN = this.rng(7), OFF = [-20, -10, -5, 5, 10, 20];
+      out.forEach(function (t) { if (t.t < lo) lo = t.t; if (t.t > hi) hi = t.t; });
+      var pubs = TJ.exemple.publicationsPeriode(lo - 86400000, hi + 86400000), fortes = {};
+      out.forEach(function (t) {
+        if (t.ses !== 'New York') return;
+        if (!fortes[t.sym]) fortes[t.sym] = TJ.newsFortesPour(t.sym, pubs);
+        var j = Math.floor(t.t / 86400000);
+        var nw = fortes[t.sym].filter(function (p) { var loc = p.t + TJ.outils.decalageParis(p.t) * 3600000, h = new Date(loc).getUTCHours(); return Math.floor(loc / 86400000) === j && h >= 14 && h < 19; })[0];
+        if (!nw) return;
+        t.t = nw.t + TJ.outils.decalageParis(nw.t) * 3600000 + OFF[Math.floor(rN() * OFF.length)] * 60000; // heure de Paris
+      });
+    }
     out.sort(function (a, b) { return a.t - b.t; });
     return out;
   }
@@ -1292,6 +1311,23 @@ class Component extends DCLogic {
     if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
     var n = parseInt(h, 16);
     return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  // Tag « trade pris près d'une news forte » (module news-logic.js + calendrier de donnees-exemple.js).
+  // Les heures du journal sont des heures de Paris : on les convertit en UTC pour les comparer au calendrier.
+  procheNews(t) {
+    var TJ = window.TJNews;
+    if (!TJ || !TJ.exemple || !this.trades || !this.trades.length) return null;
+    if (!this._nf || this._nfN !== this.trades.length) {
+      var lo = Infinity, hi = -Infinity;
+      this.trades.forEach(function (x) { if (x.t < lo) lo = x.t; if (x.t > hi) hi = x.t; });
+      this._pubs = TJ.exemple.publicationsPeriode(lo - 2 * 86400000, hi + 2 * 86400000);
+      this._nf = {}; this._nfN = this.trades.length;
+    }
+    if (!this._nf[t.sym]) this._nf[t.sym] = TJ.newsFortesPour(t.sym, this._pubs);
+    var min = null;
+    try { min = parseInt(window.sessionStorage.getItem('tj.newsProche'), 10); } catch (e) {}
+    var utc = t.t - TJ.outils.decalageParis(t.t) * 3600000;
+    return TJ.newsProche({ sym: t.sym, t: utc }, this._nf[t.sym], min > 0 ? min : TJ.SEUILS.NEWS_PROCHE_MIN);
   }
   renderVals() {
     var self = this, s = this.state, CAP = this.CAP;
@@ -1406,11 +1442,12 @@ class Component extends DCLogic {
     var PER = 12, pages = Math.max(1, Math.ceil(S.length / PER)), page = Math.min(s.page, pages - 1);
     var P = S.slice(page * PER, page * PER + PER);
     var rows = P.map(function (t) {
-      var on = s.sel === t.id, up = t.R > 0;
+      var on = s.sel === t.id, up = t.R > 0, pr = self.procheNews(t);
       return {
         date: fDay(t.t), hour: fHour(t.t), sym: t.sym, ini: ini(t.sym), ibg: ICO[t.mk][0], ifg: ICO[t.mk][1],
         dir: t.dir, dirFg: DIRC[t.dir][1], ses: t.ses, dur: self.fDur(t.dur), emo: t.emo, emoC: (EMOC[t.emo] || '#4F5A70'),
         r: self.fR1(t.R), pnl: self.fEur(t.pnl), rc: up ? GAINT : LOSST,
+        news: !!pr, newsTxt: pr ? window.TJNews.texteTag(pr) : '',
         bg: on ? '#131A28' : 'transparent', ring: on ? 'inset 0 0 0 1px ' + aLine : 'none', pressed: on ? 'true' : 'false',
         pick: function () { self.setState({ sel: self.state.sel === t.id ? null : t.id }); }
       };
@@ -1449,7 +1486,9 @@ class Component extends DCLogic {
       var cS = this.stats(T.filter(function (x) { return x.sym === t.sym && x.ses === t.ses; }));
       var cH = this.stats(T.filter(function (x) { return x.hour === t.hour; }));
       var ctxV = function (o) { return o.n + ' trade' + (o.n > 1 ? 's' : '') + ' · ' + Math.round(o.wr) + ' % · ' + self.fR(o.exp); };
+      var prD = this.procheNews(t);
       d = {
+        news: !!prD, newsTxt: prD ? 'Pris ' + window.TJNews.texteTag(prD) + ' (news forte)' : '',
         sym: t.sym, ini: ini(t.sym), ibg: ICO[t.mk][0], ifg: ICO[t.mk][1], dir: t.dir, dirBg: DIRC[t.dir][0], dirFg: DIRC[t.dir][1],
         when: fDay(t.t) + ' 2026 · ' + fHour(t.t) + ' · Session ' + t.ses + (t.manual ? ' · ajouté à la main' : ''),
         pnl: this.fEur(t.pnl), r: this.fR1(t.R), pc: t.R > 0 ? GAIN : LOSS, rBg: t.R > 0 ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)',
@@ -1976,7 +2015,7 @@ class Component extends DCLogic {
         ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6'],
         ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2'],
         ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', '', '', 'Backtesting.dc.html'],
-        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '2', 'warn'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '2', 'warn', 'News.dc.html'],
         ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', 'NOUVEAU', 'accent']
       ] },
       { title: 'COMPTE', items: [
