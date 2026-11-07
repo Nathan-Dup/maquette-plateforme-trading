@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tarifs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#C9D3E6;text-decoration:none}a:hover{color:#FFFFFF}
+button{font-family:inherit}
+html{scroll-behavior:smooth}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+.h.num,.h .num{font-family:Inter,system-ui,sans-serif !important;letter-spacing:-0.02em}
+h1,h2,h3{text-wrap:balance}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.fu{animation:fu .9s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.12s}.d2{animation-delay:.24s}.d3{animation-delay:.36s}
+@keyframes swap{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.swap{animation:swap .35s cubic-bezier(.2,.7,.2,1) both}
+@keyframes op{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.ans{animation:op .3s ease both}
+.js-rv .rv{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.js-rv .rv.in{opacity:1;transform:none}
+.rd1{transition-delay:.1s !important}.rd2{transition-delay:.2s !important}
+.navl{transition:background .2s,color .2s}.navl:hover{background:#131927;color:#FFFFFF !important}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.tg{transition:background .25s,color .25s}
+.plan{transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .3s}.plan:hover{transform:translateY(-4px)}
+.row{transition:background .2s}.row:hover{background:#0E131D}
+.qa{transition:background .2s,border-color .2s}.qa:hover{background:#0E131D}
+.chev{transition:transform .3s}
+.dots{background-image:radial-gradient(rgba(148,160,180,.13) 1px,transparent 1px);background-size:28px 28px}
+.noanim *{animation:none !important;transition:none !important}
+.noanim .rv{opacity:1 !important;transform:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}.rv{opacity:1 !important;transform:none !important}}
+</style>
+</helmet>
+<div ref="{{rootRef}}" class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; overflow-x: hidden">
+
+<header style="border-bottom: 1px solid #1A2130">
+<div style="max-width: 1200px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: #EEF1F6">
+<span style="width: 34px; height: 34px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 20px; font-weight: 700">[NOM]</span>
+</a>
+<nav aria-label="Navigation principale" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 15px">
+<a class="navl" href="Main.dc.html" style="padding: 10px 14px; border-radius: 9px">Accueil</a>
+<a class="navl" href="Main.dc.html" style="padding: 10px 14px; border-radius: 9px">Outils</a>
+<a class="navl" href="Fonctionnalites.dc.html" style="padding: 10px 14px; border-radius: 9px">Fonctionnalités</a>
+<a class="navl" href="#top" aria-current="page" style="position: relative; padding: 10px 14px; border-radius: 9px; color: #FFFFFF; font-weight: 600">Tarifs<span style="position: absolute; left: 50%; bottom: 3px; width: 4px; height: 4px; margin-left: -2px; border-radius: 2px; background: {{accent}}"></span></a>
+<a class="navl" href="Main.dc.html" style="padding: 10px 14px; border-radius: 9px">Pourquoi nous ?</a>
+</nav>
+<div style="display: flex; gap: 8px; align-items: center">
+<a class="navl" href="Connexion.dc.html" style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 9px; font-size: 15px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8a4 4 0 1 0 0 8M4 21a8 8 0 0 1 16 0"></path></svg>Connexion</a>
+<a class="btn" href="#offres" style="background: {{accent}}; color: #0A0D14; font-weight: 600; font-size: 15px; padding: 12px 18px; border-radius: 10px">Essai gratuit</a>
+</div>
+</div>
+</header>
+
+<section id="top" class="dots">
+<div style="max-width: 1200px; margin: 0 auto; padding: 80px 24px 40px; text-align: center; display: flex; flex-direction: column; align-items: center">
+<div class="fu" style="font-size: 13px; font-weight: 600; letter-spacing: .12em; color: {{accent}}">TARIFS</div>
+<h1 class="h fu d1" style="font-size: clamp(38px, 4.8vw, 62px); line-height: 1.05; margin: 16px 0 0; font-weight: 700">Un abonnement.<br>Tous les outils.</h1>
+<p class="fu d2" style="font-size: 19px; line-height: 1.6; color: #A3AEC2; margin: 20px 0 0; max-width: 580px">Commence gratuitement, sans carte bancaire. Passe Premium quand tu veux, et arrête quand tu veux.</p>
+<div class="fu d3" role="group" aria-label="Période de facturation" style="display: inline-flex; align-items: center; gap: 4px; margin-top: 34px; padding: 5px; border-radius: 14px; background: #0E131D; border: 1px solid #1D2433">
+<sc-for list="{{periods}}" as="p" hint-placeholder-count="2">
+<button class="tg" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="display: flex; align-items: center; gap: 8px; border: 0; cursor: pointer; font-size: 15px; font-weight: 600; padding: 11px 18px; border-radius: 10px; min-height: 44px; background: {{p.bg}}; color: {{p.fg}}">{{p.label}}<sc-if value="{{p.badge}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 999px; background: rgba(61,220,151,.16); color: #7BEBB9">{{p.badge}}</span></sc-if></button>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="offres">
+<div style="max-width: 980px; margin: 0 auto; padding: 32px 24px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: stretch">
+
+<div class="plan rv" style="background: #0E131D; border: 1px solid #222A3A; border-radius: 24px; padding: 34px; display: flex; flex-direction: column; gap: 24px">
+<div>
+<div style="display: flex; align-items: center; justify-content: space-between"><h2 class="h" style="font-size: 24px; margin: 0; font-weight: 600">Gratuit</h2></div>
+<p style="font-size: 15px; color: #A3AEC2; margin: 8px 0 0">Pour découvrir la plateforme et tenir un journal simple.</p>
+<div style="display: flex; align-items: baseline; gap: 8px; margin-top: 22px"><span class="h num" style="font-size: 52px; font-weight: 700; line-height: 1">0 €</span><span style="font-size: 15px; color: #8A95AA">pour toujours</span></div>
+<div style="font-size: 13px; color: #8A95AA; margin-top: 8px; min-height: 20px">Aucune carte bancaire demandée</div>
+</div>
+<a class="btn" href="Connexion.dc.html" style="text-align: center; border: 1px solid #2A3346; color: #EEF1F6; font-weight: 600; font-size: 16px; padding: 15px 20px; border-radius: 12px">Créer un compte gratuit</a>
+<div style="border-top: 1px solid #1D2433; padding-top: 22px">
+<div style="font-size: 13px; font-weight: 600; color: #C9D3E6">Inclus</div>
+<ul style="list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-direction: column; gap: 12px; font-size: 15px; color: #C9D3E6">
+<sc-for list="{{freeList}}" as="f" hint-placeholder-count="5">
+<li style="display: flex; gap: 10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>{{f}}</li>
+</sc-for>
+</ul>
+</div>
+</div>
+
+<div class="plan rv rd1" style="position: relative; background: #111622; border: 1.5px solid {{accent}}; border-radius: 24px; padding: 34px; display: flex; flex-direction: column; gap: 24px; box-shadow: 0 30px 90px {{accentGlow}}">
+<span style="position: absolute; top: -13px; left: 34px; background: {{accent}}; color: #0A0D14; font-size: 12px; font-weight: 800; letter-spacing: .04em; padding: 5px 12px; border-radius: 999px">RECOMMANDÉ</span>
+<div>
+<h2 class="h" style="font-size: 24px; margin: 0; font-weight: 600">Premium</h2>
+<p style="font-size: 15px; color: #A3AEC2; margin: 8px 0 0">Les 4 outils, sans limite, pour progresser vraiment.</p>
+<sc-if value="{{monthly}}" hint-placeholder-val="{{true}}">
+<div class="swap">
+<div style="display: flex; align-items: baseline; gap: 8px; margin-top: 22px"><span class="h num" style="font-size: 52px; font-weight: 700; line-height: 1">25 €</span><span style="font-size: 15px; color: #8A95AA">/ mois</span></div>
+<div style="font-size: 13px; color: #8A95AA; margin-top: 8px; min-height: 20px">Facturé chaque mois · sans engagement</div>
+</div>
+</sc-if>
+<sc-if value="{{annual}}" hint-placeholder-val="{{false}}">
+<div class="swap">
+<div style="display: flex; align-items: baseline; gap: 8px; margin-top: 22px"><span class="h num" style="font-size: 52px; font-weight: 700; line-height: 1; white-space: nowrap">250 €</span><span style="font-size: 15px; color: #8A95AA">/ an</span><span class="num" style="font-size: 15px; color: #6F7A90; text-decoration: line-through">300 €</span></div>
+<div class="num" style="font-size: 13px; color: #7BEBB9; margin-top: 8px; min-height: 20px">Soit 20,83 € par mois · 2 mois offerts</div>
+</div>
+</sc-if>
+</div>
+<a class="btn" href="Connexion.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: {{accent}}; color: #0A0D14; font-weight: 600; font-size: 16px; padding: 15px 20px; border-radius: 12px">Essayer Premium<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+<div style="border-top: 1px solid #1D2433; padding-top: 22px">
+<div style="font-size: 13px; font-weight: 600; color: #C9D3E6">Tout le gratuit, plus</div>
+<ul style="list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-direction: column; gap: 12px; font-size: 15px; color: #DCE2EC">
+<sc-for list="{{premList}}" as="f" hint-placeholder-count="6">
+<li style="display: flex; gap: 10px; align-items: flex-start"><span style="flex: none; margin-top: 3px; width: 16px; height: 16px; border-radius: 5px; background: {{f.soft}}; display: flex; align-items: center; justify-content: center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="{{f.c}}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>{{f.t}}</li>
+</sc-for>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="rv" style="max-width: 980px; margin: 0 auto; padding: 0 24px 96px">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+<sc-for list="{{guar}}" as="g" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: #0D1119; border: 1px solid #1A2130">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{g.i}}"></path></svg>
+<span style="font-size: 14px; font-weight: 500; color: #DCE2EC">{{g.t}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="comparatif" style="background: #0D1119; border-top: 1px solid #1A2130; border-bottom: 1px solid #1A2130">
+<div style="max-width: 980px; margin: 0 auto; padding: 96px 24px">
+<div class="rv" style="text-align: center">
+<div style="font-size: 13px; font-weight: 600; letter-spacing: .12em; color: {{accent}}">COMPARATIF DÉTAILLÉ</div>
+<h2 class="h" style="font-size: clamp(30px, 3.6vw, 44px); line-height: 1.1; margin: 14px 0 0; font-weight: 700">Ce que contient chaque offre</h2>
+</div>
+<div class="rv" style="margin-top: 44px; border: 1px solid #1D2433; border-radius: 20px; overflow: hidden; background: #0A0D14">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 150px 150px; align-items: center; padding: 18px 22px; border-bottom: 1px solid #1D2433; background: #0E131D">
+<span style="font-size: 13px; color: #8A95AA">Fonctionnalité</span>
+<span style="text-align: center; font-size: 15px; font-weight: 600">Gratuit</span>
+<span style="text-align: center; font-size: 15px; font-weight: 700; color: {{accent}}">Premium</span>
+</div>
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 10px; padding: 16px 22px 10px">
+<span style="width: 26px; height: 26px; border-radius: 8px; background: {{g.soft}}; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{g.c}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{g.i}}"></path></svg></span>
+<span style="font-size: 12px; font-weight: 700; letter-spacing: .1em; color: {{g.c}}">{{g.t}}</span>
+</div>
+<sc-for list="{{g.rows}}" as="r" hint-placeholder-count="3">
+<div class="row" style="display: grid; grid-template-columns: minmax(0, 1fr) 150px 150px; align-items: center; padding: 13px 22px; border-top: 1px solid #141A26; font-size: 14px">
+<span style="color: #DCE2EC">{{r.l}}</span>
+<span style="display: flex; justify-content: center">
+<sc-if value="{{r.fYes}}" hint-placeholder-val="{{false}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Inclus"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+<sc-if value="{{r.fNo}}" hint-placeholder-val="{{true}}"><span aria-label="Non inclus" style="width: 12px; height: 2px; border-radius: 1px; background: #2A3346"></span></sc-if>
+<sc-if value="{{r.fTxt}}" hint-placeholder-val="{{false}}"><span class="num" style="font-size: 13px; color: #A3AEC2">{{r.fTxt}}</span></sc-if>
+</span>
+<span style="display: flex; justify-content: center">
+<sc-if value="{{r.pYes}}" hint-placeholder-val="{{true}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Inclus"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+<sc-if value="{{r.pTxt}}" hint-placeholder-val="{{false}}"><span class="num" style="font-size: 13px; font-weight: 600; color: #EEF1F6">{{r.pTxt}}</span></sc-if>
+</span>
+</div>
+</sc-for>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="faq">
+<div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; display: flex; flex-wrap: wrap; gap: 48px 64px">
+<div class="rv" style="flex: 1 1 320px; min-width: 0">
+<div style="font-size: 13px; font-weight: 600; letter-spacing: .12em; color: {{accent}}">FAQ</div>
+<h2 class="h" style="font-size: clamp(30px, 3.6vw, 44px); line-height: 1.1; margin: 14px 0 0; font-weight: 700">Les questions qu'on nous pose</h2>
+<p style="font-size: 16px; line-height: 1.6; color: #A3AEC2; margin: 16px 0 0">Tu ne trouves pas ta réponse ? Écris-nous, une vraie personne te répond en français.</p>
+<a class="btn" href="Main.dc.html" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; border: 1px solid #2A3346; color: #EEF1F6; font-weight: 600; font-size: 15px; padding: 12px 18px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"></path></svg>Contacter le support</a>
+</div>
+<div class="rv rd1" style="flex: 1.6 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{faq}}" as="q" hint-placeholder-count="7">
+<div class="qa" style="border-radius: 14px; border: 1px solid {{q.bd}}; background: {{q.bg}}">
+<button type="button" onClick="{{q.pick}}" aria-expanded="{{q.expanded}}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; border: 0; background: transparent; color: #EEF1F6; cursor: pointer; text-align: left; font-size: 16px; font-weight: 600">{{q.q}}<span style="flex: none; width: 28px; height: 28px; border-radius: 8px; background: #151B28; display: flex; align-items: center; justify-content: center"><svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C9D3E6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: rotate({{q.rot}}deg)"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+<sc-if value="{{q.open}}" hint-placeholder-val="{{false}}"><p class="ans" style="margin: 0; padding: 0 20px 18px; font-size: 15px; line-height: 1.65; color: #A3AEC2">{{q.a}}</p></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section style="max-width: 1200px; margin: 0 auto; padding: 0 24px 96px">
+<div class="rv" style="position: relative; overflow: hidden; border-radius: 28px; padding: 60px 56px; background: {{accent}}; color: #0A0D14; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 28px">
+<div style="flex: 1 1 460px; min-width: 0">
+<h2 class="h" style="font-size: clamp(30px, 3.8vw, 48px); line-height: 1.05; margin: 0; font-weight: 700; color: #0A0D14">Commence aujourd'hui,<br>c'est gratuit.</h2>
+<p style="font-size: 18px; line-height: 1.6; color: rgba(10,13,20,.82); margin: 14px 0 0">Ton journal est prêt en 2 minutes. Premium quand tu veux.</p>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<a class="btn" href="Connexion.dc.html" style="display: inline-flex; align-items: center; gap: 10px; background: #0A0D14; color: #EEF1F6; font-weight: 600; font-size: 16px; padding: 16px 24px; border-radius: 12px">Créer mon compte<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+<a class="btn" href="Fonctionnalites.dc.html" style="display: inline-flex; align-items: center; border: 1.5px solid rgba(10,13,20,.4); color: #0A0D14; font-weight: 600; font-size: 16px; padding: 16px 22px; border-radius: 12px">Voir les fonctionnalités</a>
+</div>
+</div>
+</section>
+
+<footer style="border-top: 1px solid #1A2130">
+<div style="max-width: 1200px; margin: 0 auto; padding: 48px 24px 32px; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between">
+<div style="flex: 1 1 260px; max-width: 340px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 30px; height: 30px; border-radius: 8px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 18px; font-weight: 700">[NOM]</span>
+</div>
+<p style="font-size: 14px; line-height: 1.6; color: #94A0B4; margin: 14px 0 0">Tous les outils du trader, réunis en un seul abonnement.</p>
+</div>
+<div style="display: flex; gap: 56px; flex-wrap: wrap; font-size: 14px">
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Produit</span><a href="Fonctionnalites.dc.html">Fonctionnalités</a><a href="#top">Tarifs</a><a href="#faq">FAQ</a></div>
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Ressources</span><a href="Main.dc.html">Académie</a><a href="Main.dc.html">Blog</a><a href="Main.dc.html">Centre d'aide</a></div>
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Légal</span><a href="Main.dc.html">CGU / CGV</a><a href="Main.dc.html">Confidentialité</a><a href="Main.dc.html">Mentions légales</a></div>
+</div>
+</div>
+<div style="max-width: 1200px; margin: 0 auto; padding: 20px 24px 36px; border-top: 1px solid #1A2130; font-size: 12px; line-height: 1.6; color: #8A95AA">Le trading comporte un risque élevé de perte en capital. [NOM] fournit des outils d'analyse et ne constitue pas un conseil en investissement. Prix TTC. © 2026 [NOM]</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":3900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var self = this;
+    this.state = { annual: false, faq: 0 };
+    this.rootEl = null;
+    this.rootRef = function (el) { self.rootEl = el; };
+  }
+  componentDidMount() {
+    var self = this, root = this.rootEl;
+    try {
+      if (root && root.querySelectorAll && typeof IntersectionObserver !== 'undefined') {
+        this.io = new IntersectionObserver(function (ents) {
+          ents.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); self.io.unobserve(en.target); } });
+        }, { threshold: 0.1 });
+        var els = root.querySelectorAll('.rv');
+        for (var i = 0; i < els.length; i++) this.io.observe(els[i]);
+        root.classList.add('js-rv');
+      }
+    } catch (e) { if (root && root.classList) root.classList.remove('js-rv'); }
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  renderVals() {
+    var self = this, s = this.state;
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var B = { c: '#A9BBFF', soft: 'rgba(110,139,255,.16)' }, O = { c: '#F5B87A', soft: 'rgba(245,166,91,.16)' }, V = { c: '#CDB5FA', soft: 'rgba(183,148,246,.16)' }, G = { c: '#7BEBB9', soft: 'rgba(61,220,151,.16)' };
+    var periods = [[false, 'Mensuel', ''], [true, 'Annuel', '2 mois offerts']].map(function (p) {
+      var on = s.annual === p[0];
+      return { label: p[1], badge: p[2], pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.setState({ annual: p[0] }); } };
+    });
+    var R = function (l, f, p) {
+      return { l: l, fYes: f === true, fNo: f === false, fTxt: typeof f === 'string' ? f : '', pYes: p === true, pTxt: typeof p === 'string' ? p : '' };
+    };
+    var groups = [
+      { t: 'JOURNAL', c: B.c, soft: B.soft, i: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', rows: [
+        R('Trades enregistrés', '[X] / mois', 'Illimité'), R('Import MT4 / MT5 / cTrader / CSV', true, true), R('Statistiques essentielles', true, true),
+        R('Statistiques avancées (MAE / MFE, par setup, session…)', false, true), R('Captures de setup', '[X] / mois', 'Illimité'), R('Suivi des émotions et du plan', false, true), R('Plusieurs comptes', '1 compte', 'Illimité')
+      ] },
+      { t: 'BACKTESTING', c: O.c, soft: O.soft, i: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', rows: [
+        R('Replay bougie par bougie', false, true), R('Forex, actions, crypto, matières premières', false, true), R('Sessions sauvegardées', false, 'Illimité'), R('Comparaison réel vs backtest', false, true)
+      ] },
+      { t: 'NEWS', c: V.c, soft: V.soft, i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', rows: [
+        R('Calendrier économique', true, true), R('Résultats d’entreprises et géopolitique', false, true), R('Résumés IA en français', false, true), R('Alertes personnalisées', false, true)
+      ] },
+      { t: 'COACH IA', c: G.c, soft: G.soft, i: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', rows: [
+        R('Analyse automatique de tes trades', false, true), R('Bilan chaque semaine', false, true), R('Questions au coach', false, 'Illimité')
+      ] },
+      { t: 'COMPTE ET SUPPORT', c: '#C9D3E6', soft: '#1A2130', i: 'M12 12a4 4 0 1 0 0-8a4 4 0 1 0 0 8M4 21a8 8 0 0 1 16 0', rows: [
+        R('Export PDF et CSV', false, true), R('Support en français', 'Par e-mail', 'Prioritaire'), R('Nouveautés en avant-première', false, true)
+      ] }
+    ];
+    var FAQ = [
+      ['Puis-je essayer gratuitement ?', 'Oui. L’offre Gratuite est sans limite de durée et ne demande aucune carte bancaire. Tu peux passer Premium à tout moment depuis ton compte.'],
+      ['Comment annuler mon abonnement ?', 'En un clic depuis tes paramètres. Ton accès Premium reste actif jusqu’à la fin de la période payée, et tes données restent accessibles en version gratuite.'],
+      ['Quels moyens de paiement acceptez-vous ?', 'Carte bancaire (Visa, Mastercard, CB) via un prestataire de paiement sécurisé. Nous ne stockons jamais tes informations bancaires.'],
+      ['Quelles plateformes sont compatibles ?', 'MetaTrader 4 et 5, cTrader, TradingView et tout broker qui permet d’exporter un fichier CSV. D’autres connexions arriveront au fil des mises à jour.'],
+      ['Le coach IA me dit-il quoi acheter ou vendre ?', 'Non. Le coach analyse ton comportement et tes résultats passés pour t’aider à progresser. Il ne donne aucun conseil en investissement ni aucune recommandation d’achat ou de vente.'],
+      ['Mes données sont-elles en sécurité ?', 'Tes connexions sont chiffrées et tes données t’appartiennent : tu peux les exporter ou les supprimer quand tu veux.'],
+      ['Puis-je passer du mensuel à l’annuel ?', 'Oui, à tout moment. Le changement est calculé au prorata de ce que tu as déjà payé.']
+    ];
+    var faq = FAQ.map(function (f, i) {
+      var on = s.faq === i;
+      return { q: f[0], a: f[1], open: on, expanded: on ? 'true' : 'false', rot: on ? 45 : 0, bd: on ? '#2A3346' : '#1A2130', bg: on ? '#0E131D' : 'transparent', pick: function () { self.setState({ faq: self.state.faq === i ? -1 : i }); } };
+    });
+    return {
+      rootRef: this.rootRef, accent: accent, accentGlow: this.soft(accent, 0.18), rootClass: anim ? '' : 'noanim',
+      periods: periods, monthly: !s.annual, annual: s.annual,
+      freeList: ['Journal limité à [X] trades par mois', 'Import depuis MT4, MT5, cTrader ou CSV', 'Statistiques essentielles', 'Calendrier économique', '1 compte de trading'],
+      premList: [
+        { t: 'Journal illimité et statistiques avancées', c: B.c, soft: B.soft },
+        { t: 'Captures de setup et suivi des émotions', c: B.c, soft: B.soft },
+        { t: 'Backtesting en replay sur les 4 marchés', c: O.c, soft: O.soft },
+        { t: 'News, résultats d’entreprises et alertes', c: V.c, soft: V.soft },
+        { t: 'Coach IA et bilan chaque semaine', c: G.c, soft: G.soft },
+        { t: 'Comptes illimités et export PDF / CSV', c: '#C9D3E6', soft: '#1A2130' }
+      ],
+      guar: [
+        { t: 'Sans engagement', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M8 12l3 3 5-6' },
+        { t: 'Annulable en 1 clic', i: 'M18 6L6 18M6 6l12 12' },
+        { t: 'Paiement sécurisé', i: 'M6 10V7a6 6 0 0 1 12 0v3M5 10h14v11H5z' },
+        { t: 'Support en français', i: 'M4 5h16v11H8l-4 4z' }
+      ],
+      groups: groups, faq: faq
+    };
+  }
+}
+</script>
+</body>
+</html>

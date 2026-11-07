@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fonctionnalités</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#C9D3E6;text-decoration:none}a:hover{color:#FFFFFF}
+button{font-family:inherit}
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:24px}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+.h.num,.h .num{font-family:Inter,system-ui,sans-serif !important;letter-spacing:-0.02em}
+h1,h2,h3{text-wrap:balance}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.fu{animation:fu .9s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.12s}.d2{animation-delay:.24s}.d3{animation-delay:.36s}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(61,220,151,.55)}100%{box-shadow:0 0 0 10px rgba(61,220,151,0)}}
+.pu{animation:pu 1.8s ease-out infinite}
+@keyframes puo{0%{box-shadow:0 0 0 0 rgba(245,166,91,.6)}100%{box-shadow:0 0 0 9px rgba(245,166,91,0)}}
+.puo{animation:puo 1.8s ease-out infinite}
+@keyframes cin{0%,3%{opacity:0;transform:scaleY(.2)}9%,88%{opacity:1;transform:none}96%,100%{opacity:0}}
+.cin{transform-origin:center;animation:cin 9s ease-out infinite}
+@keyframes prog{0%{width:0}88%{width:100%}100%{width:100%}}
+.prog{animation:prog 9s linear infinite}
+@keyframes ring{from{stroke-dasharray:0 164}}
+.js-rv .rv{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.js-rv .rv.in{opacity:1;transform:none}
+.rd1{transition-delay:.1s !important}.rd2{transition-delay:.2s !important}.rd3{transition-delay:.3s !important}
+.js-rv .rv.in .ring{animation:ring 1.5s cubic-bezier(.2,.7,.2,1) .3s both}
+.bar{transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.toc{transition:transform .3s cubic-bezier(.2,.7,.2,1),border-color .3s,background .3s}
+.toc:hover{transform:translateX(4px);background:#131927 !important}
+.toc svg.arw{transition:transform .25s}.toc:hover svg.arw{transform:translateX(4px)}
+.feat{transition:background .3s}.feat:hover{background:#121826}
+.chip{transition:background .2s,border-color .2s,color .2s}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.row{transition:background .2s}.row:hover{background:#121826}
+.dots{background-image:radial-gradient(rgba(148,160,180,.13) 1px,transparent 1px);background-size:28px 28px}
+.noanim *{animation:none !important;transition:none !important}
+.noanim .rv{opacity:1 !important;transform:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}.rv{opacity:1 !important;transform:none !important}}
+</style>
+</helmet>
+<div ref="{{rootRef}}" class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; overflow-x: hidden">
+
+<header style="border-bottom: 1px solid #1A2130">
+<div style="max-width: 1200px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: #EEF1F6">
+<span style="width: 34px; height: 34px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 20px; font-weight: 700">[NOM]</span>
+</a>
+<nav aria-label="Navigation principale" style="display: flex; gap: 28px; flex-wrap: wrap; font-size: 15px">
+<a href="Main.dc.html">Accueil</a>
+<a href="Main.dc.html">Outils</a>
+<a href="#top" aria-current="page" style="color: #EEF1F6; font-weight: 600; position: relative">Fonctionnalités<span style="position: absolute; left: 50%; bottom: -8px; width: 4px; height: 4px; margin-left: -2px; border-radius: 2px; background: {{accent}}"></span></a>
+<a href="Tarifs.dc.html">Tarifs</a>
+<a href="Main.dc.html">Pourquoi nous ?</a>
+</nav>
+<div style="display: flex; gap: 8px; align-items: center">
+<a href="Connexion.dc.html" style="font-size: 15px; padding: 12px 14px">Connexion</a>
+<a class="btn" href="Connexion.dc.html" style="background: {{accent}}; color: #0A0D14; font-weight: 600; font-size: 15px; padding: 12px 18px; border-radius: 10px">Essai gratuit</a>
+</div>
+</div>
+</header>
+
+<section id="top" class="dots">
+<div style="max-width: 1200px; margin: 0 auto; padding: 80px 24px 88px; display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
+<div style="flex: 1.2 1 480px; min-width: 0">
+<div class="fu" style="font-size: 13px; font-weight: 600; letter-spacing: .12em; color: {{accent}}">FONCTIONNALITÉS</div>
+<h1 class="h fu d1" style="font-size: clamp(38px, 4.6vw, 60px); line-height: 1.05; margin: 16px 0 0; font-weight: 700">Tout ce dont un trader a besoin.<br><span style="color: #8A95AA">Rien de superflu.</span></h1>
+<p class="fu d2" style="font-size: 19px; line-height: 1.6; color: #A3AEC2; margin: 22px 0 0; max-width: 560px">Quatre outils pensés pour travailler ensemble : tu prépares, tu testes, tu trades, tu analyses. Tout au même endroit, sans changer de site.</p>
+</div>
+<nav class="fu d3" aria-label="Aller à un outil" style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{tools}}" as="t" hint-placeholder-count="4">
+<a class="toc" href="{{t.href}}" style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 14px; background: #0E131D; border: 1px solid #1D2433; color: #EEF1F6">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 11px; background: {{t.soft}}; display: flex; align-items: center; justify-content: center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{t.light}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg></span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-size: 16px; font-weight: 600">{{t.name}}</span><span style="display: block; font-size: 13px; color: #8A95AA; margin-top: 2px">{{t.sub}}</span></span>
+<svg class="arw" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.light}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+</a>
+</sc-for>
+</nav>
+</div>
+</section>
+
+<section id="journal" style="border-top: 1px solid #1A2130">
+<div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px">
+<div class="rv" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 64px">
+<div style="flex: 1 1 520px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 9px; background: rgba(110,139,255,.14); display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A9BBFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6"></path></svg></span><span style="font-size: 12px; font-weight: 700; letter-spacing: .12em; color: #A9BBFF">01 · JOURNAL DE TRADING</span></div>
+<h2 class="h" style="font-size: clamp(30px, 3.6vw, 46px); line-height: 1.08; margin: 16px 0 0; font-weight: 700">Toutes les statistiques,<br>sous tous les angles.</h2>
+</div>
+<p style="flex: 0 1 420px; min-width: 0; font-size: 17px; line-height: 1.65; color: #A3AEC2; margin: 0">Ton broker te donne un solde. Le journal te dit pourquoi tu gagnes, pourquoi tu perds, et ce qu'il faut changer.</p>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 48px">
+<div class="rv" style="flex: 1.25 1 520px; min-width: 0; align-self: flex-start; background: #0E131D; border: 1px solid #1D2433; border-radius: 22px; padding: 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{kstats}}" as="k" hint-placeholder-count="8">
+<div style="padding: 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">{{k.l}}</div><div class="h num" style="font-size: 19px; font-weight: 600; margin-top: 4px; color: {{k.c}}">{{k.v}}</div></div>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 22px">
+<div style="font-size: 14px; font-weight: 600">Résultats par</div>
+<div role="group" aria-label="Découper les résultats par" style="display: flex; gap: 4px; padding: 3px; border-radius: 10px; background: #0A0D14; border: 1px solid #1D2433">
+<sc-for list="{{dims}}" as="d" hint-placeholder-count="4">
+<button class="chip" type="button" onClick="{{d.pick}}" aria-pressed="{{d.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 7px; min-height: 34px; background: {{d.bg}}; color: {{d.fg}}">{{d.l}}</button>
+</sc-for>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 110px minmax(0, 1fr) 48px 72px; gap: 8px 14px; align-items: center; margin-top: 16px; font-size: 11px; color: #8A95AA">
+<span></span><span>Win rate</span><span></span><span style="text-align: right">Espérance</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: 110px minmax(0, 1fr) 48px 72px; gap: 14px; align-items: center; font-size: 13px">
+<span style="color: #C9D3E6; font-weight: 500">{{r.l}}</span>
+<span style="height: 10px; border-radius: 5px; background: #151B27; overflow: hidden"><span class="bar" style="display: block; height: 100%; width: {{r.w}}%; border-radius: 5px; background: {{r.bc}}"></span></span>
+<span class="num" style="font-weight: 600; text-align: right">{{r.wr}}</span>
+<span class="num" style="font-weight: 700; text-align: right; color: {{r.ec}}">{{r.e}}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top: 18px; padding: 12px 14px; border-radius: 12px; background: rgba(110,139,255,.08); font-size: 13px; line-height: 1.5; color: #C9D3E6"><span style="color: #A9BBFF; font-weight: 600">À retenir : </span>{{insight}}</div>
+</div>
+
+<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{jfeat}}" as="f" hint-placeholder-count="6">
+<div class="feat rv" style="display: flex; gap: 14px; padding: 14px; border-radius: 14px">
+<span style="flex: none; width: 38px; height: 38px; border-radius: 10px; background: rgba(110,139,255,.12); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A9BBFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.i}}"></path></svg></span>
+<div><div style="font-size: 15px; font-weight: 600">{{f.t}}</div><div style="font-size: 14px; line-height: 1.5; color: #A3AEC2; margin-top: 3px">{{f.d}}</div></div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</section>
+
+<section id="backtesting" style="background: #0D1119; border-top: 1px solid #1A2130; border-bottom: 1px solid #1A2130">
+<div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px">
+<div class="rv" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 64px">
+<div style="flex: 1 1 520px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 9px; background: rgba(245,166,91,.14); display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F5B87A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z"></path></svg></span><span style="font-size: 12px; font-weight: 700; letter-spacing: .12em; color: #F5B87A">02 · BACKTESTING EN REPLAY</span></div>
+<h2 class="h" style="font-size: clamp(30px, 3.6vw, 46px); line-height: 1.08; margin: 16px 0 0; font-weight: 700">Des mois de marché,<br>testés en une soirée.</h2>
+</div>
+<p style="flex: 0 1 420px; min-width: 0; font-size: 17px; line-height: 1.65; color: #A3AEC2; margin: 0">Le replay rejoue l'historique bougie par bougie, sans voir la suite. Tu prends tes décisions comme en direct, sans risquer un euro.</p>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 48px">
+<div class="rv" style="flex: 1.25 1 520px; min-width: 0; align-self: center; background: #0B0F17; border: 1px solid #1D2433; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0,0,0,.35)">
+<div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #1D2433; background: #0E131D; flex-wrap: wrap">
+<span style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border-radius: 8px; background: #131927; font-size: 13px; font-weight: 700">XAU/USD</span>
+<span style="display: flex; gap: 2px; font-size: 12px; font-weight: 600; color: #8A95AA"><span style="padding: 7px 9px">M5</span><span style="padding: 7px 9px; border-radius: 7px; background: #1D2433; color: #EEF1F6">M15</span><span style="padding: 7px 9px">H1</span><span style="padding: 7px 9px">H4</span></span>
+<span style="flex: 1"></span>
+<span style="display: flex; align-items: center; gap: 7px; padding: 5px 9px; border-radius: 7px; background: rgba(245,166,91,.12); font-size: 10px; font-weight: 800; letter-spacing: .08em; color: #F5B87A"><span class="puo" style="width: 6px; height: 6px; border-radius: 3px; background: #F5A65B"></span>REPLAY</span>
+<span class="num" style="font-size: 12px; color: #C9D3E6">14 mars 2025 · 10:45</span>
+</div>
+<div style="position: relative; height: 380px">
+<div style="position: absolute; left: {{mz.l}}%; width: {{mz.w}}%; top: {{mz.tpT}}%; height: {{mz.tpH}}%; background: rgba(61,220,151,.12); border-top: 1px dashed #3DDC97"></div>
+<div style="position: absolute; left: {{mz.l}}%; width: {{mz.w}}%; top: {{mz.enT}}%; height: {{mz.slH}}%; background: rgba(255,122,107,.12); border-top: 1.5px solid #DCE2EC; border-bottom: 1px dashed #FF7A6B"></div>
+<span class="num" style="position: absolute; left: {{mz.l}}%; top: {{mz.tpT}}%; transform: translateY(-130%); margin-left: 4px; font-size: 10px; font-weight: 700; color: #7BEBB9">TP +2 R</span>
+<span class="num" style="position: absolute; left: {{mz.l}}%; top: {{mz.slB}}%; margin: 4px 0 0 4px; font-size: 10px; font-weight: 700; color: #FF9A8E">SL −1 R</span>
+<sc-for list="{{candles}}" as="c" hint-placeholder-count="36">
+<div class="cin" style="position: absolute; top: 0; height: 100%; left: {{c.l}}%; width: 1.7%; animation-delay: {{c.d}}">
+<div style="position: absolute; left: 50%; width: 1.5px; margin-left: -0.75px; top: {{c.wt}}%; height: {{c.wh}}%; background: {{c.col}}"></div>
+<div style="position: absolute; left: 0; right: 0; top: {{c.bt}}%; height: {{c.bh}}%; background: {{c.col}}; border-radius: 1.5px"></div>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-top: 1px solid #1D2433; background: #0E131D">
+<span style="width: 34px; height: 34px; border-radius: 9px; background: #F5A65B; display: flex; align-items: center; justify-content: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="#0A0D14" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg></span>
+<span style="display: flex; gap: 2px; padding: 3px; border-radius: 8px; border: 1px solid #2A3346; font-size: 11px; font-weight: 700; color: #8A95AA"><span style="padding: 5px 8px">x1</span><span style="padding: 5px 8px; border-radius: 5px; background: #1D2433; color: #EEF1F6">x2</span><span style="padding: 5px 8px">x4</span></span>
+<span style="flex: 1; height: 4px; border-radius: 2px; background: #1D2433; position: relative; overflow: hidden"><span class="prog" style="position: absolute; left: 0; top: 0; bottom: 0; background: #F5A65B"></span></span>
+<span style="font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 7px; background: #3DDC97; color: #0A0D14">ACHETER</span>
+<span style="font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 7px; background: #FF7A6B; color: #0A0D14">VENDRE</span>
+</div>
+</div>
+
+<div style="flex: 1 1 380px; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; align-content: start">
+<sc-for list="{{bfeat}}" as="f" hint-placeholder-count="8">
+<div class="feat rv" style="padding: 14px; border-radius: 14px">
+<span style="width: 34px; height: 34px; border-radius: 10px; background: rgba(245,166,91,.12); display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F5B87A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.i}}"></path></svg></span>
+<div style="font-size: 15px; font-weight: 600; margin-top: 12px">{{f.t}}</div>
+<div style="font-size: 13px; line-height: 1.5; color: #A3AEC2; margin-top: 4px">{{f.d}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div class="rv" style="margin-top: 40px">
+<div style="font-size: 13px; font-weight: 600; color: #C9D3E6">Marchés disponibles en replay</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 14px">
+<sc-for list="{{markets}}" as="m" hint-placeholder-count="4">
+<div style="padding: 18px; border-radius: 16px; background: #0E131D; border: 1px solid #1D2433">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 10px; border-radius: 5px; background: {{m.c}}"></span><span style="font-size: 15px; font-weight: 600">{{m.n}}</span></div>
+<div style="font-size: 13px; line-height: 1.55; color: #8A95AA; margin-top: 8px">{{m.e}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</section>
+
+<section id="news">
+<div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px">
+<div class="rv" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 64px">
+<div style="flex: 1 1 520px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 9px; background: rgba(183,148,246,.14); display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#CDB5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg></span><span style="font-size: 12px; font-weight: 700; letter-spacing: .12em; color: #CDB5FA">03 · NEWS ET CALENDRIER</span></div>
+<h2 class="h" style="font-size: clamp(30px, 3.6vw, 46px); line-height: 1.08; margin: 16px 0 0; font-weight: 700">L'actualité qui compte,<br>pour les actifs que tu trades.</h2>
+</div>
+<p style="flex: 0 1 420px; min-width: 0; font-size: 17px; line-height: 1.65; color: #A3AEC2; margin: 0">Calendrier économique, géopolitique et résultats d'entreprises, filtrés selon tes marchés et résumés en français par l'IA.</p>
+</div>
+
+<div class="rv" style="margin-top: 48px; background: #0E131D; border: 1px solid #1D2433; border-radius: 22px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div><div class="h" style="font-size: 18px; font-weight: 600">Calendrier économique</div><div style="font-size: 12px; color: #8A95AA; margin-top: 3px">Vendredi 6 novembre · heure de Paris</div></div>
+<div role="group" aria-label="Filtrer par impact" style="display: flex; gap: 4px">
+<sc-for list="{{imps}}" as="f" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="cursor: pointer; font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 999px; border: 1px solid {{f.bd}}; background: {{f.bg}}; color: {{f.fg}}">{{f.l}}</button>
+</sc-for>
+</div>
+</div>
+<div style="overflow-x: auto; margin-top: 14px">
+<table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 13px">
+<thead><tr style="color: #8A95AA; font-size: 11px; text-align: left; letter-spacing: .04em">
+<th style="padding: 10px; font-weight: 600">HEURE</th><th style="padding: 10px; font-weight: 600">DEVISE</th><th style="padding: 10px; font-weight: 600">ÉVÉNEMENT</th><th style="padding: 10px; font-weight: 600">IMPACT</th><th style="padding: 10px; font-weight: 600; text-align: right">PRÉCÉDENT</th><th style="padding: 10px; font-weight: 600; text-align: right">PRÉVISION</th><th style="padding: 10px; font-weight: 600; text-align: right">RÉEL</th>
+</tr></thead>
+<tbody>
+<sc-for list="{{cal}}" as="e" hint-placeholder-count="6">
+<tr class="row" style="border-top: 1px solid #171D2A">
+<td class="num" style="padding: 12px 10px; color: #C9D3E6; font-weight: 600">{{e.h}}</td>
+<td style="padding: 12px 10px"><span style="font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 6px; background: #151B28; color: #DCE2EC">{{e.cur}}</span></td>
+<td style="padding: 12px 10px; font-weight: 600">{{e.ev}}</td>
+<td style="padding: 12px 10px"><span role="img" aria-label="{{e.aria}}" style="display: inline-flex; gap: 2px; align-items: flex-end"><span style="width: 4px; height: 7px; border-radius: 1px; background: {{e.c1}}"></span><span style="width: 4px; height: 10px; border-radius: 1px; background: {{e.c2}}"></span><span style="width: 4px; height: 13px; border-radius: 1px; background: {{e.c3}}"></span></span></td>
+<td class="num" style="padding: 12px 10px; text-align: right; color: #A3AEC2">{{e.p}}</td>
+<td class="num" style="padding: 12px 10px; text-align: right; color: #A3AEC2">{{e.f}}</td>
+<td class="num" style="padding: 12px 10px; text-align: right; font-weight: 700; color: {{e.ac}}">{{e.a}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-top: 16px">
+<sc-for list="{{nfeat}}" as="f" hint-placeholder-count="4">
+<div class="rv" style="padding: 20px; border-radius: 18px; background: #0E131D; border: 1px solid #1D2433">
+<span style="width: 36px; height: 36px; border-radius: 10px; background: rgba(183,148,246,.12); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CDB5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.i}}"></path></svg></span>
+<div style="font-size: 15px; font-weight: 600; margin-top: 14px">{{f.t}}</div>
+<div style="font-size: 13px; line-height: 1.55; color: #A3AEC2; margin-top: 5px">{{f.d}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="coach" style="background: #0D1119; border-top: 1px solid #1A2130; border-bottom: 1px solid #1A2130; position: relative; overflow: hidden">
+<div aria-hidden="true" style="position: absolute; right: -200px; top: -200px; width: 700px; height: 500px; background: #3DDC97; opacity: .07; filter: blur(120px); border-radius: 50%"></div>
+<div style="position: relative; max-width: 1200px; margin: 0 auto; padding: 96px 24px">
+<div style="display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
+<div class="rv" style="flex: 1 1 400px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 9px; background: rgba(61,220,151,.14); display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7BEBB9" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span><span style="font-size: 12px; font-weight: 700; letter-spacing: .12em; color: #7BEBB9">04 · COACH IA</span></div>
+<h2 class="h" style="font-size: clamp(30px, 3.6vw, 46px); line-height: 1.08; margin: 16px 0 0; font-weight: 700">Un regard extérieur<br>sur ta façon de trader.</h2>
+<p style="font-size: 17px; line-height: 1.65; color: #A3AEC2; margin: 18px 0 0">Le coach lit ton journal, tes émotions et tes backtests. Il repère ce que tu ne vois plus et te le dit simplement, chaque semaine.</p>
+<div style="display: flex; flex-direction: column; gap: 4px; margin-top: 24px">
+<sc-for list="{{cfeat}}" as="f" hint-placeholder-count="4">
+<div class="feat" style="display: flex; gap: 14px; padding: 12px; border-radius: 14px; margin-left: -12px">
+<span style="flex: none; width: 34px; height: 34px; border-radius: 10px; background: rgba(61,220,151,.12); display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7BEBB9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.i}}"></path></svg></span>
+<div><div style="font-size: 15px; font-weight: 600">{{f.t}}</div><div style="font-size: 14px; line-height: 1.5; color: #A3AEC2; margin-top: 3px">{{f.d}}</div></div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div class="rv rd1" style="flex: 1 1 460px; min-width: 0; background: #0E131D; border: 1px solid rgba(61,220,151,.28); border-radius: 22px; padding: 24px; box-shadow: 0 30px 80px rgba(0,0,0,.35)">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 14px">
+<div><div style="font-size: 12px; color: #8A95AA">Bilan de la semaine · score de discipline</div><div class="h" style="font-size: 20px; font-weight: 600; margin-top: 4px">Du 2 au 6 novembre</div></div>
+<div style="position: relative; width: 70px; height: 70px; flex: none" role="img" aria-label="Score de discipline 82 sur 100">
+<svg width="70" height="70" viewBox="0 0 62 62" aria-hidden="true"><circle cx="31" cy="31" r="26" fill="none" stroke="#1A2130" stroke-width="6"></circle><circle class="ring" cx="31" cy="31" r="26" fill="none" stroke="#3DDC97" stroke-width="6" stroke-linecap="round" stroke-dasharray="134 164" transform="rotate(-90 31 31)"></circle></svg>
+<div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center"><span class="h num" style="font-size: 19px; font-weight: 700; line-height: 1">82</span><span class="num" style="font-size: 9px; color: #8A95AA; margin-top: 2px">/ 100</span></div>
+</div>
+</div>
+<div class="num" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 18px">
+<div style="padding: 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Trades</div><div class="h num" style="font-size: 18px; font-weight: 600; margin-top: 3px">11</div></div>
+<div style="padding: 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Résultat</div><div class="h num" style="font-size: 18px; font-weight: 600; margin-top: 3px; color: #3DDC97">+3,4 R</div></div>
+<div style="padding: 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Plan respecté</div><div class="h num" style="font-size: 18px; font-weight: 600; margin-top: 3px">9 / 11</div></div>
+</div>
+<div style="margin-top: 18px">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #7BEBB9">CE QUI A BIEN MARCHÉ</div>
+<ul style="list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; color: #DCE2EC">
+<li style="display: flex; gap: 10px"><span style="flex: none; margin-top: 7px; width: 6px; height: 6px; border-radius: 3px; background: #3DDC97"></span>Tes 4 trades en session de Londres sont tous gagnants.</li>
+<li style="display: flex; gap: 10px"><span style="flex: none; margin-top: 7px; width: 6px; height: 6px; border-radius: 3px; background: #3DDC97"></span>Aucun stop déplacé cette semaine, une première depuis un mois.</li>
+</ul>
+</div>
+<div style="margin-top: 16px">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #FF9A8E">À SURVEILLER</div>
+<ul style="list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; color: #DCE2EC">
+<li style="display: flex; gap: 10px"><span style="flex: none; margin-top: 7px; width: 6px; height: 6px; border-radius: 3px; background: #FF7A6B"></span>Les 2 trades pris juste après une perte (« revenge ») ont fini perdants.</li>
+</ul>
+</div>
+<div style="margin-top: 18px; padding: 14px; border-radius: 12px; background: rgba(61,220,151,.08); border: 1px solid rgba(61,220,151,.22); font-size: 14px; line-height: 1.55; color: #DCE2EC"><span style="color: #7BEBB9; font-weight: 600">Objectif de la semaine : </span>après une perte, fais une pause de 15 minutes avant le trade suivant.</div>
+<div style="font-size: 11px; color: #6F7A90; margin-top: 12px">Exemple de bilan · le coach analyse ton comportement, il ne donne pas de conseil en investissement.</div>
+</div>
+</div>
+</div>
+</section>
+
+<section>
+<div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px 40px">
+<div class="rv" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 64px">
+<h2 class="h" style="flex: 1 1 480px; font-size: clamp(28px, 3.2vw, 40px); line-height: 1.1; margin: 0; font-weight: 700">Et aussi, inclus dans l'abonnement</h2>
+<p style="flex: 0 1 400px; font-size: 16px; line-height: 1.6; color: #A3AEC2; margin: 0">Les petits détails qui font gagner du temps au quotidien.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1px; margin-top: 36px; background: #1A2130; border: 1px solid #1A2130; border-radius: 20px; overflow: hidden">
+<sc-for list="{{extras}}" as="x" hint-placeholder-count="6">
+<div class="feat rv" style="background: #0A0D14; padding: 24px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{x.i}}"></path></svg>
+<sc-if value="{{x.soon}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .06em; padding: 3px 8px; border-radius: 999px; background: #1A2130; color: #A3AEC2">BIENTÔT</span></sc-if>
+</div>
+<div style="font-size: 16px; font-weight: 600; margin-top: 16px">{{x.t}}</div>
+<div style="font-size: 14px; line-height: 1.55; color: #A3AEC2; margin-top: 6px">{{x.d}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section style="max-width: 1200px; margin: 0 auto; padding: 72px 24px 96px">
+<div class="rv" style="position: relative; overflow: hidden; border-radius: 28px; padding: 60px 56px; background: {{accent}}; color: #0A0D14; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 28px">
+<div style="flex: 1 1 460px; min-width: 0">
+<h2 class="h" style="font-size: clamp(30px, 3.8vw, 48px); line-height: 1.05; margin: 0; font-weight: 700; color: #0A0D14">Essaie les 4 outils<br>gratuitement.</h2>
+<p style="font-size: 18px; line-height: 1.6; color: rgba(10,13,20,.82); margin: 14px 0 0">Sans carte bancaire. Tu passes Premium seulement si ça t'aide vraiment.</p>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<a class="btn" href="Connexion.dc.html" style="display: inline-flex; align-items: center; gap: 10px; background: #0A0D14; color: #EEF1F6; font-weight: 600; font-size: 16px; padding: 16px 24px; border-radius: 12px">Créer mon compte<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+<a class="btn" href="Tarifs.dc.html" style="display: inline-flex; align-items: center; border: 1.5px solid rgba(10,13,20,.4); color: #0A0D14; font-weight: 600; font-size: 16px; padding: 16px 22px; border-radius: 12px">Voir les tarifs</a>
+</div>
+</div>
+</section>
+
+<footer style="border-top: 1px solid #1A2130">
+<div style="max-width: 1200px; margin: 0 auto; padding: 48px 24px 32px; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between">
+<div style="flex: 1 1 260px; max-width: 340px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 30px; height: 30px; border-radius: 8px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 18px; font-weight: 700">[NOM]</span>
+</div>
+<p style="font-size: 14px; line-height: 1.6; color: #94A0B4; margin: 14px 0 0">Tous les outils du trader, réunis en un seul abonnement.</p>
+</div>
+<div style="display: flex; gap: 56px; flex-wrap: wrap; font-size: 14px">
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Produit</span><a href="#journal">Journal</a><a href="#backtesting">Backtesting</a><a href="#news">News</a><a href="#coach">Coach IA</a></div>
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Ressources</span><a href="Main.dc.html">Académie</a><a href="Main.dc.html">Blog</a><a href="Main.dc.html">Centre d'aide</a></div>
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Légal</span><a href="Main.dc.html">CGU / CGV</a><a href="Main.dc.html">Confidentialité</a><a href="Main.dc.html">Mentions légales</a></div>
+</div>
+</div>
+<div style="max-width: 1200px; margin: 0 auto; padding: 20px 24px 36px; border-top: 1px solid #1A2130; font-size: 12px; line-height: 1.6; color: #8A95AA">Le trading comporte un risque élevé de perte en capital. [NOM] fournit des outils d'analyse et ne constitue pas un conseil en investissement. © 2026 [NOM]</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":5200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var self = this;
+    this.state = { dim: 'setup', imp: 'all' };
+    this.rootEl = null;
+    this.rootRef = function (el) { self.rootEl = el; };
+  }
+  componentDidMount() {
+    var self = this, root = this.rootEl;
+    try {
+      if (root && root.querySelectorAll && typeof IntersectionObserver !== 'undefined') {
+        this.io = new IntersectionObserver(function (ents) {
+          ents.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); self.io.unobserve(en.target); } });
+        }, { threshold: 0.1 });
+        var els = root.querySelectorAll('.rv');
+        for (var i = 0; i < els.length; i++) this.io.observe(els[i]);
+        root.classList.add('js-rv');
+      }
+    } catch (e) { if (root && root.classList) root.classList.remove('js-rv'); }
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  renderVals() {
+    var self = this, s = this.state;
+    var GAIN = '#3DDC97', LOSS = '#FF7A6B';
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var fR = function (r) { return (r >= 0 ? '+' : '−') + Math.abs(r).toFixed(2).replace('.', ',') + ' R'; };
+
+    var tools = [
+      { href: '#journal', name: 'Journal de trading', sub: 'Statistiques, captures, émotions', soft: 'rgba(110,139,255,.14)', light: '#A9BBFF', icon: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6' },
+      { href: '#backtesting', name: 'Backtesting en replay', sub: 'Rejoue le marché bougie par bougie', soft: 'rgba(245,166,91,.14)', light: '#F5B87A', icon: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z' },
+      { href: '#news', name: 'News et calendrier', sub: 'Économie, géopolitique, résultats', soft: 'rgba(183,148,246,.14)', light: '#CDB5FA', icon: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18' },
+      { href: '#coach', name: 'Coach IA', sub: 'Analyse et bilan chaque semaine', soft: 'rgba(61,220,151,.14)', light: '#7BEBB9', icon: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z' }
+    ];
+
+    var kstats = [
+      { l: 'Win rate', v: '58 %', c: '#EEF1F6' }, { l: 'Profit factor', v: '1,84', c: '#EEF1F6' },
+      { l: 'Espérance', v: '+0,42 R', c: GAIN }, { l: 'Gain moyen', v: '+1,9 R', c: GAIN },
+      { l: 'Drawdown max', v: '−3,1 %', c: '#FF9A8E' }, { l: 'Série gagnante', v: '7', c: '#EEF1F6' },
+      { l: 'Durée moyenne', v: '2 h 14', c: '#EEF1F6' }, { l: 'MAE moyen', v: '−0,38 R', c: '#FF9A8E' }
+    ];
+    var DATA = {
+      setup: { l: 'Setup', rows: [['Cassure', 62, 0.58], ['Retest', 57, 0.41], ['Tendance', 54, 0.35], ['Gap résultats', 48, 0.08], ['Range', 41, -0.12]], ins: 'tes cassures rapportent 5 fois plus que tes trades en range. Tu pourrais arrêter le range.' },
+      session: { l: 'Session', rows: [['Londres', 64, 0.61], ['New York', 55, 0.32], ['Asie', 39, -0.21]], ins: 'la session asiatique te coûte de l’argent alors que Londres est ta meilleure fenêtre.' },
+      jour: { l: 'Jour', rows: [['Mercredi', 61, 0.52], ['Mardi', 59, 0.44], ['Jeudi', 57, 0.39], ['Vendredi', 49, 0.06], ['Lundi', 41, -0.18]], ins: 'le lundi est ton seul jour perdant. Réduis ta taille ce jour-là.' },
+      emo: { l: 'Émotion', rows: [['Calme', 63, 0.62], ['Confiant', 58, 0.45], ['Stressé', 42, -0.15], ['Impatient', 34, -0.41], ['FOMO', 31, -0.58]], ins: 'en FOMO, ton espérance devient fortement négative. C’est ton plus gros levier de progression.' }
+    };
+    var dims = ['setup', 'session', 'jour', 'emo'].map(function (k) {
+      var on = s.dim === k;
+      return { l: DATA[k].l, pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.setState({ dim: k }); } };
+    });
+    var rows = DATA[s.dim].rows.map(function (r) {
+      return { l: r[0], w: r[1], wr: r[1] + ' %', e: fR(r[2]), ec: r[2] >= 0 ? GAIN : LOSS, bc: r[2] >= 0 ? '#6E8BFF' : 'rgba(255,122,107,.75)' };
+    });
+
+    var jfeat = [
+      { t: 'Import automatique', d: 'MetaTrader 4 et 5, cTrader, TradingView ou fichier CSV. Tes trades arrivent sans saisie.', i: 'M12 16V4M6 10l6-6 6 6M4 20h16' },
+      { t: 'Plus de 30 statistiques', d: 'Win rate, profit factor, R-multiple, MAE / MFE, drawdown, séries, durée moyenne…', i: 'M4 20V10M10 20V4M16 20v-7M22 20H2' },
+      { t: 'Captures de setup', d: 'Ajoute ton screenshot et annote l’entrée, le stop et l’objectif.', i: 'M3 4h18v16H3zM9 10a2 2 0 1 0 0-.01M21 16l-5-5-9 9' },
+      { t: 'Émotions et discipline', d: 'Note ton état avant et pendant chaque trade, et si tu as respecté ton plan.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01' },
+      { t: 'Stratégies et playbook', d: 'Décris tes setups et compare leurs résultats entre eux.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 7a5 5 0 1 0 0 10a5 5 0 1 0 0-10M12 11.5v1' },
+      { t: 'Calendrier de performance', d: 'Visualise tes gains et pertes jour par jour, mois par mois.', i: 'M3 5h18v16H3zM3 10h18M8 3v4M16 3v4' }
+    ];
+
+    var cl = [100.2, 100.6, 100.1, 100.9, 101.4, 101.0, 101.7, 102.3, 101.9, 101.2, 100.6, 100.9, 100.2, 99.6, 99.9, 99.3, 98.8, 99.2, 98.6, 98.9, 99.5, 99.2, 99.9, 100.6, 100.3, 101.1, 101.8, 101.4, 102.2, 102.9, 102.5, 103.3, 103.9, 103.5, 104.2, 104.8];
+    var mt = 105.6, mb = 97.6, prev = 99.9;
+    var Y = function (v) { return 6 + (mt - v) / (mt - mb) * 86; };
+    var candles = cl.map(function (c, i) {
+      var w = i % 3 === 0 ? 0.5 : 0.3, o = prev;
+      var h = Math.max(o, c) + w, l = Math.min(o, c) - w;
+      prev = c;
+      return { l: (i * 2.6 + 3).toFixed(2), wt: Y(h).toFixed(2), wh: (Y(l) - Y(h)).toFixed(2), bt: Y(Math.max(o, c)).toFixed(2), bh: Math.max(0.8, Math.abs(Y(o) - Y(c))).toFixed(2), col: c >= o ? GAIN : LOSS, d: (i * 0.1).toFixed(2) + 's' };
+    });
+    var mz = { l: (19 * 2.6 + 3).toFixed(2), w: (11 * 2.6 + 1.7).toFixed(2), tpT: Y(103.2).toFixed(2), tpH: (Y(98.9) - Y(103.2)).toFixed(2), enT: Y(98.9).toFixed(2), slH: (Y(96.75 + 0.1) - Y(98.9)).toFixed(2), slB: Y(96.85).toFixed(2) };
+    mz.slH = (Y(97.75) - Y(98.9)).toFixed(2);
+    mz.slB = Y(97.75).toFixed(2);
+
+    var bfeat = [
+      { t: 'Bougie par bougie', d: 'Avance pas à pas ou en lecture continue.', i: 'M5 4l11 8-11 8zM17 4h3v16h-3z' },
+      { t: 'Vitesse x1 à x4', d: 'Accélère sur les phases calmes.', i: 'M13 5l7 7-7 7M4 5l7 7-7 7' },
+      { t: 'Multi-unités de temps', d: 'De M1 à D1, comme sur ta plateforme.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 7v5l3 2' },
+      { t: 'Outils de dessin', d: 'Tendances, niveaux, rectangles, Fibonacci.', i: 'M4 20L20 4M3 19h2v2H3zM19 3h2v2h-2z' },
+      { t: 'Ordres complets', d: 'Stop, objectif, taille de position, ratio.', i: 'M4 6h16M4 12h10M4 18h6' },
+      { t: 'Sessions sauvegardées', d: 'Reprends exactement là où tu t’es arrêté.', i: 'M5 3h11l3 3v15H5zM8 3v6h8V3M8 21v-7h8v7' },
+      { t: 'Résultats au journal', d: 'Chaque trade de test rejoint tes statistiques.', i: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6' },
+      { t: 'Réel vs backtest', d: 'Vérifie que tu appliques bien ta stratégie.', i: 'M4 20V10M10 20V4M16 20v-7M22 20H2' }
+    ];
+    var markets = [
+      { n: 'Forex', c: '#6E8BFF', e: 'Paires majeures et mineures : EUR/USD, GBP/USD, USD/JPY, AUD/USD…' },
+      { n: 'Actions et indices', c: '#3DDC97', e: 'CAC 40, DAX, S&P 500, Nasdaq 100 et les grandes actions.' },
+      { n: 'Crypto', c: '#B794F6', e: 'Bitcoin, Ethereum, Solana et les principales cryptos.' },
+      { n: 'Matières premières', c: '#F5C26B', e: 'Or, argent, pétrole WTI et Brent, gaz naturel.' }
+    ];
+
+    var EV = [
+      ['08:45', 'EUR', 'Production industrielle (France)', 1, '0,8 %', '0,3 %', '0,5 %', 1],
+      ['10:00', 'EUR', 'Ventes au détail zone euro', 2, '−0,1 %', '0,2 %', '0,4 %', 1],
+      ['11:00', 'EUR', 'Prévisions économiques UE', 2, '—', '—', '—', 0],
+      ['14:30', 'USD', 'NFP — Emplois non agricoles', 3, '142 k', '180 k', '—', 0],
+      ['14:30', 'USD', 'Taux de chômage', 3, '4,2 %', '4,2 %', '—', 0],
+      ['16:00', 'USD', 'Confiance des consommateurs (Michigan)', 2, '68,9', '69,5', '—', 0],
+      ['22:05', 'USD', 'Résultats d’un géant des semi-conducteurs', 3, '—', '1,25 $', '—', 0]
+    ];
+    var imps = [['all', 'Tous'], ['3', 'Fort'], ['2', 'Moyen et +']].map(function (f) {
+      var on = s.imp === f[0];
+      return { l: f[1], pressed: on ? 'true' : 'false', bg: on ? 'rgba(183,148,246,.14)' : 'transparent', bd: on ? '#B794F6' : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2', pick: function () { self.setState({ imp: f[0] }); } };
+    });
+    var cal = EV.filter(function (e) { return s.imp === 'all' || (s.imp === '3' ? e[3] === 3 : e[3] >= 2); }).map(function (e) {
+      var c = e[3] === 3 ? '#FF9A8E' : e[3] === 2 ? '#F5B87A' : '#8A95AA';
+      return { h: e[0], cur: e[1], ev: e[2], p: e[4], f: e[5], a: e[6], ac: e[7] ? GAIN : '#8A95AA', c1: c, c2: e[3] >= 2 ? c : '#2A3346', c3: e[3] === 3 ? c : '#2A3346', aria: e[3] === 3 ? 'Impact fort' : e[3] === 2 ? 'Impact moyen' : 'Impact faible' };
+    });
+    var nfeat = [
+      { t: 'Résumés IA en français', d: 'Chaque annonce et chaque actu expliquée en 3 lignes : ce qui se passe et ce que ça peut changer.', i: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z' },
+      { t: 'Alertes personnalisées', d: 'Une notification avant chaque annonce qui touche tes actifs ou tes positions ouvertes.', i: 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0' },
+      { t: 'Résultats d’entreprises', d: 'Dates, prévisions et chiffres publiés pour les actions que tu suis.', i: 'M4 20V10M10 20V4M16 20v-7M22 20H2' },
+      { t: 'News sur tes graphiques', d: 'Les annonces apparaissent dans ton journal et dans le replay, pour comprendre tes résultats.', i: 'M3 17l5-6 4 4 8-9M3 21h18' }
+    ];
+    var cfeat = [
+      { t: 'Détection des biais', d: 'FOMO, revenge trading, surtrading : il les repère dans tes données.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 8v5M12 16h.01' },
+      { t: 'Bilan chaque semaine', d: 'Ce qui a marché, ce qui coince, et un objectif concret.', i: 'M3 5h18v16H3zM3 10h18M8 3v4M16 3v4' },
+      { t: 'Questions libres', d: '« Pourquoi je perds le lundi ? » Il répond à partir de tes vrais trades.', i: 'M4 5h16v11H8l-4 4z' },
+      { t: 'Rappels de discipline', d: 'Il te prévient quand tu dépasses tes propres règles.', i: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z' }
+    ];
+    var extras = [
+      { t: 'Plusieurs comptes', d: 'Compte réel, compte démo, plusieurs brokers : tout au même endroit.', i: 'M3 7h18v13H3zM8 7V4h8v3', soon: false },
+      { t: 'Suivi des prop firms', d: 'Règles du challenge, drawdown max et objectif suivis en direct.', i: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7zM9 12l2 2 4-4', soon: true },
+      { t: 'Export PDF et CSV', d: 'Tes rapports et ton historique, prêts à partager ou archiver.', i: 'M12 4v12M6 10l6 6 6-6M4 20h16', soon: false },
+      { t: 'Données protégées', d: 'Connexions chiffrées et données qui restent les tiennes.', i: 'M6 10V7a6 6 0 0 1 12 0v3M5 10h14v11H5z', soon: false },
+      { t: 'Support en français', d: 'Une vraie personne pour répondre à tes questions.', i: 'M4 5h16v11H8l-4 4z', soon: false },
+      { t: 'Nouveautés régulières', d: 'Le produit évolue avec les retours des membres.', i: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', soon: false }
+    ];
+
+    return {
+      rootRef: this.rootRef, accent: accent, rootClass: anim ? '' : 'noanim',
+      tools: tools, kstats: kstats, dims: dims, rows: rows, insight: DATA[s.dim].ins,
+      jfeat: jfeat, candles: candles, mz: mz, bfeat: bfeat, markets: markets,
+      imps: imps, cal: cal, nfeat: nfeat, cfeat: cfeat, extras: extras
+    };
+  }
+}
+</script>
+</body>
+</html>

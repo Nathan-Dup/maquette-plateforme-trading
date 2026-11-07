@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Inscription et connexion</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#C9D3E6;text-decoration:none}a:hover{color:#FFFFFF}
+button,input{font-family:inherit}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+.h.num,.h .num{font-family:Inter,system-ui,sans-serif !important;letter-spacing:-0.02em}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{animation:fu .7s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}
+@keyframes draw{from{stroke-dashoffset:1400}to{stroke-dashoffset:0}}
+.draw{stroke-dasharray:1400;animation:draw 2.4s cubic-bezier(.4,0,.2,1) .4s both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.area{animation:fadein 1s ease 1.8s both}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fl{animation:fl 6s ease-in-out infinite}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(61,220,151,.55)}100%{box-shadow:0 0 0 9px rgba(61,220,151,0)}}
+.pu{animation:pu 1.8s ease-out infinite}
+.inp{transition:border-color .2s,box-shadow .2s,background .2s}
+.inp:focus{outline:none;border-color:#6E8BFF !important;box-shadow:0 0 0 4px rgba(110,139,255,.18);background:#0F1420 !important}
+.inp::placeholder{color:#6F7A90}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28 !important;border-color:#36415B !important}
+.tab{transition:background .25s,color .25s}
+.seg{transition:background .3s}
+.dots{background-image:radial-gradient(rgba(148,160,180,.12) 1px,transparent 1px);background-size:26px 26px}
+.noanim *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; min-height: 100vh">
+
+<main style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; padding: 28px 40px; box-sizing: border-box">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: #EEF1F6">
+<span style="width: 32px; height: 32px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 19px; font-weight: 700">[NOM]</span>
+</a>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: #A3AEC2; padding: 8px 4px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>Retour au site</a>
+</div>
+
+<div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 0">
+<div style="width: 100%; max-width: 420px">
+
+<sc-if value="{{showForm}}" hint-placeholder-val="{{true}}">
+<div role="group" aria-label="Choisir" class="fu" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 12px; background: #0E131D; border: 1px solid #1D2433">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="2">
+<button class="tab" type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="border: 0; cursor: pointer; font-size: 14px; font-weight: 600; padding: 10px; border-radius: 9px; min-height: 42px; background: {{t.bg}}; color: {{t.fg}}">{{t.label}}</button>
+</sc-for>
+</div>
+
+<h1 class="h fu d1" style="font-size: 30px; line-height: 1.15; margin: 26px 0 0; font-weight: 700">{{title}}</h1>
+<p class="fu d1" style="font-size: 15px; line-height: 1.6; color: #A3AEC2; margin: 10px 0 0">{{sub}}</p>
+
+<div class="fu d2" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 22px">
+<button class="ghost" type="button" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 46px; border-radius: 11px; border: 1px solid #2A3346; background: #0E131D; color: #EEF1F6; cursor: pointer; font-size: 14px; font-weight: 600"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 5v4h-4M12 12h8"></path></svg>Google</button>
+<button class="ghost" type="button" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 46px; border-radius: 11px; border: 1px solid #2A3346; background: #0E131D; color: #EEF1F6; cursor: pointer; font-size: 14px; font-weight: 600"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3c0 2-1.5 3.5-3.5 3.5C12.5 4.5 14 3 16 3zM18 17c-1 2-2 4-3.5 4-1.2 0-1.6-.8-3-.8s-1.9.8-3 .8C6.5 21 4 16.5 4 13c0-3 2-5 4.2-5 1.3 0 2.2.8 3.3.8 1 0 2-.8 3.5-.8 1.2 0 2.6.6 3.5 2-3 1.7-2.5 6 0 7z"></path></svg>Apple</button>
+</div>
+<div class="fu d2" style="display: flex; align-items: center; gap: 14px; margin: 18px 0; font-size: 12px; color: #6F7A90"><span style="flex: 1; height: 1px; background: #1D2433"></span>ou avec ton e-mail<span style="flex: 1; height: 1px; background: #1D2433"></span></div>
+
+<div class="fu d3" style="display: flex; flex-direction: column; gap: 14px">
+<sc-if value="{{signup}}" hint-placeholder-val="{{true}}">
+<div>
+<label for="prenom" style="display: block; font-size: 13px; font-weight: 600; color: #C9D3E6; margin-bottom: 7px">Prénom</label>
+<input class="inp" id="prenom" type="text" autocomplete="given-name" placeholder="Alex" style="width: 100%; box-sizing: border-box; height: 48px; padding: 0 14px; border-radius: 11px; border: 1px solid #222A3A; background: #0E131D; color: #EEF1F6; font-size: 15px">
+</div>
+</sc-if>
+<div>
+<label for="email" style="display: block; font-size: 13px; font-weight: 600; color: #C9D3E6; margin-bottom: 7px">Adresse e-mail</label>
+<input class="inp" id="email" type="email" autocomplete="email" placeholder="toi@exemple.fr" style="width: 100%; box-sizing: border-box; height: 48px; padding: 0 14px; border-radius: 11px; border: 1px solid #222A3A; background: #0E131D; color: #EEF1F6; font-size: 15px">
+</div>
+<div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px">
+<label for="pw" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Mot de passe</label>
+<sc-if value="{{login}}" hint-placeholder-val="{{false}}"><a href="#top" onClick="{{goReset}}" style="font-size: 13px; color: {{accent}}; font-weight: 600">Mot de passe oublié ?</a></sc-if>
+</div>
+<div style="position: relative">
+<input class="inp" id="pw" type="{{pwType}}" autocomplete="{{pwAuto}}" value="{{pw}}" onChange="{{onPw}}" placeholder="{{pwPh}}" style="width: 100%; box-sizing: border-box; height: 48px; padding: 0 48px 0 14px; border-radius: 11px; border: 1px solid #222A3A; background: #0E131D; color: #EEF1F6; font-size: 15px">
+<button type="button" onClick="{{togglePw}}" aria-label="{{eyeLabel}}" style="position: absolute; right: 4px; top: 4px; width: 40px; height: 40px; border: 0; border-radius: 9px; background: transparent; color: #8A95AA; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+</div>
+<sc-if value="{{signup}}" hint-placeholder-val="{{true}}">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; margin-top: 10px">
+<sc-for list="{{strength}}" as="sg" hint-placeholder-count="4"><span class="seg" style="height: 4px; border-radius: 2px; background: {{sg}}"></span></sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 7px"><span style="color: #8A95AA">8 caractères min., avec un chiffre</span><span style="font-weight: 600; color: {{strColor}}">{{strLabel}}</span></div>
+</sc-if>
+</div>
+
+<sc-if value="{{login}}" hint-placeholder-val="{{false}}">
+<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #C9D3E6; cursor: pointer"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #6E8BFF">Rester connecté</label>
+</sc-if>
+<sc-if value="{{signup}}" hint-placeholder-val="{{true}}">
+<label style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; color: #A3AEC2; cursor: pointer"><input type="checkbox" style="flex: none; width: 18px; height: 18px; margin-top: 1px; accent-color: #6E8BFF"><span>J'accepte les <a href="Main.dc.html" style="color: #EEF1F6; text-decoration: underline">conditions d'utilisation</a> et la <a href="Main.dc.html" style="color: #EEF1F6; text-decoration: underline">politique de confidentialité</a>.</span></label>
+</sc-if>
+
+<sc-if value="{{signup}}" hint-placeholder-val="{{true}}">
+<button class="btn" type="button" onClick="{{create}}" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 50px; border: 0; border-radius: 12px; background: {{accent}}; color: #0A0D14; cursor: pointer; font-size: 16px; font-weight: 700; margin-top: 4px">Créer mon compte gratuit<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</sc-if>
+<sc-if value="{{login}}" hint-placeholder-val="{{false}}">
+<a class="btn" href="Dashboard.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 50px; border-radius: 12px; background: {{accent}}; color: #0A0D14; font-size: 16px; font-weight: 700; margin-top: 4px">Se connecter<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</sc-if>
+</div>
+
+<p style="text-align: center; font-size: 14px; color: #8A95AA; margin: 26px 0 0">{{switchTxt}} <button type="button" onClick="{{switchMode}}" style="border: 0; background: transparent; padding: 4px; color: {{accent}}; font-weight: 600; font-size: 14px; cursor: pointer">{{switchCta}}</button></p>
+</sc-if>
+
+<sc-if value="{{reset}}" hint-placeholder-val="{{false}}">
+<div class="fu">
+<button type="button" onClick="{{backLogin}}" style="display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; padding: 6px 0; color: #A3AEC2; cursor: pointer; font-size: 14px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>Retour à la connexion</button>
+<h1 class="h" style="font-size: 32px; line-height: 1.15; margin: 20px 0 0; font-weight: 700">Mot de passe oublié</h1>
+<p style="font-size: 15px; line-height: 1.6; color: #A3AEC2; margin: 10px 0 0">Indique ton e-mail : on t'envoie un lien pour choisir un nouveau mot de passe.</p>
+<sc-if value="{{resetForm}}" hint-placeholder-val="{{true}}">
+<label for="email2" style="display: block; font-size: 13px; font-weight: 600; color: #C9D3E6; margin: 28px 0 7px">Adresse e-mail</label>
+<input class="inp" id="email2" type="email" autocomplete="email" placeholder="toi@exemple.fr" style="width: 100%; box-sizing: border-box; height: 48px; padding: 0 14px; border-radius: 11px; border: 1px solid #222A3A; background: #0E131D; color: #EEF1F6; font-size: 15px">
+<button class="btn" type="button" onClick="{{sendReset}}" style="width: 100%; height: 50px; margin-top: 18px; border: 0; border-radius: 12px; background: {{accent}}; color: #0A0D14; cursor: pointer; font-size: 16px; font-weight: 700">Envoyer le lien</button>
+</sc-if>
+<sc-if value="{{resetSent}}" hint-placeholder-val="{{false}}">
+<div class="fu" style="margin-top: 28px; padding: 18px; border-radius: 14px; background: rgba(61,220,151,.08); border: 1px solid rgba(61,220,151,.3); display: flex; gap: 14px">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: rgba(61,220,151,.16); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7BEBB9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6"></path></svg></span>
+<div><div style="font-size: 15px; font-weight: 600">E-mail envoyé</div><div style="font-size: 14px; line-height: 1.5; color: #A3AEC2; margin-top: 4px">Vérifie ta boîte de réception (et tes spams). Le lien est valable 30 minutes.</div></div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{done}}" hint-placeholder-val="{{false}}">
+<div class="fu" style="text-align: center">
+<span style="display: inline-flex; width: 64px; height: 64px; border-radius: 20px; background: rgba(61,220,151,.14); align-items: center; justify-content: center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7BEBB9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>
+<h1 class="h" style="font-size: 32px; line-height: 1.15; margin: 22px 0 0; font-weight: 700">Bienvenue à bord !</h1>
+<p style="font-size: 15px; line-height: 1.6; color: #A3AEC2; margin: 10px 0 0">Ton compte est créé. On va configurer ton espace en 3 petites étapes : tes marchés, ton import de trades, et c'est parti.</p>
+<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 26px; text-align: left">
+<sc-for list="{{steps}}" as="st" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: #0E131D; border: 1px solid #1D2433"><span class="num" style="flex: none; width: 26px; height: 26px; border-radius: 8px; background: {{accentSoft}}; color: {{accent}}; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{st.n}}</span><span style="font-size: 14px; color: #DCE2EC">{{st.t}}</span></div>
+</sc-for>
+</div>
+<a class="btn" href="Dashboard.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 50px; margin-top: 22px; border-radius: 12px; background: {{accent}}; color: #0A0D14; font-size: 16px; font-weight: 700">Configurer mon espace<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+<div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #6F7A90">
+<span>© 2026 [NOM]</span>
+<span style="display: flex; gap: 18px"><a href="Main.dc.html" style="color: #8A95AA">Confidentialité</a><a href="Main.dc.html" style="color: #8A95AA">CGU</a><a href="Main.dc.html" style="color: #8A95AA">Aide</a></span>
+</div>
+</main>
+
+<aside class="dots" style="flex: 1 1 520px; min-width: 0; position: relative; overflow: hidden; background-color: #0D1119; border-left: 1px solid #171D2A; display: flex; align-items: center; justify-content: center; padding: 56px 48px; box-sizing: border-box">
+<div aria-hidden="true" style="position: absolute; left: 50%; top: 50%; width: 640px; height: 520px; margin: -260px 0 0 -320px; background: {{accent}}; opacity: .14; filter: blur(110px); border-radius: 50%"></div>
+<div style="position: relative; width: 100%; max-width: 500px">
+<div class="fu" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; border: 1px solid #232B3C; background: rgba(14,19,29,.7); font-size: 12px; color: #C9D3E6"><span class="pu" style="width: 7px; height: 7px; border-radius: 4px; background: #3DDC97"></span>Forex · Actions · Crypto · Matières premières</div>
+<h2 class="h fu d1" style="font-size: 38px; line-height: 1.1; margin: 20px 0 0; font-weight: 700">Ton trading,<br><span style="color: {{accent}}">enfin mesuré.</span></h2>
+
+<div class="fu d2" style="position: relative; margin-top: 34px">
+<div style="background: #0E131D; border: 1px solid #232B3C; border-radius: 18px; padding: 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 30px 80px rgba(0,0,0,.45)">
+<div style="display: flex; justify-content: space-between; align-items: flex-start">
+<div><div style="font-size: 12px; color: #8A95AA">Courbe de capital · 30 jours</div><div class="h num" style="font-size: 28px; font-weight: 600; margin-top: 4px; color: #3DDC97">+4 820 €</div></div>
+<span class="num" style="font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: rgba(61,220,151,.14); color: #7BEBB9">+8 % vs mois préc.</span>
+</div>
+<svg viewBox="0 0 600 180" style="width: 100%; height: auto; display: block; margin-top: 14px" aria-hidden="true">
+<path class="area" d="M0,160 L40,152 L80,156 L120,134 L160,140 L200,118 L240,124 L280,100 L320,108 L360,82 L400,90 L440,64 L480,72 L520,44 L560,50 L600,24 L600,180 L0,180 Z" fill="{{accentSoft}}"></path>
+<path class="draw" d="M0,160 L40,152 L80,156 L120,134 L160,140 L200,118 L240,124 L280,100 L320,108 L360,82 L400,90 L440,64 L480,72 L520,44 L560,50 L600,24" fill="none" stroke="{{accent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<div class="num" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px">
+<div style="padding: 10px 12px; border-radius: 10px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Win rate</div><div class="h num" style="font-size: 17px; font-weight: 600; margin-top: 2px">58 %</div></div>
+<div style="padding: 10px 12px; border-radius: 10px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Profit factor</div><div class="h num" style="font-size: 17px; font-weight: 600; margin-top: 2px">1,84</div></div>
+<div style="padding: 10px 12px; border-radius: 10px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Espérance</div><div class="h num" style="font-size: 17px; font-weight: 600; margin-top: 2px; color: #3DDC97">+0,42 R</div></div>
+</div>
+</div>
+<div class="fl" style="position: relative; margin: 14px 0 0 auto; width: fit-content; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #151B28; border: 1px solid #2A3346; box-shadow: 0 16px 40px rgba(0,0,0,.45); max-width: 260px">
+<span style="flex: none; width: 32px; height: 32px; border-radius: 9px; background: rgba(61,220,151,.14); display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7BEBB9" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span>
+<div><div style="font-size: 11px; color: #7BEBB9; font-weight: 700">COACH IA</div><div style="font-size: 12px; line-height: 1.4; color: #DCE2EC; margin-top: 2px">Ta meilleure session cette semaine : Londres.</div></div>
+</div>
+</div>
+
+<ul class="fu d3" style="list-style: none; padding: 0; margin: 30px 0 0; display: flex; flex-direction: column; gap: 14px">
+<sc-for list="{{perks}}" as="p" hint-placeholder-count="3">
+<li style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: #DCE2EC"><span style="flex: none; width: 24px; height: 24px; border-radius: 7px; background: {{p.soft}}; display: flex; align-items: center; justify-content: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="{{p.c}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>{{p.t}}</li>
+</sc-for>
+</ul>
+</div>
+</aside>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"startMode":{"editor":"enum","options":["signup","login"],"default":"signup"},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { mode: null, pw: '', showPw: false, sent: false };
+  }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  renderVals() {
+    var self = this, s = this.state;
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var mode = s.mode || (this.props.startMode ?? 'signup');
+    var signup = mode === 'signup', login = mode === 'login';
+    var tabs = [['signup', 'Inscription'], ['login', 'Connexion']].map(function (t) {
+      var on = mode === t[0];
+      return { label: t[1], pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.setState({ mode: t[0] }); } };
+    });
+    var pw = s.pw, score = 0;
+    if (pw.length >= 8) score++;
+    if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score++;
+    if (/\d/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    if (pw.length > 0 && score === 0) score = 1;
+    var COL = ['#2A3346', '#FF7A6B', '#F5A65B', '#F5C26B', '#3DDC97'];
+    var LAB = ['', 'Faible', 'Moyen', 'Bon', 'Excellent'];
+    var strength = [0, 1, 2, 3].map(function (i) { return i < score ? COL[score] : '#1D2433'; });
+    return {
+      accent: accent, accentSoft: this.soft(accent, 0.14), rootClass: anim ? '' : 'noanim',
+      tabs: tabs, signup: signup, login: login,
+      showForm: signup || login, reset: mode === 'reset', done: mode === 'done',
+      resetForm: !s.sent, resetSent: s.sent,
+      title: signup ? 'Crée ton compte gratuit' : 'Content de te revoir',
+      sub: signup ? 'Ton journal est prêt en 2 minutes. Sans carte bancaire, Premium quand tu veux.' : 'Connecte-toi pour retrouver ton journal, tes backtests et ton coach.',
+      pw: pw, pwType: s.showPw ? 'text' : 'password', pwAuto: signup ? 'new-password' : 'current-password',
+      pwPh: signup ? 'Choisis un mot de passe' : 'Ton mot de passe', eyeLabel: s.showPw ? 'Masquer le mot de passe' : 'Afficher le mot de passe',
+      onPw: function (e) { self.setState({ pw: e.target.value }); },
+      togglePw: function () { self.setState({ showPw: !self.state.showPw }); },
+      strength: strength, strLabel: pw ? LAB[score] : '', strColor: COL[score],
+      switchTxt: signup ? 'Déjà un compte ?' : 'Pas encore de compte ?',
+      switchCta: signup ? 'Se connecter' : 'Créer un compte gratuit',
+      switchMode: function () { self.setState({ mode: signup ? 'login' : 'signup' }); },
+      goReset: function (e) { if (e && e.preventDefault) e.preventDefault(); self.setState({ mode: 'reset', sent: false }); },
+      backLogin: function () { self.setState({ mode: 'login' }); },
+      sendReset: function () { self.setState({ sent: true }); },
+      create: function () { self.setState({ mode: 'done' }); },
+      steps: [{ n: '1', t: 'Choisis tes marchés' }, { n: '2', t: 'Importe tes trades ou ajoute ton premier trade' }, { n: '3', t: 'Découvre tes premières statistiques' }],
+      perks: [
+        { t: 'Journal, backtesting, news et coach IA', c: '#A9BBFF', soft: 'rgba(110,139,255,.16)' },
+        { t: 'Import depuis MT4, MT5, cTrader ou CSV', c: '#F5B87A', soft: 'rgba(245,166,91,.16)' },
+        { t: 'Gratuit pour commencer, sans carte bancaire', c: '#7BEBB9', soft: 'rgba(61,220,151,.16)' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

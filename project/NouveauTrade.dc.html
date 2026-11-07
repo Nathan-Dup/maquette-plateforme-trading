@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Nouveau trade</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#A3AEC2;text-decoration:none}a:hover{color:#FFFFFF}
+button,input,select,textarea{font-family:inherit}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{animation:fu .7s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}.d4{animation-delay:.28s}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes sl{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.toast{animation:sl .3s ease both}
+.nav{transition:background .2s,color .2s}.nav:hover{background:#131927;color:#EEF1F6}
+.chip{transition:background .2s,color .2s,border-color .2s}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28;border-color:#36415B}
+.inp{transition:border-color .2s,box-shadow .2s}.inp:focus{outline:none;border-color:#6E8BFF !important;box-shadow:0 0 0 3px rgba(110,139,255,.2)}
+.inp::placeholder{color:#6F7A90}
+.drop{transition:border-color .2s,background .2s}.drop:hover{border-color:#4A5878 !important;background:#0E131D !important}
+.noanim *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; min-height: 100vh">
+
+<aside style="flex: 1 1 248px; background: #0B0F17; border-right: 1px solid #171D2A; padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px">
+<span style="width: 32px; height: 32px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 19px; font-weight: 700">[NOM]</span>
+</div>
+<nav aria-label="Menu de l'application" style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
+<div>
+<div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="3">
+<a class="nav" href="{{n.href}}" aria-current="{{n.current}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; background: {{n.bg}}; color: {{n.fg}}; font-weight: {{n.fw}}">
+<span style="position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: {{n.bar}}"></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+<span style="flex: 1">{{n.label}}</span>
+<sc-if value="{{n.badge}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 999px; background: {{n.bBg}}; color: {{n.bFg}}">{{n.badge}}</span></sc-if>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid #1A2130">
+<span style="width: 34px; height: 34px; border-radius: 17px; background: #1D2433; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #DCE2EC">AM</span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 600">Alex Martin</div><div style="font-size: 11px; color: #8A95AA">Premium · renouvellement le 6 déc.</div></div>
+</div>
+</aside>
+
+<main id="top" style="flex: 999 1 560px; min-width: 0; padding: 22px 36px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+
+<nav aria-label="Fil d'Ariane" class="fu" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #8A95AA">
+<a href="Journal.dc.html" style="display: inline-flex; align-items: center; gap: 6px; color: #A3AEC2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>Journal</a>
+<span aria-hidden="true">/</span><span style="color: #EEF1F6">Nouveau trade</span>
+</nav>
+
+<div class="fu d1" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div>
+<h1 class="h" style="font-size: 30px; margin: 0; font-weight: 700">Ajouter un trade</h1>
+<p style="font-size: 14px; color: #A3AEC2; margin: 6px 0 0">Les champs marqués <span style="color: #EEF1F6; font-weight: 600">*</span> suffisent. Le reste affine tes statistiques.</p>
+</div>
+<a class="btn ghost" href="Importer.dc.html" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 16px; height: 42px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"></path></svg>Plutôt importer un fichier</a>
+</div>
+
+<sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+<div class="toast" role="status" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 12px; background: rgba(61,220,151,.1); border: 1px solid rgba(61,220,151,.35); font-size: 14px; color: #DCE2EC">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3DDC97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>{{toast}}
+</div>
+</sc-if>
+
+<sc-if value="{{isSaved}}" hint-placeholder-val="{{false}}">
+<section class="fu" style="max-width: 640px; width: 100%; box-sizing: border-box; margin: 20px auto 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 24px; padding: 40px 32px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<span class="pop" style="width: 64px; height: 64px; border-radius: 32px; background: rgba(61,220,151,.14); display: flex; align-items: center; justify-content: center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3DDC97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>
+<h2 class="h" style="font-size: 24px; margin: 4px 0 0; font-weight: 600">Trade enregistré</h2>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center">
+<span style="font-size: 15px; font-weight: 600">{{sv.sym}}</span>
+<span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{sv.dirBg}}; color: {{sv.dirFg}}">{{sv.dir}}</span>
+<span class="h num" style="font-size: 20px; font-weight: 600; color: {{sv.c}}">{{sv.pnl}}</span>
+<span class="num" style="font-size: 13px; color: #A3AEC2">{{sv.r}}</span>
+</div>
+<p style="font-size: 14px; line-height: 1.55; color: #A3AEC2; margin: 0; max-width: 460px">Il apparaît déjà dans ton Journal, tes Statistiques, ton Calendrier et ton Tableau de bord.</p>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 8px">
+<a class="btn" href="Journal.dc.html" onClick="{{goSaved}}" style="display: inline-flex; align-items: center; gap: 8px; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 600; padding: 0 18px; height: 44px; border-radius: 11px">Voir dans le journal</a>
+<button class="btn ghost" type="button" onClick="{{again}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 18px; height: 44px; border-radius: 11px">Ajouter un autre trade</button>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{isForm}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+<form onSubmit="{{onSubmit}}" novalidate="" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 18px; margin: 0">
+
+<section class="fu d2" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Le trade</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 2 1 260px; display: flex; flex-direction: column; gap: 6px">
+<label for="f-sym" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Actif *</label>
+<select id="f-sym" class="inp" value="{{f.sym}}" onChange="{{on.sym}}" style="height: 44px; padding: 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; color-scheme: dark">
+<sc-for list="{{symOpts}}" as="o" hint-placeholder-count="10"><option value="{{o}}">{{o}}</option></sc-for>
+</select>
+<div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center"><span style="font-size: 11px; color: #8A95AA">Récents :</span>
+<sc-for list="{{recent}}" as="rc" hint-placeholder-count="4">
+<button class="chip" type="button" onClick="{{rc.pick}}" aria-pressed="{{rc.pressed}}" style="cursor: pointer; font-size: 12px; font-weight: 600; padding: 0 10px; min-height: 30px; border-radius: 999px; border: 1px solid {{rc.bd}}; background: {{rc.bg}}; color: {{rc.fg}}">{{rc.l}}</button>
+</sc-for>
+</div>
+</div>
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+<span id="l-dir" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Sens *</span>
+<div role="group" aria-labelledby="l-dir" style="display: flex; gap: 4px; background: #0B0F17; border: 1px solid #2A3346; border-radius: 10px; padding: 3px; height: 44px; box-sizing: border-box">
+<sc-for list="{{dirOpts}}" as="o" hint-placeholder-count="2">
+<button class="chip" type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="flex: 1; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 7px; font-size: 14px; font-weight: 600; background: {{o.bg}}; color: {{o.fg}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{o.icon}}"></path></svg>{{o.l}}</button>
+</sc-for>
+</div>
+</div>
+</div>
+</section>
+
+<section class="fu d2" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Entrée et sortie</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<sc-for list="{{fieldsA}}" as="fd" hint-placeholder-count="6">
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+<label for="{{fd.id}}" style="font-size: 13px; font-weight: 600; color: #C9D3E6">{{fd.l}}</label>
+<input id="{{fd.id}}" class="inp num" type="{{fd.type}}" inputmode="{{fd.im}}" value="{{fd.v}}" onChange="{{fd.on}}" placeholder="{{fd.ph}}" aria-invalid="{{fd.inv}}" style="height: 44px; padding: 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{fd.bd}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; width: 100%; color-scheme: dark">
+<sc-if value="{{fd.err}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #FF9A8E">{{fd.err}}</span></sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Taille et risque</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<sc-for list="{{fieldsB}}" as="fd" hint-placeholder-count="3">
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+<label for="{{fd.id}}" style="font-size: 13px; font-weight: 600; color: #C9D3E6">{{fd.l}}</label>
+<div style="position: relative">
+<input id="{{fd.id}}" class="inp num" type="text" inputmode="decimal" value="{{fd.v}}" onChange="{{fd.on}}" placeholder="{{fd.ph}}" aria-invalid="{{fd.inv}}" style="height: 44px; padding: 0 84px 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{fd.bd}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; width: 100%">
+<span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #8A95AA; pointer-events: none">{{fd.unit}}</span>
+</div>
+<span style="font-size: 12px; color: {{fd.hc}}">{{fd.hint}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; align-items: baseline; gap: 10px"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Pour aller plus loin</h2><span style="font-size: 12px; color: #8A95AA">facultatif</span></div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span id="l-emo" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Comment tu te sentais ?</span>
+<div role="group" aria-labelledby="l-emo" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{emoOpts}}" as="o" hint-placeholder-count="5">
+<button class="chip" type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 0 14px; min-height: 38px; border-radius: 999px; border: 1px solid {{o.bd}}; background: {{o.bg}}; color: {{o.fg}}"><span style="width: 8px; height: 8px; border-radius: 4px; background: {{o.c}}"></span>{{o.l}}</button>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 3 1 300px; display: flex; flex-direction: column; gap: 6px">
+<label for="f-note" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Note</label>
+<textarea id="f-note" class="inp" value="{{f.note}}" onChange="{{on.note}}" rows="4" placeholder="Pourquoi tu es entré, ce qui s'est passé, ce que tu retiens…" style="padding: 12px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; line-height: 1.5; resize: vertical; box-sizing: border-box; width: 100%; min-height: 112px"></textarea>
+</div>
+<div style="flex: 2 1 220px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 600; color: #C9D3E6">Capture du graphique</span>
+<label class="drop" for="f-shot" style="flex: 1; min-height: 112px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 12px; border-radius: 10px; border: 1px dashed {{shot.bd}}; background: #0B0F17; cursor: pointer; text-align: center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{shot.ic}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{shot.icon}}"></path></svg>
+<span style="font-size: 13px; font-weight: 600; color: #DCE2EC">{{shot.t}}</span>
+<span style="font-size: 11px; color: #8A95AA">{{shot.s}}</span>
+</label>
+<input id="f-shot" type="file" accept="image/*" onChange="{{on.shot}}" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">
+</div>
+</div>
+</section>
+
+<sc-if value="{{showErrBox}}" hint-placeholder-val="{{false}}">
+<div role="alert" style="padding: 12px 16px; border-radius: 12px; background: rgba(255,122,107,.08); border: 1px solid rgba(255,122,107,.35); font-size: 14px; color: #FFC2BA">Il manque des informations : {{errSummary}}</div>
+</sc-if>
+
+<div class="fu d4" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; align-items: center">
+<a class="btn ghost" href="Journal.dc.html" style="display: inline-flex; align-items: center; border: 1px solid transparent; color: #A3AEC2; font-size: 14px; font-weight: 600; padding: 0 14px; height: 44px; border-radius: 11px">Annuler</a>
+<button class="btn ghost" type="button" onClick="{{saveAnother}}" style="cursor: pointer; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 16px; height: 44px; border-radius: 11px">Enregistrer et en ajouter un autre</button>
+<button class="btn" type="submit" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; padding: 0 20px; height: 44px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>Enregistrer le trade</button>
+</div>
+</form>
+
+<aside class="fu d3" aria-label="Aperçu du trade" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Aperçu en direct</h2>
+<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #8A95AA"><span style="width: 6px; height: 6px; border-radius: 3px; background: {{accent}}"></span>calculé automatiquement</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 11px; background: {{pv.ibg}}; color: {{pv.ifg}}; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800">{{pv.ini}}</span>
+<div><div style="display: flex; align-items: center; gap: 8px"><span style="font-size: 16px; font-weight: 600">{{f.sym}}</span><span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{pv.dirBg}}; color: {{pv.dirFg}}">{{f.dir}}</span></div><div class="num" style="font-size: 12px; color: #8A95AA; margin-top: 3px">{{pv.when}}</div></div>
+</div>
+<div>
+<div style="font-size: 12px; color: #94A0B4">Résultat net</div>
+<div style="display: flex; align-items: baseline; gap: 10px; margin-top: 4px; flex-wrap: wrap">
+<span class="h num" style="font-size: 34px; font-weight: 600; color: {{pv.c}}">{{pv.net}}</span>
+<sc-if value="{{pv.hasR}}" hint-placeholder-val="{{true}}"><span class="num" style="font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 7px; background: {{pv.rBg}}; color: {{pv.c}}">{{pv.r}}</span></sc-if>
+</div>
+</div>
+
+<div style="position: relative; height: 64px; margin: 4px 6px 0">
+<span style="position: absolute; left: 0; right: 0; top: 30px; height: 4px; border-radius: 2px; background: #1A2130"></span>
+<span style="position: absolute; top: 30px; height: 4px; border-radius: 2px; left: {{pv.segL}}%; width: {{pv.segW}}%; background: {{pv.c}}"></span>
+<sc-for list="{{pv.marks}}" as="m" hint-placeholder-count="3">
+<span style="position: absolute; left: {{m.x}}%; top: 0; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px">
+<span style="font-size: 10px; font-weight: 700; color: {{m.c}}; white-space: nowrap">{{m.l}}</span>
+<span style="width: 12px; height: 12px; border-radius: 6px; background: {{m.c}}; box-shadow: 0 0 0 3px #0E131D; margin-top: 4px"></span>
+<span class="num" style="font-size: 10px; color: #8A95AA; white-space: nowrap">{{m.v}}</span>
+</span>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{pv.rows}}" as="r" hint-placeholder-count="7">
+<div style="display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px solid #151B27; font-size: 13px"><span style="color: #A3AEC2">{{r.l}}</span><span class="num" style="font-weight: 600; color: {{r.c}}; text-align: right">{{r.v}}</span></div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: {{accentSoft}}; border: 1px solid {{accentLine}}; font-size: 13px; line-height: 1.5; color: #C9D3E6">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>
+<span>Une fois enregistré, ce trade est pris en compte partout : Journal, Statistiques, Calendrier et Tableau de bord.</span>
+</div>
+</aside>
+</div>
+</sc-if>
+
+<div style="font-size: 11px; color: #6F7A90">Valeurs d'exemple pré-remplies pour la maquette · capital de référence : 20 000 €</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":1320}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var s = this.example();
+    s.toast = ''; s.saved = null; s.tried = false; s.shot = '';
+    this.state = s;
+  }
+  example() {
+    return { sym: 'EUR/USD', dir: 'Long', dIn: '2026-11-06', tIn: '09:42', dOut: '2026-11-06', tOut: '11:15', entry: '1,16240', exit: '1,16710', stop: '1,16010', size: '1', fees: '7', emo: 'Calme', note: '' };
+  }
+  blank() {
+    return { sym: this.state.sym, dir: 'Long', dIn: '2026-11-06', tIn: '', dOut: '2026-11-06', tOut: '', entry: '', exit: '', stop: '', size: this.state.size, fees: '', emo: '', note: '', tried: false, shot: '' };
+  }
+  componentDidMount() { try { window.scrollTo(0, 0); } catch (e) {} }
+  componentWillUnmount() { clearTimeout(this.tt); }
+  sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
+  sset(k, v) { try { if (v === null) window.sessionStorage.removeItem(k); else window.sessionStorage.setItem(k, v); } catch (e) {} }
+  num(v) { var x = String(v == null ? '' : v).replace(/\s/g, '').replace(',', '.'); if (x === '') return null; var n = parseFloat(x); return isNaN(n) ? null : n; }
+  dt(d, t) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''), h = /^(\d{1,2}):(\d{2})/.exec(t || '');
+    if (!m || !h) return null;
+    return Date.UTC(+m[1], +m[2] - 1, +m[3], +h[1], +h[2]);
+  }
+  fEur(v) { return (v >= 0 ? '+' : '−') + Math.abs(Math.round(v)).toLocaleString('fr-FR') + ' €'; }
+  fEurU(v) { return Math.abs(Math.round(v)).toLocaleString('fr-FR') + ' €'; }
+  fPx(v, d) { return v.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  fDur(m) { if (m < 60) return Math.round(m) + ' min'; var h = Math.floor(m / 60), mm = Math.round(m % 60); return h + ' h ' + (mm < 10 ? '0' : '') + mm; }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  spec() {
+    return {
+      'EUR/USD': { mk: 'fx', dec: 5, pv: 100000, unit: 'lots' }, 'GBP/USD': { mk: 'fx', dec: 5, pv: 100000, unit: 'lots' },
+      'USD/JPY': { mk: 'fx', dec: 3, pv: 650, unit: 'lots' }, 'XAU/USD': { mk: 'co', dec: 2, pv: 100, unit: 'lots' },
+      'WTI': { mk: 'co', dec: 2, pv: 1000, unit: 'lots' }, 'BTC/USD': { mk: 'cr', dec: 0, pv: 1, unit: 'BTC' },
+      'ETH/USD': { mk: 'cr', dec: 1, pv: 1, unit: 'ETH' }, 'NAS100': { mk: 'st', dec: 1, pv: 1, unit: 'contrats' },
+      'CAC 40': { mk: 'st', dec: 1, pv: 1, unit: 'contrats' }, 'NVDA': { mk: 'st', dec: 2, pv: 1, unit: 'actions' }
+    };
+  }
+  calc() {
+    var s = this.state, sp = this.spec()[s.sym], sg = s.dir === 'Long' ? 1 : -1;
+    var e = this.num(s.entry), x = this.num(s.exit), sl = this.num(s.stop), sz = this.num(s.size), fe = this.num(s.fees) || 0;
+    var tIn = this.dt(s.dIn, s.tIn), tOut = this.dt(s.dOut, s.tOut);
+    var gross = (e !== null && x !== null && sz) ? sg * (x - e) * sz * sp.pv : null;
+    var net = gross !== null ? gross - Math.abs(fe) : null;
+    var stopOk = (sl === null || e === null) ? true : (sg > 0 ? sl < e : sl > e);
+    var risk = (e !== null && sl !== null && sz && stopOk) ? Math.abs(e - sl) * sz * sp.pv : null;
+    var R = (net !== null && risk) ? net / risk : null;
+    var dur = (tIn !== null && tOut !== null) ? (tOut - tIn) / 60000 : null;
+    var hr = tIn !== null ? new Date(tIn).getUTCHours() : null;
+    var ses = hr === null ? null : (hr >= 1 && hr < 9) ? 'Asie' : (hr >= 9 && hr < 14) ? 'Londres' : (hr >= 14 && hr < 22) ? 'New York' : 'Asie';
+    var err = {};
+    if (e === null) err.entry = 'Indique le prix d’entrée.';
+    if (x === null) err.exit = 'Indique le prix de sortie.';
+    if (!sz || sz <= 0) err.size = 'Indique une taille supérieure à 0.';
+    if (tIn === null) err.tIn = 'Indique la date et l’heure d’entrée.';
+    if (tOut === null) err.tOut = 'Indique la date et l’heure de sortie.';
+    if (dur !== null && dur <= 0) err.tOut = 'La sortie doit être après l’entrée.';
+    if (!stopOk) err.stop = s.dir === 'Long' ? 'Pour un long, le stop doit être sous le prix d’entrée.' : 'Pour un short, le stop doit être au-dessus du prix d’entrée.';
+    return { sp: sp, sg: sg, e: e, x: x, sl: sl, sz: sz, fe: fe, tIn: tIn, tOut: tOut, gross: gross, net: net, risk: risk, R: R, dur: dur, ses: ses, err: err, ok: Object.keys(err).length === 0 };
+  }
+  save(another) {
+    var c = this.calc(), s = this.state, self = this;
+    if (!c.ok) { this.setState({ tried: true }); return; }
+    var list = [];
+    try { list = JSON.parse(this.sget('tj.added') || '[]') || []; } catch (e) { list = []; }
+    var id = 900001 + list.length;
+    var Rv = c.risk ? c.net / c.risk : c.net / 200;
+    var stopV = c.sl !== null && c.risk ? c.sl : c.e - c.sg * Math.abs(c.x - c.e) / Math.max(0.1, Math.abs(Rv));
+    var rp = Math.abs(c.e - stopV);
+    var d = new Date(c.tIn);
+    var obj = {
+      id: id, t: c.tIn, sym: s.sym, mk: c.sp.mk, ses: c.ses, emo: s.emo || '—', R: Math.round(Rv * 100) / 100, pnl: Math.round(c.net),
+      dir: s.dir, dur: Math.max(1, Math.round(c.dur)), entry: c.e, exit: c.x, stop: stopV, target: c.e + c.sg * 2 * rp, dec: c.sp.dec,
+      note: s.note || 'Trade ajouté manuellement.', seed: 5000 + id, hour: d.getUTCHours(), dow: d.getUTCDay(), manual: true
+    };
+    list.push(obj);
+    this.sset('tj.added', JSON.stringify(list));
+    if (another) {
+      var b = this.blank();
+      b.toast = 'Trade enregistré : ' + obj.sym + ' ' + this.fEur(obj.pnl) + '. Tu peux saisir le suivant.';
+      this.setState(b);
+      clearTimeout(this.tt);
+      this.tt = setTimeout(function () { self.setState({ toast: '' }); }, 4000);
+      try { window.scrollTo(0, 0); } catch (e) {}
+    } else {
+      this.setState({ saved: obj, toast: '' });
+      try { window.scrollTo(0, 0); } catch (e) {}
+    }
+  }
+  renderVals() {
+    var self = this, s = this.state;
+    var GAIN = '#3DDC97', LOSS = '#FF7A6B', GAINT = '#7BEBB9', LOSST = '#FF9A8E';
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var soft = this.soft(accent, 0.13), aLine = this.soft(accent, 0.38);
+    var ICO = { fx: ['rgba(110,139,255,.16)', '#A9BBFF'], co: ['rgba(245,194,107,.16)', '#F5C26B'], cr: ['rgba(183,148,246,.16)', '#CDB5FA'], st: ['rgba(61,220,151,.14)', '#7BEBB9'] };
+    var DIRC = { 'Long': ['rgba(110,139,255,.16)', '#A9BBFF'], 'Short': ['rgba(245,166,91,.16)', '#F5B87A'] };
+    var EMOC = { 'Calme': '#5FD3A5', 'Confiant': '#8FA6FF', 'FOMO': '#F5B87A', 'Stressé': '#FF9A8E', 'Impatient': '#D9A3F0' };
+    var JOURS = ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'];
+    var MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    var c = this.calc(), sp = c.sp;
+    var showErr = s.tried;
+    var set = function (k) { return function (e) { var o = {}; o[k] = e.target.value; self.setState(o); }; };
+    var ini = s.sym.replace(/[^A-Z0-9]/g, '').slice(0, 2);
+
+    var symOpts = Object.keys(this.spec());
+    var recent = ['EUR/USD', 'XAU/USD', 'NAS100', 'GBP/USD'].map(function (x) {
+      var on = s.sym === x;
+      return { l: x, pressed: on ? 'true' : 'false', bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2', pick: function () { self.setState({ sym: x }); } };
+    });
+    var dirOpts = [['Long', 'M7 17L17 7M9 7h8v8'], ['Short', 'M7 7l10 10M17 9v8H9']].map(function (d) {
+      var on = s.dir === d[0];
+      return { l: d[0], icon: d[1], pressed: on ? 'true' : 'false', bg: on ? DIRC[d[0]][0] : 'transparent', fg: on ? DIRC[d[0]][1] : '#8A95AA', pick: function () { self.setState({ dir: d[0] }); } };
+    });
+    var fld = function (id, key, l, type, im, ph) {
+      var er = showErr ? (c.err[key] || '') : '';
+      return { id: id, l: l, type: type, im: im, ph: ph, v: s[key], on: set(key), err: er, inv: er ? 'true' : 'false', bd: er ? 'rgba(255,122,107,.7)' : '#2A3346' };
+    };
+    var fieldsA = [
+      fld('f-din', 'dIn', 'Date d’entrée *', 'date', 'none', ''), fld('f-tin', 'tIn', 'Heure d’entrée *', 'time', 'none', ''),
+      fld('f-entry', 'entry', 'Prix d’entrée *', 'text', 'decimal', 'ex. 1,16240'),
+      fld('f-dout', 'dOut', 'Date de sortie *', 'date', 'none', ''), fld('f-tout', 'tOut', 'Heure de sortie *', 'time', 'none', ''),
+      fld('f-exit', 'exit', 'Prix de sortie *', 'text', 'decimal', 'ex. 1,16710')
+    ];
+    var stopErr = showErr || (c.sl !== null && c.e !== null) ? (c.err.stop || '') : '';
+    var fieldsB = [
+      { id: 'f-size', l: 'Taille *', v: s.size, on: set('size'), ph: 'ex. 1', unit: sp.unit, hint: showErr && c.err.size ? c.err.size : 'Quantité en ' + sp.unit, hc: showErr && c.err.size ? LOSST : '#8A95AA', inv: showErr && c.err.size ? 'true' : 'false', bd: showErr && c.err.size ? 'rgba(255,122,107,.7)' : '#2A3346' },
+      { id: 'f-stop', l: 'Stop loss', v: s.stop, on: set('stop'), ph: 'facultatif', unit: 'prix', hint: stopErr || 'Permet de calculer ton résultat en R', hc: stopErr ? LOSST : '#8A95AA', inv: stopErr ? 'true' : 'false', bd: stopErr ? 'rgba(255,122,107,.7)' : '#2A3346' },
+      { id: 'f-fees', l: 'Frais et commissions', v: s.fees, on: set('fees'), ph: 'facultatif', unit: '€', hint: 'Déduits du résultat', hc: '#8A95AA', inv: 'false', bd: '#2A3346' }
+    ];
+    var emoOpts = ['Calme', 'Confiant', 'FOMO', 'Stressé', 'Impatient'].map(function (x) {
+      var on = s.emo === x;
+      return { l: x, c: EMOC[x], pressed: on ? 'true' : 'false', bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2', pick: function () { self.setState({ emo: on ? '' : x }); } };
+    });
+    var shot = s.shot ? { t: s.shot, s: 'Clique pour remplacer', icon: 'M5 12l5 5 9-10', ic: GAIN, bd: 'rgba(61,220,151,.5)' } : { t: 'Ajouter une capture', s: 'PNG ou JPG · glisser-déposer ou cliquer', icon: 'M12 16V4M6 10l6-6 6 6M4 20h16', ic: '#8A95AA', bd: '#2A3346' };
+
+    /* Aperçu */
+    var hasNet = c.net !== null, pos = hasNet && c.net >= 0;
+    var when = '—';
+    if (c.tIn !== null) { var d = new Date(c.tIn); when = JOURS[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MOIS[d.getUTCMonth()] + ' · ' + s.tIn; }
+    var marks = [], segL = 0, segW = 0;
+    if (c.e !== null && c.x !== null) {
+      var pts = [c.e, c.x]; if (c.sl !== null) pts.push(c.sl);
+      var mn = Math.min.apply(null, pts), mx = Math.max.apply(null, pts); if (mx === mn) mx = mn + 1;
+      var X = function (p) { var v = (p - mn) / (mx - mn); return 6 + (s.dir === 'Long' ? v : 1 - v) * 88; };
+      if (c.sl !== null) marks.push({ l: 'Stop', x: X(c.sl).toFixed(1), c: LOSST, v: this.fPx(c.sl, sp.dec) });
+      marks.push({ l: 'Entrée', x: X(c.e).toFixed(1), c: '#EEF1F6', v: this.fPx(c.e, sp.dec) });
+      marks.push({ l: 'Sortie', x: X(c.x).toFixed(1), c: pos ? GAINT : LOSST, v: this.fPx(c.x, sp.dec) });
+      var a = X(c.e), b = X(c.x); segL = Math.min(a, b).toFixed(1); segW = Math.abs(b - a).toFixed(1);
+    }
+    var W = '#EEF1F6';
+    var pv = {
+      ini: ini, ibg: ICO[sp.mk][0], ifg: ICO[sp.mk][1], dirBg: DIRC[s.dir][0], dirFg: DIRC[s.dir][1], when: when,
+      net: hasNet ? this.fEur(c.net) : '—', c: !hasNet ? '#8A95AA' : pos ? GAIN : LOSS,
+      hasR: c.R !== null, r: c.R !== null ? (c.R >= 0 ? '+' : '−') + Math.abs(c.R).toFixed(2).replace('.', ',') + ' R' : '', rBg: pos ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)',
+      marks: marks, segL: segL, segW: segW,
+      rows: [
+        { l: 'Résultat brut', v: c.gross !== null ? this.fEur(c.gross) : '—', c: c.gross === null ? '#8A95AA' : c.gross >= 0 ? GAINT : LOSST },
+        { l: 'Frais', v: c.fe ? '−' + this.fEurU(c.fe) : '0 €', c: W },
+        { l: 'Risque pris', v: c.risk ? this.fEurU(c.risk) + ' · ' + (c.risk / 200).toFixed(1).replace('.', ',') + ' % du capital' : 'ajoute un stop', c: c.risk ? W : '#8A95AA' },
+        { l: 'Rendement', v: hasNet ? (c.net >= 0 ? '+' : '−') + Math.abs(c.net / 200).toFixed(2).replace('.', ',') + ' %' : '—', c: !hasNet ? '#8A95AA' : pos ? GAINT : LOSST },
+        { l: 'Durée', v: c.dur !== null && c.dur > 0 ? this.fDur(c.dur) : '—', c: W },
+        { l: 'Session détectée', v: c.ses || '—', c: W },
+        { l: 'Émotion', v: s.emo || 'non renseignée', c: s.emo ? W : '#8A95AA' }
+      ]
+    };
+
+    var errKeys = Object.keys(c.err);
+    var errNames = { entry: 'prix d’entrée', exit: 'prix de sortie', size: 'taille', tIn: 'entrée (date / heure)', tOut: 'sortie (date / heure)', stop: 'stop loss' };
+    var sv = null;
+    if (s.saved) {
+      var o = s.saved;
+      sv = { sym: o.sym, dir: o.dir, dirBg: DIRC[o.dir][0], dirFg: DIRC[o.dir][1], pnl: this.fEur(o.pnl), c: o.pnl >= 0 ? GAIN : LOSS, r: (o.R >= 0 ? '+' : '−') + Math.abs(o.R).toFixed(1).replace('.', ',') + ' R' };
+    }
+
+    var navDef = [
+      { title: 'PRINCIPAL', items: [
+        ['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', 'Dashboard.dc.html'],
+        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
+        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html']
+      ] },
+      { title: 'OUTILS', items: [
+        ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', '#top'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '#top', '2', 'warn'],
+        ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', '#top', 'NOUVEAU', 'accent']
+      ] },
+      { title: 'COMPTE', items: [
+        ['set', 'Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4', '#top'],
+        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01', '#top']
+      ] }
+    ];
+    var navGroups = navDef.map(function (g) {
+      return { title: g.title, items: g.items.map(function (n) {
+        var on = n[0] === 'journal';
+        return { label: n[1], icon: n[2], href: n[3], badge: n[4] || '', bBg: n[5] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: n[5] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false' };
+      }) };
+    });
+
+    return {
+      accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
+      f: { sym: s.sym, dir: s.dir, note: s.note }, on: { sym: set('sym'), note: set('note'), shot: function (e) { var fl = e.target.files && e.target.files[0]; self.setState({ shot: fl ? fl.name : 'capture.png' }); } },
+      symOpts: symOpts, recent: recent, dirOpts: dirOpts, fieldsA: fieldsA, fieldsB: fieldsB, emoOpts: emoOpts, shot: shot,
+      pv: pv, toast: s.toast,
+      showErrBox: s.tried && errKeys.length > 0, errSummary: errKeys.map(function (k) { return errNames[k]; }).join(', ') + '.',
+      isSaved: !!s.saved, isForm: !s.saved, sv: sv || {},
+      onSubmit: function (e) { if (e && e.preventDefault) e.preventDefault(); self.save(false); },
+      saveAnother: function () { self.save(true); },
+      again: function () { var b = self.blank(); b.saved = null; self.setState(b); },
+      goSaved: function () { if (s.saved) self.sset('tj.go', JSON.stringify({ to: 'journal', tab: 'trades', sel: s.saved.id, t: Date.now() })); }
+    };
+  }
+}
+</script>
+</body>
+</html>

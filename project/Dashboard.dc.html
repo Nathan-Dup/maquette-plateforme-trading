@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tableau de bord</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#A3AEC2;text-decoration:none}a:hover{color:#FFFFFF}
+button{font-family:inherit}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{animation:fu .8s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.26s}.d4{animation-delay:.36s}
+@keyframes draw{from{stroke-dashoffset:2400}to{stroke-dashoffset:0}}
+.draw{stroke-dasharray:2400;animation:draw 2.2s cubic-bezier(.4,0,.2,1) .4s both}
+.sdraw{stroke-dasharray:300;animation:draw 1.6s cubic-bezier(.4,0,.2,1) .6s both}
+.eqline{transition:d .7s cubic-bezier(.4,0,.2,1)}
+.spl{transition:d .8s cubic-bezier(.4,0,.2,1)}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.area{animation:fadein 1s ease 1.6s both}
+@keyframes sl{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.open{animation:sl .3s ease both}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(61,220,151,.55)}100%{box-shadow:0 0 0 9px rgba(61,220,151,0)}}
+.pu{animation:pu 1.8s ease-out infinite}
+@keyframes puo{0%{box-shadow:0 0 0 0 rgba(245,166,91,.6)}100%{box-shadow:0 0 0 9px rgba(245,166,91,0)}}
+.puo{animation:puo 1.8s ease-out infinite}
+.nav{transition:background .2s,color .2s}.nav:hover{background:#131927;color:#EEF1F6}
+.row{transition:background .2s}.row:hover{background:#121826}
+.chip{transition:background .2s,color .2s,border-color .2s}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.search:focus-within{border-color:#3A4763 !important}
+.ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28;border-color:#36415B}
+.nitem{transition:background .2s,border-color .2s}.nitem:hover{background:#121826 !important}
+.pchg{transition:color .4s}
+.noanim *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; min-height: 100vh">
+
+<aside style="flex: 1 1 248px; background: #0B0F17; border-right: 1px solid #171D2A; padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px">
+<span style="width: 32px; height: 32px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 19px; font-weight: 700">[NOM]</span>
+</div>
+<nav aria-label="Menu de l'application" style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
+<div>
+<div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="4">
+<a class="nav" href="{{n.href}}" onClick="{{n.pick}}" aria-current="{{n.current}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; background: {{n.bg}}; color: {{n.fg}}; font-weight: {{n.fw}}">
+<span style="position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: {{n.bar}}"></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+<span style="flex: 1">{{n.label}}</span>
+<sc-if value="{{n.badge}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 999px; background: {{n.bBg}}; color: {{n.bFg}}">{{n.badge}}</span></sc-if>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid #1A2130">
+<span style="width: 34px; height: 34px; border-radius: 17px; background: #1D2433; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #DCE2EC">AM</span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 600">Alex Martin</div><div style="font-size: 11px; color: #8A95AA">Premium · renouvellement le 6 déc.</div></div>
+</div>
+</aside>
+
+<main id="top" style="flex: 999 1 560px; min-width: 0; padding: 18px 36px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 26px">
+
+<div class="fu" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 16px; border-bottom: 1px solid #151B27">
+<div class="search" style="flex: 1 1 280px; max-width: 440px; display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 12px; border-radius: 11px; background: #0E131D; border: 1px solid #1D2433; box-sizing: border-box">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Rechercher</label>
+<input id="q" type="search" placeholder="Rechercher un trade, un actif…" style="flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: #EEF1F6; font: inherit; font-size: 14px">
+<kbd style="font-family: inherit; font-size: 11px; color: #8A95AA; border: 1px solid #2A3346; border-radius: 5px; padding: 2px 6px">⌘K</kbd>
+</div>
+<span style="flex: 1"></span>
+<span style="display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid #1D2433; background: #0E131D; font-size: 12px; color: #C9D3E6"><span class="pu" style="width: 7px; height: 7px; border-radius: 4px; background: #3DDC97"></span>Session de Londres ouverte</span>
+<button class="ghost" type="button" aria-label="Notifications, 2 non lues" style="position: relative; width: 42px; height: 42px; border-radius: 11px; border: 1px solid #1D2433; background: #0E131D; color: #C9D3E6; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10 21a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 8px; right: 9px; width: 8px; height: 8px; border-radius: 4px; background: #FF7A6B; box-shadow: 0 0 0 2px #0E131D"></span></button>
+</div>
+
+<div class="fu d1" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div>
+<div style="font-size: 13px; color: #8A95AA">Vendredi 6 novembre 2026</div>
+<h1 class="h" style="font-size: 30px; margin: 6px 0 0; font-weight: 700">Bonjour Alex</h1>
+<p class="num" style="font-size: 14px; color: #A3AEC2; margin: 6px 0 0">{{weekTxt}}</p>
+</div>
+<div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+<a class="btn ghost" href="Importer.dc.html" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 16px; height: 42px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"></path></svg>Importer</a>
+<a class="btn" href="NouveauTrade.dc.html" style="display: inline-flex; align-items: center; gap: 8px; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 600; padding: 0 16px; height: 42px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Nouveau trade</a>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px">
+<section class="fu d2" style="flex: 2 1 540px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 24px 26px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap">
+<div>
+<div style="font-size: 13px; color: #94A0B4">P&amp;L net · {{periodLabel}}</div>
+<div style="display: flex; align-items: baseline; gap: 12px; margin-top: 6px; flex-wrap: wrap">
+<span class="h num" style="font-size: 38px; font-weight: 600; color: {{eqx.totalColor}}">{{eqx.total}}</span>
+<span class="num" style="font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 7px; background: {{eqx.dBg}}; color: {{eqx.dFg}}">{{eqx.delta}}</span>
+</div>
+<div class="num" style="display: flex; gap: 18px; margin-top: 10px; font-size: 13px; color: #8A95AA; flex-wrap: wrap">
+<span><span style="color: #EEF1F6; font-weight: 600">{{eqx.n}}</span> trades</span>
+<span><span style="color: #EEF1F6; font-weight: 600">{{eqx.wr}}</span> gagnants</span>
+<span>Drawdown max <span style="color: #EEF1F6; font-weight: 600">{{eqx.dd}}</span></span>
+<a href="Statistiques.dc.html" onClick="{{goStats}}" style="display: inline-flex; align-items: center; gap: 4px; color: {{accent}}; font-weight: 600">Voir toutes les statistiques<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+</div>
+<div role="group" aria-label="Période" style="display: flex; gap: 2px; background: #0A0D14; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{periods}}" as="p" hint-placeholder-count="4">
+<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 8px; min-height: 36px; background: {{p.bg}}; color: {{p.fg}}">{{p.label}}</button>
+</sc-for>
+</div>
+</div>
+<div style="position: relative; margin-top: 22px; padding-right: 64px">
+<svg viewBox="0 0 800 260" preserveAspectRatio="none" style="width: 100%; height: 280px; display: block" aria-hidden="true">
+<g stroke="#161C29" stroke-width="1" vector-effect="non-scaling-stroke"><line x1="0" y1="20" x2="800" y2="20"></line><line x1="0" y1="130" x2="800" y2="130"></line><line x1="0" y1="240" x2="800" y2="240"></line></g>
+<path class="area eqline" d="{{eqx.area}}" fill="{{accentSoft}}"></path>
+<path class="draw eqline" d="{{eqx.line}}" fill="none" stroke="{{accent}}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+</svg>
+<sc-if value="{{eqx.hasZero}}" hint-placeholder-val="{{false}}"><div style="position: absolute; left: 0; right: 64px; top: {{eqx.zeroY}}px; border-top: 1px dashed #2A3346"></div></sc-if>
+<span class="num" style="position: absolute; right: 0; top: 21px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{eqx.yTop}}</span>
+<span class="num" style="position: absolute; right: 0; top: 140px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{eqx.yMid}}</span>
+<span class="num" style="position: absolute; right: 0; top: 258px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{eqx.yBot}}</span>
+<div onMouseMove="{{eqMove}}" onMouseLeave="{{eqLeave}}" style="position: absolute; left: 0; top: 0; right: 64px; height: 280px; cursor: crosshair">
+<sc-if value="{{eqx.cross}}" hint-placeholder-val="{{false}}">
+<div style="position: absolute; top: 0; bottom: 0; left: {{eqx.hx}}%; width: 1px; background: #33405A"></div>
+</sc-if>
+<div style="position: absolute; left: {{eqx.hx}}%; top: {{eqx.hy}}px; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 6px; background: {{accent}}; box-shadow: 0 0 0 5px {{accentSoft}}"></div>
+<div class="num" style="position: absolute; left: {{eqx.tx}}%; top: {{eqx.hy}}px; transform: translate(-50%, calc(-100% - 14px)); background: #161C29; border: 1px solid #2A3346; border-radius: 9px; padding: 7px 10px; font-size: 12px; white-space: nowrap; pointer-events: none; box-shadow: 0 10px 30px rgba(0,0,0,.4)"><div style="color: #8A95AA; font-size: 11px">{{eqx.hl}}</div><div style="font-weight: 700; margin-top: 2px">{{eqx.hv}}</div></div>
+</div>
+</div>
+<div class="num" style="display: flex; justify-content: space-between; padding-right: 64px; margin-top: 10px; font-size: 11px; color: #8A95AA"><span>{{eqx.x0}}</span><span>{{eqx.x1}}</span><span>{{eqx.x2}}</span></div>
+</section>
+
+<section class="fu d3" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px">
+<div><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Marchés du jour</h2><div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: #8A95AA; margin-top: 4px"><span class="pu" style="width: 6px; height: 6px; border-radius: 3px; background: #3DDC97"></span>En direct</div></div>
+<a href="#top" style="font-size: 13px; color: {{accent}}; font-weight: 600">Modifier</a>
+</div>
+<div style="display: flex; flex-direction: column; margin-top: 12px; flex: 1">
+<sc-for list="{{watch}}" as="w" hint-placeholder-count="7">
+<div class="row" style="display: grid; grid-template-columns: minmax(0, 1fr) 64px 86px; align-items: center; gap: 12px; padding: 11px 8px; margin: 0 -8px; border-radius: 10px; border-top: 1px solid #151B27">
+<div style="display: flex; align-items: center; gap: 10px; min-width: 0">
+<span style="flex: none; width: 30px; height: 30px; border-radius: 9px; background: {{w.ibg}}; color: {{w.ifg}}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800">{{w.ini}}</span>
+<span style="min-width: 0"><span style="display: block; font-size: 13px; font-weight: 600">{{w.sym}}</span><span style="display: block; font-size: 11px; color: #8A95AA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{w.name}}</span></span>
+</div>
+<svg viewBox="0 0 100 32" preserveAspectRatio="none" style="width: 64px; height: 26px" aria-hidden="true"><path class="spl" d="{{w.spark}}" fill="none" stroke="{{w.color}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg>
+<div style="text-align: right"><div class="num" style="font-size: 13px; font-weight: 600">{{w.price}}</div><div class="num pchg" style="font-size: 12px; font-weight: 700; margin-top: 2px; color: {{w.color}}">{{w.chg}}</div></div>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 11px; color: #6F7A90; margin-top: 10px">Variation depuis l'ouverture · données simulées</div>
+</section>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px">
+<section class="fu d3" style="flex: 1 1 300px; min-width: 0; background: #0E131D; border: 1px solid {{accentLine}}; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 36px; height: 36px; border-radius: 11px; background: {{accentSoft}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span>
+<div style="flex: 1"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Coach IA</h2><div style="font-size: 11px; color: #8A95AA; margin-top: 2px">Analyse de {{periodLabel}}</div></div>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: #7BEBB9"><span class="pu" style="width: 6px; height: 6px; border-radius: 3px; background: #3DDC97"></span>à jour</span>
+</div>
+<p style="font-size: 15px; line-height: 1.6; color: #DCE2EC; margin: 0">{{coach.text}}</p>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<div style="padding: 12px 14px; border-radius: 12px; background: rgba(255,122,107,.07); border: 1px solid rgba(255,122,107,.22)"><div style="font-size: 11px; color: #FF9A8E">À surveiller</div><div style="font-size: 14px; font-weight: 600; margin-top: 4px">{{coach.worstL}}</div><div class="num" style="font-size: 12px; color: #FF9A8E; margin-top: 2px">{{coach.worstV}}</div></div>
+<div style="padding: 12px 14px; border-radius: 12px; background: rgba(61,220,151,.07); border: 1px solid rgba(61,220,151,.22)"><div style="font-size: 11px; color: #7BEBB9">Point fort</div><div style="font-size: 14px; font-weight: 600; margin-top: 4px">{{coach.bestL}}</div><div class="num" style="font-size: 12px; color: #7BEBB9; margin-top: 2px">{{coach.bestV}}</div></div>
+</div>
+<div style="padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433; font-size: 14px; line-height: 1.55; color: #C9D3E6"><span style="color: #EEF1F6; font-weight: 600">Conseil : </span>{{coach.advice}}</div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto">
+<a class="chip ghost" href="Statistiques.dc.html" onClick="{{goWeek}}" style="display: inline-flex; align-items: center; min-height: 36px; box-sizing: border-box; font-size: 12px; padding: 0 12px; border-radius: 999px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6">Bilan de la semaine</a>
+<a class="chip ghost" href="Journal.dc.html" onClick="{{goLosses}}" style="display: inline-flex; align-items: center; min-height: 36px; box-sizing: border-box; font-size: 12px; padding: 0 12px; border-radius: 999px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6">Analyse mes pertes</a>
+<a class="chip ghost" href="Statistiques.dc.html" onClick="{{goHours}}" style="display: inline-flex; align-items: center; min-height: 36px; box-sizing: border-box; font-size: 12px; padding: 0 12px; border-radius: 999px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6">Mes meilleures heures</a>
+</div>
+</section>
+
+<section class="fu d4" style="flex: 1 1 300px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 36px; height: 36px; border-radius: 11px; background: rgba(245,166,91,.12); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5B87A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path><path d="M10 9l5 3-5 3z"></path></svg></span>
+<div style="flex: 1"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Backtesting</h2><div style="font-size: 11px; color: #8A95AA; margin-top: 2px">Dernière session · il y a 2 h</div></div>
+<a href="#top" style="font-size: 13px; color: {{accent}}; font-weight: 600">Sessions</a>
+</div>
+<div style="padding: 14px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+<div style="min-width: 0">
+<div style="font-size: 14px; font-weight: 600">Cassure de Londres</div>
+<div style="display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap"><span style="font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 5px; background: rgba(110,139,255,.16); color: #A9BBFF">EUR/USD</span><span style="font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 5px; background: #1A2130; color: #C9D3E6">M15</span><span style="font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 5px; background: #1A2130; color: #C9D3E6">Mars → Juin 2025</span></div>
+</div>
+<div class="h num" style="font-size: 20px; font-weight: 600; color: #3DDC97; white-space: nowrap">{{bt.tot}}</div>
+</div>
+<svg viewBox="0 0 300 80" preserveAspectRatio="none" style="width: 100%; height: 74px; display: block; margin-top: 10px" aria-hidden="true">
+<path class="area" d="{{bt.area}}" fill="rgba(245,166,91,.10)"></path>
+<path class="draw" d="{{bt.line}}" fill="none" stroke="#F5B87A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+</svg>
+<div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #8A95AA; margin-top: 8px"><span>Période testée</span><span class="num" style="color: #C9D3E6; font-weight: 600">68 %</span></div>
+<div style="height: 4px; border-radius: 2px; background: #1A2130; margin-top: 5px; overflow: hidden"><div style="width: 68%; height: 100%; border-radius: 2px; background: #F5B87A"></div></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div style="padding: 10px; border-radius: 10px; background: #111622; border: 1px solid #1D2433"><div style="font-size: 11px; color: #8A95AA">Trades</div><div class="h num" style="font-size: 17px; font-weight: 600; margin-top: 3px">{{bt.n}}</div></div>
+<div style="padding: 10px; border-radius: 10px; background: #111622; border: 1px solid #1D2433"><div style="font-size: 11px; color: #8A95AA">Win rate</div><div class="h num" style="font-size: 17px; font-weight: 600; margin-top: 3px">{{bt.wr}}</div></div>
+<div style="padding: 10px; border-radius: 10px; background: #111622; border: 1px solid #1D2433"><div style="font-size: 11px; color: #8A95AA">Espérance</div><div class="h num" style="font-size: 17px; font-weight: 600; margin-top: 3px; color: #3DDC97">{{bt.exp}}</div></div>
+</div>
+<div>
+<div style="display: flex; justify-content: space-between; font-size: 12px"><span style="color: #C9D3E6; font-weight: 600">Réel vs backtest</span><span style="color: #8A95AA">win rate</span></div>
+<div style="display: grid; grid-template-columns: 62px minmax(0, 1fr) 40px; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px">
+<span style="color: #8A95AA">Backtest</span><span style="height: 6px; border-radius: 3px; background: #1A2130; overflow: hidden"><span style="display: block; height: 100%; width: {{bt.wrN}}%; border-radius: 3px; background: #F5B87A; transition: width .6s"></span></span><span class="num" style="text-align: right; font-weight: 600">{{bt.wr}}</span>
+<span style="color: #8A95AA">Réel</span><span style="height: 6px; border-radius: 3px; background: #1A2130; overflow: hidden"><span style="display: block; height: 100%; width: {{bt.realN}}%; border-radius: 3px; background: {{accent}}; transition: width .6s"></span></span><span class="num" style="text-align: right; font-weight: 600">{{bt.real}}</span>
+</div>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 8px">{{bt.gapTxt}}</div>
+</div>
+<div style="display: flex; gap: 8px; margin-top: auto">
+<a class="btn" href="#top" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 600; height: 40px; border-radius: 10px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg>Reprendre</a>
+<a class="btn ghost" href="#top" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; font-weight: 600; height: 40px; border-radius: 10px">Nouvelle session</a>
+</div>
+</section>
+
+<section class="fu d4" style="flex: 1.25 1 380px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Annonces et actualités</h2>
+<div role="group" aria-label="Filtrer" style="display: flex; gap: 4px">
+<sc-for list="{{nf}}" as="f" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="cursor: pointer; font-size: 12px; font-weight: 600; padding: 7px 11px; border-radius: 999px; border: 1px solid {{f.bd}}; background: {{f.bg}}; color: {{f.fg}}">{{f.label}}</button>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{showNfp}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 14px; background: rgba(245,166,91,.08); border: 1px solid rgba(245,166,91,.32); flex-wrap: wrap">
+<div style="flex: 1; min-width: 200px">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #F5B87A"><span class="puo" style="width: 7px; height: 7px; border-radius: 4px; background: #F5A65B"></span>AUJOURD'HUI 14:30 · USD · IMPACT FORT</div>
+<div style="font-size: 15px; font-weight: 600; margin-top: 6px">NFP — Emplois non agricoles</div>
+<div style="font-size: 12px; color: #A3AEC2; margin-top: 3px">Concerne 3 de tes actifs : EUR/USD, XAU/USD, NAS100</div>
+</div>
+<div style="text-align: right"><div style="font-size: 11px; color: #F5B87A">dans</div><div class="h num" style="font-size: 24px; font-weight: 600; color: #F5C28F">{{cd}}</div></div>
+</div>
+</sc-if>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{news}}" as="n" hint-placeholder-count="5">
+<button class="nitem" type="button" onClick="{{n.pick}}" aria-expanded="{{n.expanded}}" style="text-align: left; cursor: pointer; width: 100%; padding: 11px 12px; border-radius: 12px; background: {{n.bg}}; border: 1px solid {{n.bd}}; color: #EEF1F6">
+<span style="display: flex; align-items: center; gap: 12px">
+<span class="num" style="flex: none; width: 58px; font-size: 11px; color: #8A95AA; line-height: 1.35"><span style="display: block; color: #EEF1F6; font-weight: 600; font-size: 13px">{{n.time}}</span>{{n.day}}</span>
+<span style="flex: none; font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 6px; background: {{n.catBg}}; color: {{n.catFg}}">{{n.cat}}</span>
+<span style="flex: 1; min-width: 0; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{n.title}}</span>
+<span role="img" aria-label="{{n.aria}}" style="flex: none; display: flex; gap: 2px; align-items: flex-end"><span style="width: 4px; height: 7px; border-radius: 1px; background: {{n.c}}"></span><span style="width: 4px; height: 10px; border-radius: 1px; background: {{n.c}}"></span><span style="width: 4px; height: 13px; border-radius: 1px; background: {{n.c3}}"></span></span>
+</span>
+<sc-if value="{{n.open}}" hint-placeholder-val="{{false}}">
+<span class="open" style="display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid #1D2433">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .06em; color: {{accent}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>RÉSUMÉ IA</span>
+<span style="display: block; font-size: 13px; line-height: 1.55; color: #C9D3E6; margin-top: 6px">{{n.sum}}</span>
+<span style="display: block; font-size: 12px; color: #8A95AA; margin-top: 6px">Actifs concernés : <span style="color: #DCE2EC; font-weight: 600">{{n.assets}}</span></span>
+</span>
+</sc-if>
+</button>
+</sc-for>
+</div>
+<a href="#top" style="margin-top: auto; font-size: 13px; color: {{accent}}; font-weight: 600">Voir tout le calendrier et les news</a>
+</section>
+</div>
+
+<div style="font-size: 11px; color: #6F7A90">Données d'exemple générées pour la maquette</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.base = this.gen();
+    this.trades = this.base;
+    this.mergeAdded();
+    this.curM = 2;
+    var rb = this.rng(19), bcum = 0, beq = [0], bw = 0, bsum = 0;
+    for (var bi = 0; bi < 142; bi++) {
+      var bwin = rb() < 0.54;
+      var bR = bwin ? Math.round((1.2 + rb() * 1.4) * 10) / 10 : -1;
+      if (bwin) bw++;
+      bsum += bR; bcum += bR; beq.push(bcum);
+    }
+    this.bt = { eq: beq, n: 142, wr: bw / 142 * 100, exp: bsum / 142, tot: bcum };
+    var r = this.rng(77);
+    var W = [
+      ['EUR/USD', 'Euro / Dollar US', 'fx', 1.1624, 0.18, 4],
+      ['XAU/USD', 'Or', 'co', 4012.4, 0.62, 1],
+      ['BTC/USD', 'Bitcoin', 'cr', 98450, -1.24, 0],
+      ['NAS100', 'Nasdaq 100', 'st', 21480, 0.41, 0],
+      ['CAC 40', 'Bourse de Paris', 'st', 8121.5, 0.35, 1],
+      ['WTI', 'Pétrole brut', 'co', 61.42, 1.12, 2],
+      ['GBP/USD', 'Livre / Dollar US', 'fx', 1.3152, -0.09, 4]
+    ];
+    var wl = W.map(function (w) {
+      var hist = [], v = 0;
+      for (var i = 0; i < 40; i++) { v += (r() - 0.5) * 0.12 + w[4] / 40; hist.push(v); }
+      var shift = w[4] - hist[hist.length - 1];
+      hist = hist.map(function (x, i) { return x + shift * i / 39; });
+      return { sym: w[0], name: w[1], mk: w[2], open: w[3] / (1 + w[4] / 100), chg: w[4], dec: w[5], hist: hist };
+    });
+    var sp = this.sget('tj.period');
+    this.lastP = sp;
+    this.state = { period: ['7j', '30j', '90j', 'tout'].indexOf(sp) >= 0 ? sp : '30j', nav: 'dash', hov: -1, cd: 5232, nf: 'all', nOpen: -1, wl: wl };
+  }
+  sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
+  mergeAdded() {
+    var ad = this.sget('tj.added') || '';
+    if (ad === this.lastAdded) return false;
+    this.lastAdded = ad;
+    var l = []; try { l = JSON.parse(ad || '[]') || []; } catch (e) { l = []; }
+    this.trades = this.base.concat(l).sort(function (a, b) { return a.t - b.t; });
+    return true;
+  }
+  sset(k, v) { try { if (v === null) window.sessionStorage.removeItem(k); else window.sessionStorage.setItem(k, v); } catch (e) {} }
+  go(to, extra) {
+    var o = { to: to, t: Date.now() };
+    for (var k in (extra || {})) o[k] = extra[k];
+    this.sset('tj.go', JSON.stringify(o));
+  }
+  rng(seed) {
+    var s = seed;
+    return function () { s = (s * 1664525 + 1013904223) % 4294967296; return s / 4294967296; };
+  }
+  gen() {
+    var r = this.rng(42), out = [], day = Date.UTC(2026, 10, 6), id = 0;
+    var A = [['EUR/USD', 'fx'], ['GBP/USD', 'fx'], ['USD/JPY', 'fx'], ['XAU/USD', 'co'], ['WTI', 'co'], ['BTC/USD', 'cr'], ['ETH/USD', 'cr'], ['NAS100', 'st'], ['CAC 40', 'st'], ['NVDA', 'st']];
+    var EMO = ['Calme', 'Confiant', 'FOMO', 'Stressé', 'Impatient'];
+    var EW = [0.36, 0.24, 0.14, 0.14, 0.12];
+    var guard = 0;
+    while (out.length < 230 && guard < 400) {
+      guard++;
+      var dow = new Date(day).getUTCDay();
+      if (dow !== 0 && dow !== 6) {
+        var n = Math.floor(r() * 3.3);
+        for (var k = 0; k < n; k++) {
+          var a = A[Math.floor(r() * A.length)];
+          var x = r(), e = 0, acc = 0;
+          for (var j = 0; j < EW.length; j++) { acc += EW[j]; if (x < acc) { e = j; break; } }
+          var emo = EMO[e];
+          var rs = r();
+          var ses = rs < 0.2 ? 'Asie' : rs < 0.6 ? 'Londres' : 'New York';
+          var p = emo === 'Calme' ? 0.62 : emo === 'Confiant' ? 0.57 : emo === 'Stressé' ? 0.42 : 0.33;
+          if (ses === 'Londres') p += 0.05;
+          if (ses === 'Asie') p -= 0.07;
+          var win = r() < p;
+          var R = win ? Math.round((1 + r() * 1.9) * 10) / 10 : (r() < 0.2 ? -0.5 : -1);
+          var hour = ses === 'Asie' ? 2 + Math.floor(r() * 5) : ses === 'Londres' ? 9 + Math.floor(r() * 4) : 14 + Math.floor(r() * 5);
+          out.push({ t: day + hour * 3600000 + Math.floor(r() * 12) * 300000, sym: a[0], mk: a[1], ses: ses, emo: emo, R: R, pnl: R * 200, id: ++id });
+        }
+      }
+      day -= 86400000;
+    }
+    out.sort(function (a, b) { return a.t - b.t; });
+    return out;
+  }
+  componentDidMount() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var self = this;
+    this.t = 0;
+    this.iv = setInterval(function () {
+      self.t++;
+      var up = {};
+      if (self.state.cd > 0) up.cd = self.state.cd - 1;
+      if (self.mergeAdded()) up.rev = Date.now();
+      var sp = self.sget('tj.period');
+      if (sp && sp !== self.lastP && ['7j', '30j', '90j', 'tout'].indexOf(sp) >= 0) { self.lastP = sp; up.period = sp; up.hov = -1; }
+      if (self.t % 2 === 0) {
+        up.wl = self.state.wl.map(function (w) {
+          var d = (Math.random() - 0.5) * 0.09;
+          var nc = w.chg + d;
+          return { sym: w.sym, name: w.name, mk: w.mk, open: w.open, dec: w.dec, chg: nc, hist: w.hist.slice(1).concat([nc]) };
+        });
+      }
+      self.setState(up);
+    }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  stats(L) {
+    var n = L.length, w = 0, sumR = 0, cum = 0, peak = 0, dd = 0, eq = [0];
+    L.forEach(function (t) { if (t.R > 0) w++; sumR += t.R; cum += t.pnl; eq.push(cum); if (cum > peak) peak = cum; if (peak - cum > dd) dd = peak - cum; });
+    return { n: n, w: w, pnl: cum, wr: n ? w / n * 100 : 0, exp: n ? sumR / n : 0, dd: dd, eq: eq };
+  }
+  spark(vals) {
+    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+    if (mx === mn) mx = mn + 1;
+    return 'M' + vals.map(function (v, i) { return (i / (vals.length - 1) * 100).toFixed(1) + ',' + (29 - (v - mn) / (mx - mn) * 26).toFixed(1); }).join(' L');
+  }
+  fEur(v) { return (v >= 0 ? '+' : '−') + Math.abs(Math.round(v)).toLocaleString('fr-FR') + ' €'; }
+  fEurU(v) { return Math.abs(Math.round(v)).toLocaleString('fr-FR') + ' €'; }
+  fR(r) { return (r >= 0 ? '+' : '−') + Math.abs(r).toFixed(2).replace('.', ',') + ' R'; }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  renderVals() {
+    var self = this, s = this.state;
+    var GAIN = '#3DDC97', LOSS = '#FF7A6B';
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var soft = this.soft(accent, 0.13), aLine = this.soft(accent, 0.38);
+    var MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    var pad2 = function (x) { return (x < 10 ? '0' : '') + x; };
+    var fDay = function (t) { var d = new Date(t); return d.getUTCDate() + ' ' + MOIS[d.getUTCMonth()]; };
+    var DAY = 86400000, END = Date.UTC(2026, 10, 6, 23, 59);
+    var T = this.trades;
+    var days = { '7j': 7, '30j': 30, '90j': 90, 'tout': 0 }[s.period];
+    var sel = days ? T.filter(function (t) { return t.t > END - days * DAY; }) : T;
+    var prev = days ? T.filter(function (t) { return t.t <= END - days * DAY && t.t > END - 2 * days * DAY; }) : [];
+    var st = this.stats(sel), ps = this.stats(prev);
+    var hasPrev = !!days && ps.n > 0;
+    var periodLabel = { '7j': '7 derniers jours', '30j': '30 derniers jours', '90j': '90 derniers jours', 'tout': 'tout l’historique' }[s.period];
+    var ws = this.stats(T.filter(function (t) { return t.t > END - 7 * DAY; }));
+    var weekTxt = 'Cette semaine : ' + ws.n + ' trades · ' + this.fEur(ws.pnl) + ' · 1 annonce à fort impact aujourd’hui';
+
+    var periods = [['7j', '7 j'], ['30j', '30 j'], ['90j', '90 j'], ['tout', 'Tout']].map(function (p) {
+      var on = s.period === p[0];
+      return { label: p[1], pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.lastP = p[0]; self.sset('tj.period', p[0]); self.setState({ period: p[0], hov: -1 }); } };
+    });
+
+    var E = st.eq.length > 1 ? st.eq : [0, 0], m = E.length;
+    this.curM = m;
+    var mn = Math.min.apply(null, E), mx = Math.max.apply(null, E);
+    if (mx === mn) mx = mn + 1;
+    var EY = function (v) { return 20 + (mx - v) / (mx - mn) * 220; };
+    var ln = 'M' + E.map(function (v, i) { return (i / (m - 1) * 800).toFixed(1) + ',' + EY(v).toFixed(1); }).join(' L');
+    var hi = s.hov >= 0 && s.hov < m ? s.hov : m - 1;
+    var hx = hi / (m - 1) * 100;
+    var trH = hi > 0 ? sel[hi - 1] : null;
+    var ys = 280 / 260;
+    var dP = st.pnl - ps.pnl;
+    var eqx = {
+      line: ln, area: ln + ' L800,260 L0,260 Z',
+      hx: hx.toFixed(2), tx: Math.min(86, Math.max(14, hx)).toFixed(2), hy: (EY(E[hi]) * ys).toFixed(1), cross: s.hov >= 0,
+      hv: this.fEur(E[hi]), hl: trH ? 'Trade n°' + hi + ' · ' + fDay(trH.t) + ' · ' + trH.sym : 'Début de période',
+      yTop: this.fEur(mx), yMid: this.fEur((mx + mn) / 2), yBot: this.fEur(mn),
+      hasZero: mn < 0 && mx > 0, zeroY: (EY(0) * ys).toFixed(1),
+      x0: sel.length ? fDay(sel[0].t) : '', x1: sel.length ? fDay(sel[Math.floor(sel.length / 2)].t) : '', x2: sel.length ? fDay(sel[sel.length - 1].t) : '',
+      total: this.fEur(st.pnl), totalColor: st.pnl >= 0 ? GAIN : LOSS,
+      n: st.n, wr: Math.round(st.wr) + ' %', dd: this.fEurU(st.dd),
+      delta: hasPrev ? this.fEur(dP) + ' vs période préc.' : 'Depuis le début',
+      dBg: !hasPrev ? '#151B28' : dP >= 0 ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)',
+      dFg: !hasPrev ? '#8A95AA' : dP >= 0 ? '#7BEBB9' : '#FF9A8E'
+    };
+
+    var EMO = ['Calme', 'Confiant', 'Stressé', 'Impatient', 'FOMO'];
+    var emS = EMO.map(function (l) { var L = sel.filter(function (t) { return t.emo === l; }); return { l: l, n: L.length, avg: L.length ? self.stats(L).exp : 0 }; });
+    var valid = emS.filter(function (x) { return x.n >= 2; });
+    if (!valid.length) valid = emS;
+    var sorted = valid.slice().sort(function (a, b) { return a.avg - b.avg; });
+    var worst = sorted[0], best = sorted[sorted.length - 1];
+    var sesS = ['Asie', 'Londres', 'New York'].map(function (nm) { var L = sel.filter(function (t) { return t.ses === nm; }); return { nm: nm, n: L.length, exp: L.length ? self.stats(L).exp : -9 }; });
+    var bestSes = sesS.slice().sort(function (a, b) { return b.exp - a.exp; })[0];
+    var sesName = function (nm) { return nm === 'Asie' ? 'la session asiatique' : nm === 'Londres' ? 'la session de Londres' : 'la session de New York'; };
+    var coach = {
+      text: 'Sur les ' + periodLabel.replace('tout l’historique', 'derniers mois') + ', tes trades pris en état « ' + worst.l + ' » ont une espérance de ' + this.fR(worst.avg) + ', contre ' + this.fR(best.avg) + ' quand tu es « ' + best.l + ' ». Ta meilleure fenêtre est ' + sesName(bestSes.nm) + '.',
+      worstL: 'État « ' + worst.l + ' »', worstV: this.fR(worst.avg) + ' par trade',
+      bestL: 'Session ' + bestSes.nm, bestV: this.fR(bestSes.exp) + ' par trade',
+      advice: worst.avg < 0 ? 'quand tu te sens « ' + worst.l + ' », réduis ta taille de moitié ou attends 10 minutes avant d’entrer.' : 'ta gestion émotionnelle est solide sur cette période, garde la même routine.'
+    };
+
+    var ICO = { fx: ['rgba(110,139,255,.16)', '#A9BBFF'], co: ['rgba(245,194,107,.16)', '#F5C26B'], cr: ['rgba(183,148,246,.16)', '#CDB5FA'], st: ['rgba(61,220,151,.14)', '#7BEBB9'] };
+    var watch = s.wl.map(function (w) {
+      var up = w.chg >= 0;
+      var price = w.open * (1 + w.chg / 100);
+      return {
+        sym: w.sym, name: w.name, ini: w.sym.replace(/[^A-Z0-9]/g, '').slice(0, 2), ibg: ICO[w.mk][0], ifg: ICO[w.mk][1],
+        spark: self.spark(w.hist), color: up ? GAIN : LOSS,
+        price: price.toLocaleString('fr-FR', { minimumFractionDigits: w.dec, maximumFractionDigits: w.dec }),
+        chg: (up ? '+' : '−') + Math.abs(w.chg).toFixed(2).replace('.', ',') + ' %'
+      };
+    });
+
+    var NEWS = [
+      { k: 'eco', time: '16:00', day: "Aujourd'hui", title: 'Confiance des consommateurs (Michigan)', lvl: 2, sum: "Un moral des ménages en hausse soutient l'idée d'une consommation solide aux États-Unis, plutôt favorable au dollar.", assets: 'USD · Indices US' },
+      { k: 'geo', time: '12:10', day: "Aujourd'hui", title: 'OPEP+ : réunion sur les quotas de production', lvl: 3, sum: "Une baisse de production réduirait l'offre de pétrole et pourrait faire monter le WTI et le Brent.", assets: 'WTI · Brent · USD/CAD' },
+      { k: 'eco', time: '11:00', day: 'Lun. 9 nov.', title: 'PIB zone euro (estimation)', lvl: 2, sum: "Une croissance plus faible que prévu pèserait sur l'euro et renforcerait les attentes de baisse de taux de la BCE.", assets: 'EUR/USD · DAX · CAC 40' },
+      { k: 'geo', time: '09:45', day: "Aujourd'hui", title: 'Commerce mondial : nouveau cycle de négociations', lvl: 2, sum: "Toute annonce sur les droits de douane peut peser sur les devises exportatrices et les actions industrielles.", assets: 'AUD · CNH · Indices' },
+      { k: 'eco', time: '13:00', day: 'Jeu. 12 nov.', title: "Décision de taux de la Banque d'Angleterre", lvl: 3, sum: "Le marché attend un statu quo ; le ton du communiqué guidera la livre sterling.", assets: 'GBP/USD · FTSE 100' },
+      { k: 'geo', time: '08:20', day: "Aujourd'hui", title: 'Énergie : nouvelles discussions sur les sanctions en Europe', lvl: 2, sum: "Un durcissement des sanctions pourrait tendre l'offre de gaz et de pétrole et soutenir les prix de l'énergie.", assets: 'Brent · Gaz naturel · EUR' }
+    ];
+    var nf = [['all', 'Tout'], ['eco', 'Calendrier éco'], ['geo', 'Géopolitique']].map(function (f) {
+      var on = s.nf === f[0];
+      return { label: f[1], pressed: on ? 'true' : 'false', bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2', pick: function () { self.setState({ nf: f[0], nOpen: -1 }); } };
+    });
+    var news = [];
+    NEWS.forEach(function (it, idx) {
+      if (s.nf !== 'all' && it.k !== s.nf) return;
+      if (news.length >= 5) return;
+      var op = s.nOpen === idx, c = it.lvl === 3 ? '#FF9A8E' : '#F5B87A';
+      news.push({
+        time: it.time, day: it.day, title: it.title, cat: it.k === 'eco' ? 'ÉCO' : 'GÉO',
+        catBg: it.k === 'eco' ? 'rgba(110,139,255,.16)' : 'rgba(183,148,246,.16)', catFg: it.k === 'eco' ? '#A9BBFF' : '#CDB5FA',
+        c: c, c3: it.lvl === 3 ? c : '#2A3346', aria: it.lvl === 3 ? 'Impact fort' : 'Impact moyen',
+        open: op, expanded: op ? 'true' : 'false', bg: op ? '#121826' : 'transparent', bd: op ? '#2A3346' : '#171D2A',
+        sum: it.sum, assets: it.assets,
+        pick: function () { self.setState({ nOpen: self.state.nOpen === idx ? -1 : idx }); }
+      });
+    });
+
+    var navDef = [
+      { title: 'PRINCIPAL', items: [
+        ['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z'],
+        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6'],
+        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2']
+      ] },
+      { title: 'OUTILS', items: [
+        ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '2', 'warn'],
+        ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', 'NOUVEAU', 'accent']
+      ] },
+      { title: 'COMPTE', items: [
+        ['set', 'Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4'],
+        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01']
+      ] }
+    ];
+    var navGroups = navDef.map(function (g) {
+      return { title: g.title, items: g.items.map(function (n) {
+        var on = s.nav === n[0];
+        return { label: n[1], icon: n[2], badge: n[3] || '', href: ({ journal: 'Journal.dc.html', stats: 'Statistiques.dc.html' })[n[0]] || '#top', bBg: n[4] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: n[4] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false', pick: function () { if (n[0] !== 'journal' && n[0] !== 'stats') self.setState({ nav: n[0] }); } };
+      }) };
+    });
+
+    var be = this.bt.eq, bmn = Math.min.apply(null, be), bmx = Math.max.apply(null, be);
+    if (bmx === bmn) bmx = bmn + 1;
+    var BY = function (v) { return 6 + (bmx - v) / (bmx - bmn) * 68; };
+    var bl = 'M' + be.map(function (v, i) { return (i / (be.length - 1) * 300).toFixed(1) + ',' + BY(v).toFixed(1); }).join(' L');
+    var wrN = Math.round(this.bt.wr), realN = Math.round(st.wr), gap = realN - wrN;
+    var btv = {
+      line: bl, area: bl + ' L300,80 L0,80 Z',
+      tot: (this.bt.tot >= 0 ? '+' : '−') + Math.abs(this.bt.tot).toFixed(1).replace('.', ',') + ' R',
+      n: this.bt.n, wr: wrN + ' %', exp: this.fR(this.bt.exp), wrN: wrN, realN: realN, real: realN + ' %',
+      gapTxt: gap >= 0 ? 'En réel, tu fais ' + (gap ? gap + ' pts de mieux' : 'aussi bien') + ' que ton backtest.' : 'En réel, tu es ' + Math.abs(gap) + ' pts sous ton backtest : compare tes heures et tes actifs entre les deux.'
+    };
+    var hh = Math.floor(s.cd / 3600), mm = Math.floor((s.cd % 3600) / 60), ss = s.cd % 60;
+    return {
+      accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim',
+      navGroups: navGroups, weekTxt: weekTxt, periods: periods, periodLabel: periodLabel,
+      eqx: eqx,
+      eqMove: function (evt) {
+        var r = evt.currentTarget.getBoundingClientRect();
+        var f = Math.min(1, Math.max(0, (evt.clientX - r.left) / r.width));
+        var idx = Math.round(f * (self.curM - 1));
+        if (idx !== self.state.hov) self.setState({ hov: idx });
+      },
+      eqLeave: function () { self.setState({ hov: -1 }); },
+      coach: coach, watch: watch, bt: btv,
+      goTrades: function () { self.go('journal', { tab: 'trades' }); },
+      goStats: function () { self.go('stats', { tab: 'stats' }); },
+      goWeek: function () { self.go('stats', { tab: 'stats', period: '7j' }); },
+      goHours: function () { self.go('stats', { tab: 'stats', focus: 'heures' }); },
+      goLosses: function () { self.go('journal', { tab: 'trades', res: 'loss' }); },
+      nf: nf, news: news, showNfp: s.nf !== 'geo',
+      cd: pad2(hh) + ':' + pad2(mm) + ':' + pad2(ss)
+    };
+  }
+}
+</script>
+</body>
+</html>

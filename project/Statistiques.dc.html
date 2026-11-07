@@ -1,0 +1,1452 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Statistiques</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#A3AEC2;text-decoration:none}a:hover{color:#FFFFFF}
+button{font-family:inherit}
+button:disabled{opacity:.35;cursor:default !important}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{animation:fu .7s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}.d4{animation-delay:.28s}
+@keyframes draw{from{stroke-dashoffset:2400}to{stroke-dashoffset:0}}
+.draw{stroke-dasharray:2400;animation:draw 1.6s cubic-bezier(.4,0,.2,1) .2s both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.area{animation:fadein 1s ease .8s both}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.grow{transform-origin:bottom;animation:grow .8s cubic-bezier(.2,.7,.2,1) .2s both}
+@keyframes growx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.growx{transform-origin:left;animation:growx .8s cubic-bezier(.2,.7,.2,1) .2s both}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .9s linear infinite}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(61,220,151,.55)}100%{box-shadow:0 0 0 9px rgba(61,220,151,0)}}
+.pu{animation:pu 1.8s ease-out infinite}
+.nav{transition:background .2s,color .2s}.nav:hover{background:#131927;color:#EEF1F6}
+.chip{transition:background .2s,color .2s,border-color .2s}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.search:focus-within{border-color:#3A4763 !important}
+.ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28;border-color:#36415B}
+.trow{transition:background .2s}.trow:hover{background:#121826 !important}
+.tab{transition:color .2s,box-shadow .2s}.tab:hover{color:#EEF1F6 !important}
+.dcell{transition:border-color .2s,filter .2s}.dcell:hover{border-color:#4A5878 !important;filter:brightness(1.15)}
+.hm{transition:transform .15s,box-shadow .15s}.hm:hover{transform:scale(1.12);box-shadow:0 0 0 1px #EEF1F6;position:relative;z-index:2}
+.noanim *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; min-height: 100vh">
+
+<aside style="flex: 1 1 248px; background: #0B0F17; border-right: 1px solid #171D2A; padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px">
+<span style="width: 32px; height: 32px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 19px; font-weight: 700">[NOM]</span>
+</div>
+<nav aria-label="Menu de l'application" style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
+<div>
+<div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="3">
+<a class="nav" href="{{n.href}}" onClick="{{n.pick}}" aria-current="{{n.current}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; background: {{n.bg}}; color: {{n.fg}}; font-weight: {{n.fw}}">
+<span style="position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: {{n.bar}}"></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+<span style="flex: 1">{{n.label}}</span>
+<sc-if value="{{n.badge}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 999px; background: {{n.bBg}}; color: {{n.bFg}}">{{n.badge}}</span></sc-if>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid #1A2130">
+<span style="width: 34px; height: 34px; border-radius: 17px; background: #1D2433; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #DCE2EC">AM</span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 600">Alex Martin</div><div style="font-size: 11px; color: #8A95AA">Premium · renouvellement le 6 déc.</div></div>
+</div>
+</aside>
+
+<main id="top" style="flex: 999 1 560px; min-width: 0; padding: 18px 36px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+
+<div class="fu" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 16px; border-bottom: 1px solid #151B27">
+<div class="search" style="flex: 1 1 280px; max-width: 440px; display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 12px; border-radius: 11px; background: #0E131D; border: 1px solid #1D2433; box-sizing: border-box">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Rechercher</label>
+<input id="q" type="search" placeholder="Rechercher un trade, un actif…" style="flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: #EEF1F6; font: inherit; font-size: 14px">
+<kbd style="font-family: inherit; font-size: 11px; color: #8A95AA; border: 1px solid #2A3346; border-radius: 5px; padding: 2px 6px">⌘K</kbd>
+</div>
+<span style="flex: 1"></span>
+<span style="display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid #1D2433; background: #0E131D; font-size: 12px; color: #C9D3E6"><span class="pu" style="width: 7px; height: 7px; border-radius: 4px; background: #3DDC97"></span>Session de Londres ouverte</span>
+<button class="ghost" type="button" aria-label="Notifications, 2 non lues" style="position: relative; width: 42px; height: 42px; border-radius: 11px; border: 1px solid #1D2433; background: #0E131D; color: #C9D3E6; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10 21a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 8px; right: 9px; width: 8px; height: 8px; border-radius: 4px; background: #FF7A6B; box-shadow: 0 0 0 2px #0E131D"></span></button>
+</div>
+
+<div class="fu d1" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div>
+<div class="num" style="font-size: 13px; color: #8A95AA">{{subtitle}}</div>
+<h1 class="h" style="font-size: 30px; margin: 6px 0 0; font-weight: 700">Journal de trading</h1>
+</div>
+<div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+<button class="btn ghost" type="button" onClick="{{ex.open}}" aria-haspopup="dialog" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 16px; height: 42px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"></path></svg>Exporter</button>
+<a class="btn ghost" href="Importer.dc.html" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 16px; height: 42px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"></path></svg>Importer</a>
+<a class="btn" href="NouveauTrade.dc.html" style="display: inline-flex; align-items: center; gap: 8px; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 600; padding: 0 16px; height: 42px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Nouveau trade</a>
+</div>
+</div>
+
+<div role="tablist" aria-label="Vues du journal" class="fu d1" style="display: flex; gap: 4px; border-bottom: 1px solid #1A2130; flex-wrap: wrap">
+<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="3">
+<button class="tab" type="button" role="tab" aria-selected="{{tb.sel}}" onClick="{{tb.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 16px; margin-bottom: -1px; border: 0; background: transparent; cursor: pointer; font-size: 14px; font-weight: 600; color: {{tb.fg}}; box-shadow: inset 0 -2px 0 {{tb.bar}}">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{tb.icon}}"></path></svg>
+<span>{{tb.label}}</span>
+<sc-if value="{{tb.count}}" hint-placeholder-val="{{false}}"><span class="num" style="font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: #1A2130; color: #C9D3E6">{{tb.count}}</span></sc-if>
+</button>
+</sc-for>
+</div>
+
+<sc-if value="{{showFilters}}" hint-placeholder-val="{{true}}">
+<div class="fu d2" style="display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center">
+<div role="group" aria-label="Période" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{periods}}" as="p" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 34px; background: {{p.bg}}; color: {{p.fg}}">{{p.label}}</button>
+</sc-for>
+</div>
+<div role="group" aria-label="Marché" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{markets}}" as="c" hint-placeholder-count="5">
+<button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; font-size: 12px; font-weight: 600; padding: 0 12px; min-height: 34px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}">{{c.label}}</button>
+</sc-for>
+</div>
+<div role="group" aria-label="Sens" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{dirs}}" as="p" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 34px; background: {{p.bg}}; color: {{p.fg}}">{{p.label}}</button>
+</sc-for>
+</div>
+<div role="group" aria-label="Résultat" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{results}}" as="c" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; font-size: 12px; font-weight: 600; padding: 0 12px; min-height: 34px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}">{{c.label}}</button>
+</sc-for>
+</div>
+<span style="flex: 1"></span>
+<div class="search" style="flex: 0 1 220px; display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px; border-radius: 10px; background: #0E131D; border: 1px solid #1D2433; box-sizing: border-box">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>
+<label for="jq" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Filtrer par actif</label>
+<input id="jq" type="search" value="{{q}}" onChange="{{onQ}}" placeholder="Filtrer : actif" style="flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: #EEF1F6; font: inherit; font-size: 13px">
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{showEmpty}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 64px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center">
+<div class="h" style="font-size: 18px; font-weight: 600">Aucun trade ne correspond à ces filtres</div>
+<div style="font-size: 14px; color: #A3AEC2">Élargis la période ou retire un filtre pour voir tes trades.</div>
+<button class="btn ghost" type="button" onClick="{{resetFilters}}" style="cursor: pointer; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 16px; height: 42px; border-radius: 11px">Réinitialiser les filtres</button>
+</div>
+</sc-if>
+
+<sc-if value="{{showTrades}}" hint-placeholder-val="{{true}}">
+<div class="fu d2" style="display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{kpis}}" as="k" hint-placeholder-count="5">
+<div style="flex: 1 1 170px; background: #0E131D; border: 1px solid #1D2433; border-radius: 16px; padding: 16px 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="font-size: 12px; color: #94A0B4">{{k.l}}</div>
+<div class="h num" style="font-size: 24px; font-weight: 600; margin-top: 6px; color: {{k.c}}">{{k.v}}</div>
+<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{k.s}}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+<section class="fu d3" aria-label="Liste des trades" style="flex: 999 1 620px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="overflow-x: auto">
+<div style="min-width: 730px">
+<div style="display: grid; grid-template-columns: 112px minmax(0, 1.2fr) 96px 78px 104px 66px 92px; gap: 12px; align-items: center; padding: 6px 16px; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #8A95AA">
+<button type="button" onClick="{{sortDate.pick}}" aria-label="Trier par date" style="justify-self: start; display: inline-flex; align-items: center; gap: 4px; min-height: 36px; padding: 0; border: 0; background: transparent; cursor: pointer; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: {{sortDate.fg}}">DATE<span aria-hidden="true">{{sortDate.arrow}}</span></button>
+<span>ACTIF</span>
+<span>SESSION</span>
+<button type="button" onClick="{{sortDur.pick}}" aria-label="Trier par durée" style="justify-self: start; display: inline-flex; align-items: center; gap: 4px; min-height: 36px; padding: 0; border: 0; background: transparent; cursor: pointer; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: {{sortDur.fg}}">DURÉE<span aria-hidden="true">{{sortDur.arrow}}</span></button>
+<span>ÉMOTION</span>
+<span style="text-align: right">R</span>
+<button type="button" onClick="{{sortPnl.pick}}" aria-label="Trier par P&amp;L" style="justify-self: end; display: inline-flex; align-items: center; gap: 4px; min-height: 36px; padding: 0; border: 0; background: transparent; cursor: pointer; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: {{sortPnl.fg}}">P&amp;L<span aria-hidden="true">{{sortPnl.arrow}}</span></button>
+</div>
+<sc-for list="{{rows}}" as="t" hint-placeholder-count="12">
+<button class="trow" type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="width: 100%; display: grid; grid-template-columns: 112px minmax(0, 1.2fr) 96px 78px 104px 66px 92px; gap: 12px; align-items: center; padding: 10px 16px; border: 0; border-top: 1px solid #151B27; background: {{t.bg}}; box-shadow: {{t.ring}}; color: #EEF1F6; text-align: left; cursor: pointer; font-size: 13px">
+<span><span style="display: block; font-size: 13px; font-weight: 600">{{t.date}}</span><span class="num" style="display: block; font-size: 11px; color: #8A95AA; margin-top: 2px">{{t.hour}}</span></span>
+<span style="display: flex; align-items: center; gap: 10px; min-width: 0">
+<span style="flex: none; width: 30px; height: 30px; border-radius: 9px; background: {{t.ibg}}; color: {{t.ifg}}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800">{{t.ini}}</span>
+<span style="min-width: 0"><span style="display: block; font-size: 13px; font-weight: 600; white-space: nowrap">{{t.sym}}</span><span style="display: block; font-size: 11px; font-weight: 700; margin-top: 2px; color: {{t.dirFg}}">{{t.dir}}</span></span>
+</span>
+<span style="font-size: 13px; color: #C9D3E6">{{t.ses}}</span>
+<span class="num" style="font-size: 13px; color: #C9D3E6">{{t.dur}}</span>
+<span style="display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: #C9D3E6"><span style="flex: none; width: 7px; height: 7px; border-radius: 4px; background: {{t.emoC}}"></span>{{t.emo}}</span>
+<span class="num" style="text-align: right; font-size: 13px; font-weight: 600; color: {{t.rc}}">{{t.r}}</span>
+<span class="num" style="text-align: right; font-size: 14px; font-weight: 700; color: {{t.rc}}">{{t.pnl}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid #151B27">
+<span class="num" style="font-size: 13px; color: #8A95AA">{{pager.txt}}</span>
+<div style="display: flex; align-items: center; gap: 8px">
+<button class="ghost" type="button" onClick="{{pager.prev}}" disabled="{{pager.prevDis}}" aria-label="Page précédente" style="width: 40px; height: 40px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<span class="num" style="font-size: 13px; color: #C9D3E6; min-width: 64px; text-align: center">{{pager.page}}</span>
+<button class="ghost" type="button" onClick="{{pager.next}}" disabled="{{pager.nextDis}}" aria-label="Page suivante" style="width: 40px; height: 40px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+</section>
+
+<sc-if value="{{hasSel}}" hint-placeholder-val="{{true}}">
+<aside class="fu d4" aria-label="Détail du trade" style="flex: 1 1 340px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; align-items: flex-start; gap: 12px">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 11px; background: {{d.ibg}}; color: {{d.ifg}}; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800">{{d.ini}}</span>
+<div style="flex: 1; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap"><h2 class="h" style="font-size: 20px; margin: 0; font-weight: 600">{{d.sym}}</h2><span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{d.dirBg}}; color: {{d.dirFg}}">{{d.dir}}</span></div>
+<div class="num" style="font-size: 12px; color: #8A95AA; margin-top: 4px">{{d.when}}</div>
+</div>
+<button class="ghost" type="button" onClick="{{closeSel}}" aria-label="Fermer le détail du trade" style="flex: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<span class="h num" style="font-size: 32px; font-weight: 600; color: {{d.pc}}">{{d.pnl}}</span>
+<span class="num" style="font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 7px; background: {{d.rBg}}; color: {{d.pc}}">{{d.r}}</span>
+<span class="num" style="margin-left: auto; font-size: 12px; color: #A3AEC2">{{d.pct}} du capital</span>
+</div>
+
+<div style="position: relative; height: 170px; border-radius: 12px; background: #0B0F17; border: 1px solid #1A2130; overflow: hidden">
+<svg viewBox="0 0 300 170" preserveAspectRatio="none" style="position: absolute; left: 0; top: 0; width: 100%; height: 170px" aria-hidden="true">
+<path d="{{d.pre}}" fill="none" stroke="#4A5670" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+<path class="draw" d="{{d.path}}" fill="none" stroke="{{d.pc}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+</svg>
+<div style="position: absolute; left: 0; right: 0; top: {{d.tgtY}}px; border-top: 1px dashed rgba(61,220,151,.55)"></div>
+<div style="position: absolute; left: 0; right: 0; top: {{d.entY}}px; border-top: 1px solid #3A4458"></div>
+<div style="position: absolute; left: 0; right: 0; top: {{d.stpY}}px; border-top: 1px dashed rgba(255,122,107,.6)"></div>
+<span class="num" style="position: absolute; right: 8px; top: {{d.tgtY}}px; transform: translateY(-120%); font-size: 10px; font-weight: 600; color: #7BEBB9">{{d.tgtL}}</span>
+<span class="num" style="position: absolute; right: 8px; top: {{d.entY}}px; transform: translateY(-120%); font-size: 10px; font-weight: 600; color: #A3AEC2">{{d.entL}}</span>
+<span class="num" style="position: absolute; right: 8px; top: {{d.stpY}}px; transform: translateY(-120%); font-size: 10px; font-weight: 600; color: #FF9A8E">{{d.stpL}}</span>
+<span style="position: absolute; left: 30%; top: {{d.entY}}px; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 5px; background: #EEF1F6; box-shadow: 0 0 0 3px #0B0F17"></span>
+<span style="position: absolute; left: 96.67%; top: {{d.exY}}px; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 5px; background: {{d.pc}}; box-shadow: 0 0 0 3px #0B0F17"></span>
+<span style="position: absolute; left: 8px; bottom: 6px; font-size: 10px; color: #6F7A90">Replay simplifié · {{d.tf}}</span>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{d.metrics}}" as="m" hint-placeholder-count="9">
+<div style="padding: 10px; border-radius: 10px; background: #111622; border: 1px solid #1D2433; min-width: 0"><div style="font-size: 11px; color: #8A95AA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{m.l}}</div><div class="num" style="font-size: 13px; font-weight: 600; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: {{m.c}}">{{m.v}}</div></div>
+</sc-for>
+</div>
+
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<span style="font-size: 12px; padding: 6px 10px; border-radius: 999px; background: #151B28; color: #C9D3E6; border: 1px solid #2A3346">Session {{d.ses}}</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 6px 10px; border-radius: 999px; background: #151B28; color: #C9D3E6; border: 1px solid #2A3346"><span style="width: 7px; height: 7px; border-radius: 4px; background: {{d.emoC}}"></span>{{d.emo}}</span>
+</div>
+
+<div style="padding: 12px 14px; border-radius: 12px; background: {{accentSoft}}; border: 1px solid {{accentLine}}">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .06em; color: {{accent}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>DANS LE MÊME CONTEXTE</div>
+<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px">
+<sc-for list="{{d.ctx}}" as="c" hint-placeholder-count="3">
+<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px"><span style="color: #C9D3E6">{{c.l}}</span><span class="num" style="font-weight: 600; color: {{c.c}}; white-space: nowrap">{{c.v}}</span></div>
+</sc-for>
+</div>
+</div>
+
+<div>
+<div style="font-size: 12px; color: #C9D3E6; font-weight: 600">Ma note <span style="font-weight: 400; color: #8A95AA">(facultatif)</span></div>
+<p style="font-size: 14px; line-height: 1.55; color: #DCE2EC; margin: 6px 0 0; padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433">{{d.note}}</p>
+</div>
+
+<div style="display: flex; gap: 8px">
+<a class="btn ghost" href="#top" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; font-weight: 600; height: 42px; border-radius: 10px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Modifier</a>
+<a class="btn ghost" href="#top" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; font-weight: 600; height: 42px; border-radius: 10px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg>Ajouter une capture</a>
+</div>
+</aside>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{showStats}}" hint-placeholder-val="{{false}}">
+<section class="fu d2" style="background: #0E131D; border: 1px solid {{accentLine}}; border-radius: 20px; padding: 20px 22px; display: flex; gap: 18px; flex-wrap: wrap; align-items: stretch; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 36px; height: 36px; border-radius: 11px; background: {{accentSoft}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span>
+<h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">L'essentiel en 3 chiffres</h2>
+<div style="font-size: 12px; color: #8A95AA">Calculé sur {{periodLabel}}</div>
+</div>
+<sc-for list="{{insights}}" as="i" hint-placeholder-count="3">
+<div style="flex: 1 1 230px; padding: 14px 16px; border-radius: 14px; background: #111622; border: 1px solid #1D2433; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 12px; color: #94A0B4">{{i.t}}</div>
+<div class="h num" style="font-size: 20px; font-weight: 600; color: {{i.c}}">{{i.v}}</div>
+<div class="num" style="font-size: 13px; line-height: 1.5; color: #C9D3E6">{{i.d}}</div>
+</div>
+</sc-for>
+</section>
+
+<div class="fu d3" style="display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{hero}}" as="k" hint-placeholder-count="4">
+<div style="flex: 1 1 220px; background: #0E131D; border: 1px solid #1D2433; border-radius: 16px; padding: 16px 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="font-size: 12px; color: #94A0B4">{{k.l}}</div>
+<div class="h num" style="font-size: 28px; font-weight: 600; margin-top: 6px; color: {{k.c}}">{{k.v}}</div>
+<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{k.s}}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px">
+<section class="fu d3" style="flex: 999 1 600px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Courbe de capital</h2><span class="num" style="font-size: 12px; color: #8A95AA">{{eq.range}}</span></div>
+<div style="position: relative; margin-top: 16px; padding-right: 64px">
+<svg viewBox="0 0 800 220" preserveAspectRatio="none" style="width: 100%; height: 220px; display: block" aria-hidden="true">
+<g stroke="#161C29" stroke-width="1" vector-effect="non-scaling-stroke"><line x1="0" y1="14" x2="800" y2="14"></line><line x1="0" y1="110" x2="800" y2="110"></line><line x1="0" y1="206" x2="800" y2="206"></line></g>
+<path class="area" d="{{eq.area}}" fill="{{accentSoft}}"></path>
+<path class="draw" d="{{eq.line}}" fill="none" stroke="{{accent}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+</svg>
+<span class="num" style="position: absolute; right: 0; top: 14px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{eq.yTop}}</span>
+<span class="num" style="position: absolute; right: 0; top: 110px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{eq.yMid}}</span>
+<span class="num" style="position: absolute; right: 0; top: 206px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{eq.yBot}}</span>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; padding-right: 64px"><span style="font-size: 12px; font-weight: 600; color: #C9D3E6">Drawdown</span><span class="num" style="font-size: 11px; color: #FF9A8E">max {{eq.ddTxt}}</span></div>
+<div style="position: relative; margin-top: 6px; padding-right: 64px">
+<svg viewBox="0 0 800 70" preserveAspectRatio="none" style="width: 100%; height: 70px; display: block" aria-hidden="true">
+<line x1="0" y1="2" x2="800" y2="2" stroke="#2A3346" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+<path class="area" d="{{eq.dd}}" fill="rgba(255,122,107,.22)" stroke="#FF7A6B" stroke-width="1.4" vector-effect="non-scaling-stroke"></path>
+</svg>
+<span class="num" style="position: absolute; right: 0; top: 2px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">0 €</span>
+<span class="num" style="position: absolute; right: 0; top: 66px; transform: translateY(-50%); font-size: 11px; color: #8A95AA">{{eq.ddBot}}</span>
+</div>
+<div class="num" style="display: flex; justify-content: space-between; padding-right: 64px; margin-top: 10px; font-size: 11px; color: #8A95AA"><span>{{eq.x0}}</span><span>{{eq.x1}}</span><span>{{eq.x2}}</span></div>
+</section>
+
+<section class="fu d3" style="flex: 1 1 340px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 12px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Par session</h2><div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Selon l'heure d'entrée (heure de Paris)</div></div>
+<sc-for list="{{sessions}}" as="se" hint-placeholder-count="3">
+<div style="padding: 14px; border-radius: 14px; background: #111622; border: 1px solid {{se.bd}}">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+<div><div style="display: flex; align-items: center; gap: 8px"><span style="font-size: 15px; font-weight: 600">{{se.l}}</span><sc-if value="{{se.best}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 5px; background: rgba(61,220,151,.16); color: #7BEBB9">MEILLEURE</span></sc-if></div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">{{se.hours}}</div></div>
+<div class="h num" style="font-size: 20px; font-weight: 600; color: {{se.vc}}">{{se.v}}</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px">
+<div><div style="font-size: 10px; color: #8A95AA">Trades</div><div class="num" style="font-size: 13px; font-weight: 600; margin-top: 2px">{{se.n}}</div></div>
+<div><div style="font-size: 10px; color: #8A95AA">Réussite</div><div class="num" style="font-size: 13px; font-weight: 600; margin-top: 2px">{{se.wr}}</div></div>
+<div><div style="font-size: 10px; color: #8A95AA">Profit f.</div><div class="num" style="font-size: 13px; font-weight: 600; margin-top: 2px">{{se.pf}}</div></div>
+<div><div style="font-size: 10px; color: #8A95AA">Espérance</div><div class="num" style="font-size: 13px; font-weight: 600; margin-top: 2px; color: {{se.vc}}">{{se.exp}}</div></div>
+</div>
+<div style="height: 5px; border-radius: 3px; background: #1A2130; margin-top: 10px; overflow: hidden"><div class="growx" style="width: {{se.wrN}}%; height: 100%; border-radius: 3px; background: {{se.bar}}"></div></div>
+</div>
+</sc-for>
+</section>
+</div>
+
+<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Toutes les statistiques</h2>
+<div style="display: flex; flex-wrap: wrap; column-gap: 28px; margin-top: 10px">
+<sc-for list="{{metrics}}" as="m" hint-placeholder-count="20">
+<div style="flex: 1 1 230px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 11px 0; border-bottom: 1px solid #151B27">
+<span style="font-size: 13px; color: #A3AEC2">{{m.l}}</span>
+<span class="num" style="font-size: 14px; font-weight: 600; color: {{m.c}}; white-space: nowrap">{{m.v}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section class="fu d4" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div><h2 id="heures" class="h" style="font-size: 17px; margin: 0; font-weight: 600; scroll-margin-top: 24px">Heures de trading</h2><div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Jour × heure d'entrée (heure de Paris). Survole une case pour le détail.</div></div>
+<div role="group" aria-label="Valeur affichée" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{hmModes}}" as="p" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 34px; background: {{p.bg}}; color: {{p.fg}}">{{p.label}}</button>
+</sc-for>
+</div>
+</div>
+<div style="overflow-x: auto; margin-top: 16px">
+<div style="min-width: 920px; display: flex; flex-direction: column; gap: 3px">
+<div style="display: grid; grid-template-columns: 52px repeat(24, minmax(0, 1fr)); gap: 3px; margin-bottom: 4px">
+<sc-for list="{{hm.bands}}" as="b" hint-placeholder-count="3">
+<span style="grid-column: {{b.col}}; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: {{b.bg}}; color: {{b.fg}}; white-space: nowrap">{{b.l}}</span>
+</sc-for>
+</div>
+<sc-for list="{{hm.rows}}" as="r" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: 52px repeat(24, minmax(0, 1fr)); gap: 3px">
+<span style="font-size: 12px; font-weight: 600; color: #A3AEC2; align-self: center">{{r.l}}</span>
+<sc-for list="{{r.cells}}" as="c" hint-placeholder-count="24">
+<span class="hm num" title="{{c.title}}" style="height: 34px; border-radius: 5px; background: {{c.bg}}; color: {{c.fg}}; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; overflow: hidden">{{c.txt}}</span>
+</sc-for>
+</div>
+</sc-for>
+<div style="display: grid; grid-template-columns: 52px repeat(24, minmax(0, 1fr)); gap: 3px; margin-top: 4px">
+<span></span>
+<sc-for list="{{hm.hours}}" as="h" hint-placeholder-count="24">
+<span class="num" style="font-size: 10px; color: #8A95AA; text-align: center">{{h}}</span>
+</sc-for>
+</div>
+<div style="font-size: 12px; font-weight: 600; color: #C9D3E6; margin-top: 18px">P&amp;L par heure d'entrée</div>
+<div style="position: relative; display: grid; grid-template-columns: 52px repeat(24, minmax(0, 1fr)); gap: 3px; margin-top: 8px">
+<span style="position: absolute; left: 55px; right: 0; top: 60px; border-top: 1px solid #2A3346"></span>
+<span></span>
+<sc-for list="{{hm.bars}}" as="b" hint-placeholder-count="24">
+<div title="{{b.title}}" style="position: relative; height: 120px"><span style="position: absolute; left: 18%; right: 18%; top: {{b.top}}px; height: {{b.h}}px; border-radius: {{b.rad}}; background: {{b.c}}"></span></div>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: 52px repeat(24, minmax(0, 1fr)); gap: 3px; margin-top: 6px">
+<span style="font-size: 10px; color: #8A95AA">Trades</span>
+<sc-for list="{{hm.bars}}" as="b" hint-placeholder-count="24">
+<span class="num" style="font-size: 10px; color: #A3AEC2; text-align: center">{{b.n}}</span>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; font-size: 11px; color: #8A95AA">
+<span>{{hm.legend}}</span>
+<span style="display: flex; gap: 3px"><sc-for list="{{hm.scale}}" as="sc" hint-placeholder-count="5"><span style="width: 16px; height: 10px; border-radius: 3px; background: {{sc}}"></span></sc-for></span>
+<span>{{hm.legend2}}</span>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px">
+<section class="fu d4" style="flex: 999 1 560px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Par actif</h2>
+<div style="overflow-x: auto; margin-top: 12px">
+<div style="min-width: 600px">
+<div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 60px 72px 96px 70px 82px 74px; gap: 10px; padding: 6px 0; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #8A95AA">
+<span>ACTIF</span><span style="text-align: right">TRADES</span><span style="text-align: right">RÉUSSITE</span><span style="text-align: right">P&amp;L</span><span style="text-align: right">PROFIT F.</span><span style="text-align: right">ESPÉRANCE</span><span style="text-align: right">DURÉE</span>
+</div>
+<sc-for list="{{assets}}" as="a" hint-placeholder-count="10">
+<div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 60px 72px 96px 70px 82px 74px; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid #151B27; font-size: 13px">
+<span style="display: flex; align-items: center; gap: 10px; min-width: 0"><span style="flex: none; width: 28px; height: 28px; border-radius: 8px; background: {{a.ibg}}; color: {{a.ifg}}; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800">{{a.ini}}</span><span style="font-weight: 600; white-space: nowrap">{{a.l}}</span></span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{a.n}}</span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{a.wr}}</span>
+<span class="num" style="text-align: right; font-weight: 700; color: {{a.vc}}">{{a.v}}</span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{a.pf}}</span>
+<span class="num" style="text-align: right; color: {{a.vc}}">{{a.exp}}</span>
+<span class="num" style="text-align: right; color: #C9D3E6">{{a.dur}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section class="fu d4" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Long ou short</h2>
+<div style="display: flex; gap: 10px">
+<sc-for list="{{ls}}" as="x" hint-placeholder-count="2">
+<div style="flex: 1; min-width: 0; padding: 14px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
+<span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{x.bg}}; color: {{x.fg}}">{{x.l}}</span>
+<div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 10px; color: {{x.vc}}">{{x.v}}</div>
+<div style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px; font-size: 12px">
+<div style="display: flex; justify-content: space-between"><span style="color: #8A95AA">Trades</span><span class="num" style="font-weight: 600">{{x.n}}</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #8A95AA">Réussite</span><span class="num" style="font-weight: 600">{{x.wr}}</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #8A95AA">Profit factor</span><span class="num" style="font-weight: 600">{{x.pf}}</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #8A95AA">Espérance</span><span class="num" style="font-weight: 600; color: {{x.vc}}">{{x.exp}}</span></div>
+</div>
+</div>
+</sc-for>
+</div>
+<div>
+<div style="display: flex; justify-content: space-between; font-size: 12px; color: #A3AEC2"><span>Répartition des trades</span><span class="num">{{lsShare.txt}}</span></div>
+<div style="display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px; background: #F5B87A"><div class="growx" style="width: {{lsShare.long}}%; height: 100%; background: #8FA6FF"></div></div>
+</div>
+</section>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px">
+<section class="fu d4" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Par jour de la semaine</h2><span style="font-size: 11px; color: #8A95AA">P&amp;L net</span></div>
+<div style="position: relative; height: 180px; margin-top: 18px; display: flex; gap: 10px">
+<span style="position: absolute; left: 0; right: 0; top: 90px; border-top: 1px solid #2A3346"></span>
+<sc-for list="{{wd}}" as="w" hint-placeholder-count="5">
+<div style="flex: 1; position: relative; height: 180px"><span class="grow" style="position: absolute; left: 14%; right: 14%; top: {{w.top}}px; height: {{w.h}}px; border-radius: {{w.rad}}; background: {{w.c}}"></span></div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; margin-top: 10px">
+<sc-for list="{{wd}}" as="w" hint-placeholder-count="5">
+<div style="flex: 1; min-width: 0; text-align: center"><div style="font-size: 12px; font-weight: 600">{{w.l}}</div><div class="num" style="font-size: 11px; font-weight: 700; margin-top: 3px; color: {{w.vc}}; white-space: nowrap">{{w.v}}</div><div class="num" style="font-size: 10px; color: #8A95AA; margin-top: 2px">{{w.meta}}</div></div>
+</sc-for>
+</div>
+</section>
+
+<section class="fu d4" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Distribution des résultats</h2>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Nombre de trades par résultat (1 R = le risque pris)</div>
+<div style="display: flex; align-items: flex-end; gap: 8px; height: 160px; margin-top: 14px; border-bottom: 1px solid #222A3A">
+<sc-for list="{{hist}}" as="b" hint-placeholder-count="6">
+<div style="flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px">
+<span class="num" style="font-size: 12px; font-weight: 600; color: #C9D3E6">{{b.n}}</span>
+<span class="grow" style="display: block; width: 100%; max-width: 44px; height: {{b.h}}px; border-radius: 6px 6px 0 0; background: {{b.c}}"></span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 8px; margin-top: 8px">
+<sc-for list="{{hist}}" as="b" hint-placeholder-count="6">
+<span class="num" style="flex: 1; min-width: 0; text-align: center; font-size: 10px; color: #8A95AA">{{b.l}}</span>
+</sc-for>
+</div>
+</section>
+
+<sc-for list="{{bdA}}" as="g" hint-placeholder-count="1">
+<section class="fu d4" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">{{g.title}}</h2><span style="font-size: 11px; color: #8A95AA">{{g.sub}}</span></div>
+<div style="margin-top: 12px">
+<sc-for list="{{g.rows}}" as="r" hint-placeholder-count="4">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 80px; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #151B27">
+<div style="min-width: 0"><div style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">{{r.meta}}</div></div>
+<div style="position: relative; height: 10px; border-radius: 5px; background: #121826"><span style="position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: #2A3346"></span><span style="position: absolute; top: 0; bottom: 0; left: {{r.l}}%; width: {{r.w}}%; border-radius: 5px; background: {{r.c}}"></span></div>
+<div style="text-align: right"><div class="num" style="font-size: 13px; font-weight: 700; color: {{r.vc}}">{{r.v}}</div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">{{r.exp}}</div></div>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px">
+<sc-for list="{{bdB}}" as="g" hint-placeholder-count="1">
+<section class="fu d4" style="flex: 1 1 320px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">{{g.title}}</h2><span style="font-size: 11px; color: #8A95AA">{{g.sub}}</span></div>
+<div style="margin-top: 12px">
+<sc-for list="{{g.rows}}" as="r" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 80px; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #151B27">
+<div style="min-width: 0"><div style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">{{r.meta}}</div></div>
+<div style="position: relative; height: 10px; border-radius: 5px; background: #121826"><span style="position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: #2A3346"></span><span style="position: absolute; top: 0; bottom: 0; left: {{r.l}}%; width: {{r.w}}%; border-radius: 5px; background: {{r.c}}"></span></div>
+<div style="text-align: right"><div class="num" style="font-size: 13px; font-weight: 700; color: {{r.vc}}">{{r.v}}</div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">{{r.exp}}</div></div>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+
+<section class="fu d4" style="flex: 2 1 560px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Performance mensuelle</h2><span style="font-size: 11px; color: #8A95AA">P&amp;L net · réussite · rendement</span></div>
+<div style="position: relative; height: 180px; margin-top: 18px; display: flex; gap: 10px">
+<span style="position: absolute; left: 0; right: 0; top: 90px; border-top: 1px solid #2A3346"></span>
+<sc-for list="{{monthly}}" as="w" hint-placeholder-count="7">
+<div style="flex: 1; position: relative; height: 180px"><span class="grow" style="position: absolute; left: 18%; right: 18%; top: {{w.top}}px; height: {{w.h}}px; border-radius: {{w.rad}}; background: {{w.c}}"></span></div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; margin-top: 10px">
+<sc-for list="{{monthly}}" as="w" hint-placeholder-count="7">
+<div style="flex: 1; min-width: 0; text-align: center"><div style="font-size: 12px; font-weight: 600">{{w.l}}</div><div class="num" style="font-size: 11px; font-weight: 700; margin-top: 3px; color: {{w.vc}}; white-space: nowrap">{{w.v}}</div><div class="num" style="font-size: 10px; color: #8A95AA; margin-top: 2px; white-space: nowrap">{{w.meta}}</div></div>
+</sc-for>
+</div>
+</section>
+</div>
+</sc-if>
+
+<sc-if value="{{showCal}}" hint-placeholder-val="{{false}}">
+<div class="fu d2" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<button class="ghost" type="button" onClick="{{cal.prev}}" disabled="{{cal.prevDis}}" aria-label="Mois précédent" style="width: 42px; height: 42px; border-radius: 11px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<h2 class="h" style="font-size: 22px; margin: 0 6px; font-weight: 600; min-width: 170px">{{cal.title}}</h2>
+<button class="ghost" type="button" onClick="{{cal.next}}" disabled="{{cal.nextDis}}" aria-label="Mois suivant" style="width: 42px; height: 42px; border-radius: 11px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+<span style="flex: 1"></span>
+<div role="group" aria-label="Choisir un mois" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{cal.months}}" as="mo" hint-placeholder-count="7">
+<button class="chip" type="button" onClick="{{mo.pick}}" aria-pressed="{{mo.pressed}}" style="cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 64px; padding: 6px 10px; border-radius: 10px; border: 1px solid {{mo.bd}}; background: {{mo.bg}}; color: #EEF1F6">
+<span style="font-size: 12px; font-weight: 600">{{mo.l}}</span>
+<span class="num" style="font-size: 11px; font-weight: 700; color: {{mo.vc}}">{{mo.v}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div class="fu d2" style="display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{cal.tiles}}" as="k" hint-placeholder-count="5">
+<div style="flex: 1 1 170px; background: #0E131D; border: 1px solid #1D2433; border-radius: 16px; padding: 16px 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="font-size: 12px; color: #94A0B4">{{k.l}}</div>
+<div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 6px; color: {{k.c}}">{{k.v}}</div>
+<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{k.s}}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+<section class="fu d3" aria-label="Calendrier de performance" style="flex: 999 1 660px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="overflow-x: auto">
+<div style="min-width: 660px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) 1.15fr; gap: 6px">
+<sc-for list="{{cal.heads}}" as="hd" hint-placeholder-count="8">
+<span style="font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; padding: 2px 4px">{{hd}}</span>
+</sc-for>
+</div>
+<sc-for list="{{cal.weeks}}" as="wk" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) 1.15fr; gap: 6px">
+<sc-for list="{{wk.cells}}" as="c" hint-placeholder-count="8">
+<sc-if value="{{c.isTrade}}" hint-placeholder-val="{{false}}">
+<button class="dcell" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}" style="height: 92px; box-sizing: border-box; border-radius: 12px; border: 1px solid {{c.bd}}; background: {{c.bg}}; box-shadow: {{c.ring}}; color: #EEF1F6; padding: 8px 10px; display: flex; flex-direction: column; align-items: stretch; text-align: left; cursor: pointer; min-width: 0">
+<span style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #C9D3E6"><span class="num">{{c.num}}</span><sc-if value="{{c.today}}" hint-placeholder-val="{{false}}"><span style="font-size: 9px; font-weight: 800; letter-spacing: .04em; padding: 2px 5px; border-radius: 4px; background: {{accent}}; color: #0A0D14">AUJ.</span></sc-if></span>
+<span class="h num" style="margin-top: auto; font-size: 15px; font-weight: 600; color: {{c.fg}}; white-space: nowrap">{{c.pnl}}</span>
+<span class="num" style="font-size: 11px; color: #A3AEC2; margin-top: 2px; white-space: nowrap">{{c.nTxt}}</span>
+</button>
+</sc-if>
+<sc-if value="{{c.isEmpty}}" hint-placeholder-val="{{true}}">
+<div style="height: 92px; box-sizing: border-box; border-radius: 12px; border: 1px solid {{c.bd}}; background: {{c.bg}}; padding: 8px 10px; min-width: 0">
+<span class="num" style="font-size: 12px; color: {{c.fg}}">{{c.num}}</span>
+</div>
+</sc-if>
+<sc-if value="{{c.isWeek}}" hint-placeholder-val="{{false}}">
+<div style="height: 92px; box-sizing: border-box; border-radius: 12px; border: 1px solid #1D2433; background: #111622; padding: 8px 10px; display: flex; flex-direction: column; min-width: 0">
+<span style="font-size: 11px; font-weight: 700; color: #8A95AA">{{c.lbl}}</span>
+<span class="h num" style="margin-top: auto; font-size: 15px; font-weight: 600; color: {{c.fg}}; white-space: nowrap">{{c.pnl}}</span>
+<span class="num" style="font-size: 11px; color: #A3AEC2; margin-top: 2px; white-space: nowrap">{{c.nTxt}}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; font-size: 11px; color: #8A95AA">
+<span>Intensité du P&amp;L :</span>
+<span style="display: flex; gap: 3px"><span style="width: 16px; height: 10px; border-radius: 3px; background: rgba(255,122,107,.42)"></span><span style="width: 16px; height: 10px; border-radius: 3px; background: rgba(255,122,107,.16)"></span><span style="width: 16px; height: 10px; border-radius: 3px; background: #121826"></span><span style="width: 16px; height: 10px; border-radius: 3px; background: rgba(61,220,151,.16)"></span><span style="width: 16px; height: 10px; border-radius: 3px; background: rgba(61,220,151,.42)"></span></span>
+<span>perte forte → gain fort</span>
+</div>
+</section>
+
+<aside class="fu d4" aria-label="Détail de la journée" style="flex: 1 1 300px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div>
+<div style="font-size: 12px; color: #8A95AA">Journée sélectionnée</div>
+<h2 class="h" style="font-size: 20px; margin: 4px 0 0; font-weight: 600">{{day.title}}</h2>
+</div>
+<div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap">
+<span class="h num" style="font-size: 30px; font-weight: 600; color: {{day.c}}">{{day.pnl}}</span>
+<span class="num" style="font-size: 13px; color: #A3AEC2">{{day.meta}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{day.stats}}" as="m" hint-placeholder-count="3">
+<div style="padding: 10px; border-radius: 10px; background: #111622; border: 1px solid #1D2433; min-width: 0"><div style="font-size: 11px; color: #8A95AA">{{m.l}}</div><div class="num" style="font-size: 13px; font-weight: 600; margin-top: 3px; color: {{m.c}}; white-space: nowrap">{{m.v}}</div></div>
+</sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{day.trades}}" as="t" hint-placeholder-count="3">
+<button class="trow" type="button" onClick="{{t.pick}}" aria-label="{{t.aria}}" style="width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid #1D2433; background: #111622; color: #EEF1F6; text-align: left; cursor: pointer">
+<span style="flex: none; width: 30px; height: 30px; border-radius: 9px; background: {{t.ibg}}; color: {{t.ifg}}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800">{{t.ini}}</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-size: 13px; font-weight: 600">{{t.sym}} <span style="font-size: 11px; color: {{t.dirFg}}">{{t.dir}}</span></span><span class="num" style="display: block; font-size: 11px; color: #8A95AA; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{t.sub}}</span></span>
+<span style="text-align: right"><span class="num" style="display: block; font-size: 13px; font-weight: 700; color: {{t.rc}}">{{t.pnl}}</span><span class="num" style="display: block; font-size: 11px; color: #8A95AA; margin-top: 2px">{{t.r}}</span></span>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6F7A90" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</button>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #8A95AA">Clique sur un trade pour l'ouvrir dans la liste.</div>
+</aside>
+</div>
+</sc-if>
+
+<div style="font-size: 11px; color: #6F7A90">Données d'exemple générées pour la maquette · capital de départ supposé : 20 000 €</div>
+</main>
+
+<sc-if value="{{ex.isOpen}}" hint-placeholder-val="{{false}}">
+<div onClick="{{ex.close}}" style="position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 50; background: rgba(5,7,12,.74); display: flex; align-items: flex-start; justify-content: center; padding: 48px 16px; box-sizing: border-box; overflow-y: auto">
+<div role="dialog" aria-modal="true" aria-labelledby="ex-title" onClick="{{ex.stop}}" onKeyDown="{{ex.key}}" class="fu" style="width: 100%; max-width: 660px; background: #0E131D; border: 1px solid #2A3346; border-radius: 22px; box-shadow: 0 30px 80px rgba(0,0,0,.55); display: flex; flex-direction: column">
+
+<div style="display: flex; align-items: flex-start; gap: 12px; padding: 20px 22px; border-bottom: 1px solid #1A2130">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 12px; background: {{accentSoft}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"></path></svg></span>
+<div style="flex: 1; min-width: 0"><h2 id="ex-title" class="h" style="font-size: 20px; margin: 0; font-weight: 600">Exporter</h2><div style="font-size: 13px; color: #A3AEC2; margin-top: 3px">Récupère tes trades et tes statistiques pour les garder, les analyser ou les partager.</div></div>
+<button class="ghost" type="button" onClick="{{ex.close}}" aria-label="Fermer" style="flex: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+
+<sc-if value="{{ex.isForm}}" hint-placeholder-val="{{true}}">
+<div style="padding: 20px 22px; display: flex; flex-direction: column; gap: 20px">
+<div>
+<div id="ex-l-fmt" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Format</div>
+<div role="group" aria-labelledby="ex-l-fmt" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px">
+<sc-for list="{{ex.fmts}}" as="f" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="flex: 1 1 170px; text-align: left; cursor: pointer; padding: 14px; border-radius: 14px; border: 1px solid {{f.bd}}; background: {{f.bg}}; color: #EEF1F6; display: flex; flex-direction: column; gap: 6px">
+<span style="display: flex; align-items: center; gap: 8px; width: 100%"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{f.ic}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.icon}}"></path></svg><span style="font-size: 14px; font-weight: 700">{{f.l}}</span><sc-if value="{{f.badge}}" hint-placeholder-val="{{false}}"><span style="margin-left: auto; font-size: 9px; font-weight: 800; letter-spacing: .04em; padding: 2px 6px; border-radius: 5px; background: rgba(245,194,107,.16); color: #F5C26B">{{f.badge}}</span></sc-if></span>
+<span style="font-size: 12px; line-height: 1.45; color: #A3AEC2">{{f.d}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div>
+<div id="ex-l-per" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Période</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 8px">
+<div role="group" aria-labelledby="ex-l-per" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{ex.pers}}" as="p" hint-placeholder-count="4">
+<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 34px; background: {{p.bg}}; color: {{p.fg}}">{{p.label}}</button>
+</sc-for>
+</div>
+<label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #DCE2EC; cursor: pointer"><input type="checkbox" checked="{{ex.useF}}" onChange="{{ex.toggleF}}" style="width: 17px; height: 17px; accent-color: #6E8BFF">Appliquer mes filtres actuels <span style="color: #8A95AA">({{ex.fltTxt}})</span></label>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A3AEC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>
+<span class="num" style="font-size: 13px; color: #C9D3E6"><span style="color: #EEF1F6; font-weight: 700">{{ex.n}} trades</span> · {{ex.range}}</span>
+<span class="num" style="margin-left: auto; font-size: 13px; font-weight: 700; color: {{ex.pc}}">{{ex.pnl}}</span>
+</div>
+
+<div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px"><span style="font-size: 13px; font-weight: 600; color: #C9D3E6">{{ex.optTitle}}</span><button type="button" onClick="{{ex.all}}" style="cursor: pointer; border: 0; padding: 4px 0; background: transparent; color: {{accent}}; font-size: 12px; font-weight: 600">{{ex.allTxt}}</button></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px">
+<sc-for list="{{ex.opts}}" as="o" hint-placeholder-count="13">
+<label style="flex: 1 1 170px; display: flex; align-items: center; gap: 8px; padding: 9px 11px; border-radius: 10px; border: 1px solid {{o.bd}}; background: {{o.bg}}; font-size: 13px; color: #DCE2EC; cursor: pointer"><input type="checkbox" checked="{{o.on}}" onChange="{{o.toggle}}" style="width: 16px; height: 16px; accent-color: #6E8BFF">{{o.l}}</label>
+</sc-for>
+</div>
+<sc-if value="{{ex.note}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; color: #8A95AA; margin-top: 8px">{{ex.note}}</div></sc-if>
+</div>
+</div>
+
+<div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap; padding: 16px 22px; border-top: 1px solid #1A2130">
+<span style="margin-right: auto; font-size: 12px; color: {{ex.warnC}}">{{ex.warn}}</span>
+<button class="btn ghost" type="button" onClick="{{ex.close}}" style="cursor: pointer; border: 1px solid transparent; background: transparent; color: #A3AEC2; font-size: 14px; font-weight: 600; padding: 0 14px; height: 44px; border-radius: 11px">Annuler</button>
+<button class="btn" type="button" onClick="{{ex.go}}" disabled="{{ex.cant}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; padding: 0 20px; height: 44px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"></path></svg>{{ex.goTxt}}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ex.isWorking}}" hint-placeholder-val="{{false}}">
+<div role="status" style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 56px 22px; text-align: center">
+<svg class="spin" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 1-9 9"></path></svg>
+<div class="h" style="font-size: 18px; font-weight: 600">Préparation de ton fichier…</div>
+<div class="num" style="font-size: 13px; color: #8A95AA">{{ex.n}} trades · {{ex.fmtL}}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ex.isReady}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 36px 22px 28px; text-align: center">
+<span class="pop" style="width: 60px; height: 60px; border-radius: 30px; background: rgba(61,220,151,.14); display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3DDC97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>
+<h3 class="h" style="font-size: 20px; margin: 0; font-weight: 600">Ton fichier est prêt</h3>
+<div style="display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A3AEC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"></path><path d="M14 3v4h4"></path></svg>
+<span style="text-align: left"><span class="num" style="display: block; font-size: 14px; font-weight: 600">{{ex.fileName}}</span><span class="num" style="display: block; font-size: 12px; color: #8A95AA; margin-top: 2px">{{ex.fileMeta}}</span></span>
+</div>
+<sc-if value="{{ex.readyNote}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; color: #8A95AA; max-width: 440px">{{ex.readyNote}}</div></sc-if>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 4px">
+<sc-if value="{{ex.hasUrl}}" hint-placeholder-val="{{true}}"><a class="btn" href="{{ex.url}}" download="{{ex.fileName}}" style="display: inline-flex; align-items: center; gap: 8px; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; padding: 0 20px; height: 44px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"></path></svg>Télécharger le fichier</a></sc-if>
+<button class="btn ghost" type="button" onClick="{{ex.again}}" style="cursor: pointer; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 16px; height: 44px; border-radius: 11px">Autre export</button>
+<button class="btn ghost" type="button" onClick="{{ex.close}}" style="cursor: pointer; border: 1px solid transparent; background: transparent; color: #A3AEC2; font-size: 14px; font-weight: 600; padding: 0 14px; height: 44px; border-radius: 11px">Fermer</button>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"onglet":{"editor":"enum","options":["Trades","Statistiques","Calendrier"],"default":"Statistiques"},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":3500}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var T = this.gen();
+    this.enrich(T);
+    this.base = T;
+    this.lastAdded = this.sget('tj.added') || '';
+    this.setTrades(this.parseAdded(this.lastAdded));
+    T = this.trades;
+    this.lastYM = 2026 * 12 + 10;
+    this.CAP = 20000;
+    this.pageName = 'stats';
+    var sp = this.sget('tj.period');
+    this.lastP = sp;
+    this.state = { tab: null, period: ['7j', '30j', '90j', 'tout'].indexOf(sp) >= 0 ? sp : '30j', mk: 'all', res: 'all', dir: 'all', q: '', sort: 'date', desc: true, page: 0, sel: T[T.length - 1].id, calYM: 2026 * 12 + 9, calDay: null, hm: 'pnl' };
+  }
+  sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
+  sset(k, v) { try { if (v === null) window.sessionStorage.removeItem(k); else window.sessionStorage.setItem(k, v); } catch (e) {} }
+  componentDidMount() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var self = this;
+    this.syncIv = setInterval(function () { self.syncFromStore(); }, 400);
+    this.syncFromStore();
+  }
+  componentWillUnmount() { clearInterval(this.syncIv); }
+  parseAdded(str) { var l = []; try { l = JSON.parse(str || '[]') || []; } catch (e) { l = []; } return l; }
+  setTrades(added) {
+    var T = this.base.concat(added).sort(function (a, b) { return a.t - b.t; });
+    var self = this;
+    this.trades = T; this.byId = {}; this.pos = {}; this.byDay = {};
+    T.forEach(function (t, i) {
+      self.byId[t.id] = t; self.pos[t.id] = i;
+      var k = Math.floor(t.t / 86400000);
+      if (!self.byDay[k]) self.byDay[k] = [];
+      self.byDay[k].push(t);
+    });
+    var f = new Date(T[0].t);
+    this.firstYM = f.getUTCFullYear() * 12 + f.getUTCMonth();
+  }
+  syncFromStore() {
+    var up = {}, focus = null;
+    var ad = this.sget('tj.added') || '';
+    if (ad !== this.lastAdded) { this.lastAdded = ad; this.setTrades(this.parseAdded(ad)); up.rev = Date.now(); }
+    var sp = this.sget('tj.period');
+    if (sp && sp !== this.lastP && ['7j', '30j', '90j', 'tout'].indexOf(sp) >= 0) { this.lastP = sp; up.period = sp; up.page = 0; }
+    var g = this.sget('tj.go');
+    if (g) {
+      try {
+        var o = JSON.parse(g);
+        if (o.to === this.pageName && Date.now() - o.t < 15000) {
+          this.sset('tj.go', null);
+          up.page = 0;
+          if (o.tab) up.tab = o.tab;
+          if (o.period) up.period = o.period;
+          if (o.res) { up.res = o.res; up.mk = 'all'; up.dir = 'all'; up.q = ''; up.sort = 'pnl'; up.desc = o.res !== 'loss'; }
+          if (o.focus) focus = o.focus;
+          if (o.sel && this.byId[o.sel]) {
+            up.sel = o.sel; up.tab = 'trades'; up.period = 'tout'; up.mk = 'all'; up.dir = 'all'; up.res = 'all'; up.q = ''; up.sort = 'date'; up.desc = true;
+            up.page = Math.floor((this.trades.length - 1 - this.pos[o.sel]) / 12);
+          }
+        }
+      } catch (e) {}
+    }
+    if (Object.keys(up).length) this.setState(up);
+    if (focus) {
+      setTimeout(function () { try { var el = document.getElementById(focus); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {} }, 350);
+    }
+  }
+  componentDidUpdate(prev) {
+    if (prev.onglet !== this.props.onglet) this.setState({ tab: null });
+  }
+  rng(seed) {
+    var s = seed;
+    return function () { s = (s * 1664525 + 1013904223) % 4294967296; return s / 4294967296; };
+  }
+  gen() {
+    var r = this.rng(42), out = [], day = Date.UTC(2026, 10, 6), id = 0;
+    var A = [['EUR/USD', 'fx'], ['GBP/USD', 'fx'], ['USD/JPY', 'fx'], ['XAU/USD', 'co'], ['WTI', 'co'], ['BTC/USD', 'cr'], ['ETH/USD', 'cr'], ['NAS100', 'st'], ['CAC 40', 'st'], ['NVDA', 'st']];
+    var EMO = ['Calme', 'Confiant', 'FOMO', 'Stressé', 'Impatient'];
+    var EW = [0.36, 0.24, 0.14, 0.14, 0.12];
+    var guard = 0;
+    while (out.length < 230 && guard < 400) {
+      guard++;
+      var dow = new Date(day).getUTCDay();
+      if (dow !== 0 && dow !== 6) {
+        var n = Math.floor(r() * 3.3);
+        for (var k = 0; k < n; k++) {
+          var a = A[Math.floor(r() * A.length)];
+          var x = r(), e = 0, acc = 0;
+          for (var j = 0; j < EW.length; j++) { acc += EW[j]; if (x < acc) { e = j; break; } }
+          var emo = EMO[e];
+          var rs = r();
+          var ses = rs < 0.2 ? 'Asie' : rs < 0.6 ? 'Londres' : 'New York';
+          var p = emo === 'Calme' ? 0.62 : emo === 'Confiant' ? 0.57 : emo === 'Stressé' ? 0.42 : 0.33;
+          if (ses === 'Londres') p += 0.05;
+          if (ses === 'Asie') p -= 0.07;
+          var win = r() < p;
+          var R = win ? Math.round((1 + r() * 1.9) * 10) / 10 : (r() < 0.2 ? -0.5 : -1);
+          var hour = ses === 'Asie' ? 2 + Math.floor(r() * 5) : ses === 'Londres' ? 9 + Math.floor(r() * 4) : 14 + Math.floor(r() * 5);
+          out.push({ t: day + hour * 3600000 + Math.floor(r() * 12) * 300000, sym: a[0], mk: a[1], ses: ses, emo: emo, R: R, pnl: R * 200, id: ++id });
+        }
+      }
+      day -= 86400000;
+    }
+    out.sort(function (a, b) { return a.t - b.t; });
+    return out;
+  }
+  enrich(T) {
+    var r = this.rng(99);
+    var BASE = { 'EUR/USD': [1.1624, 4], 'GBP/USD': [1.3152, 4], 'USD/JPY': [153.42, 2], 'XAU/USD': [4012.4, 1], 'WTI': [61.42, 2], 'BTC/USD': [98450, 0], 'ETH/USD': [3520, 1], 'NAS100': [21480, 1], 'CAC 40': [8121.5, 1], 'NVDA': [188.4, 2] };
+    var NW = [
+      "Entrée sur clôture de bougie, j'ai laissé courir jusqu'à l'objectif sans toucher au stop.",
+      "Sortie partielle à 1 R, le reste à l'objectif. Bonne patience.",
+      "Niveau respecté au tick près dès l'ouverture."
+    ];
+    var NL = [
+      "Entrée un peu tôt, stop touché rapidement.",
+      "Le marché a réagi à une annonce que je n'avais pas vue.",
+      "Rien de spécial, le trade n'a simplement pas fonctionné."
+    ];
+    var NF = "Entré en retard après un gros mouvement, par peur de rater la suite.";
+    T.forEach(function (t) {
+      var win = t.R > 0;
+      t.dir = r() < 0.56 ? 'Long' : 'Short';
+      t.dur = 6 + Math.floor(r() * (win ? 210 : 90));
+      var b = BASE[t.sym];
+      t.dec = b[1];
+      t.entry = b[0] * (1 + (r() - 0.5) * 0.08);
+      var risk = t.entry * (0.0018 + r() * 0.0025);
+      var sg = t.dir === 'Long' ? 1 : -1;
+      t.stop = t.entry - sg * risk;
+      t.target = t.entry + sg * risk * 2;
+      t.exit = t.entry + sg * risk * t.R;
+      t.note = (!win && t.emo === 'FOMO') ? NF : win ? NW[Math.floor(r() * NW.length)] : NL[Math.floor(r() * NL.length)];
+      t.seed = 1000 + t.id * 7;
+      t.hour = new Date(t.t).getUTCHours();
+      t.dow = new Date(t.t).getUTCDay();
+    });
+  }
+  stats(L) {
+    var CAP = this.CAP;
+    var n = L.length, w = 0, sumR = 0, cum = 0, peak = 0, dd = 0, ddp = 0, gw = 0, gl = 0, cur = 0, best = 0, curL = 0, bestL = 0, dW = 0, dL = 0, rw = 0, rl = 0, big = 0, worst = 0;
+    L.forEach(function (t) {
+      if (t.R > 0) { w++; gw += t.pnl; rw += t.R; dW += t.dur; cur++; curL = 0; if (cur > best) best = cur; }
+      else { gl -= t.pnl; rl -= t.R; dL += t.dur; curL++; cur = 0; if (curL > bestL) bestL = curL; }
+      if (t.pnl > big) big = t.pnl;
+      if (t.pnl < worst) worst = t.pnl;
+      sumR += t.R; cum += t.pnl;
+      if (cum > peak) peak = cum;
+      if (peak - cum > dd) dd = peak - cum;
+      var p = (peak - cum) / (CAP + peak); if (p > ddp) ddp = p;
+    });
+    var l = n - w;
+    return {
+      n: n, w: w, l: l, pnl: cum, wr: n ? w / n * 100 : 0, exp: n ? sumR / n : 0, expE: n ? cum / n : 0,
+      dd: dd, ddp: ddp * 100, gw: gw, gl: gl, pf: gl ? gw / gl : (gw ? 99 : 0),
+      avgW: w ? gw / w : 0, avgL: l ? gl / l : 0, rW: w ? rw / w : 0, rL: l ? rl / l : 0,
+      streak: best, lstreak: bestL, durW: w ? dW / w : 0, durL: l ? dL / l : 0, dur: n ? (dW + dL) / n : 0, big: big, worst: worst
+    };
+  }
+  fEur(v) { return (v >= 0 ? '+' : '−') + Math.abs(Math.round(v)).toLocaleString('fr-FR') + ' €'; }
+  fEurU(v) { return Math.abs(Math.round(v)).toLocaleString('fr-FR') + ' €'; }
+  fR(r) { return (r >= 0 ? '+' : '−') + Math.abs(r).toFixed(2).replace('.', ',') + ' R'; }
+  fR1(r) { return (r >= 0 ? '+' : '−') + Math.abs(r).toFixed(1).replace('.', ',') + ' R'; }
+  fPx(v, d) { return v.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  fPct(v, sign) { return (sign ? (v >= 0 ? '+' : '−') : '') + Math.abs(v).toFixed(1).replace('.', ',') + ' %'; }
+  fPF(v) { return v >= 99 ? '∞' : v.toFixed(2).replace('.', ','); }
+  fDur(m) { if (m < 60) return Math.round(m) + ' min'; var h = Math.floor(m / 60), mm = Math.round(m % 60); return h + ' h ' + (mm < 10 ? '0' : '') + mm; }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  renderVals() {
+    var self = this, s = this.state, CAP = this.CAP;
+    var GAIN = '#3DDC97', LOSS = '#FF7A6B', GAINT = '#7BEBB9', LOSST = '#FF9A8E';
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var soft = this.soft(accent, 0.13), aLine = this.soft(accent, 0.38);
+    var tab = s.tab || ({ 'Statistiques': 'stats', 'Calendrier': 'cal' }[this.props.onglet ?? 'Statistiques'] || 'trades');
+    var T = this.trades, DAY = 86400000, END = Date.UTC(2026, 10, 6, 23, 59);
+    var MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    var MOISL = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    var MOISC = ['Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'];
+    var JOURS = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
+    var JOURSL = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    var pad2 = function (x) { return (x < 10 ? '0' : '') + x; };
+    var fDay = function (t) { var d = new Date(t); return JOURS[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MOIS[d.getUTCMonth()]; };
+    var fDayS = function (t) { var d = new Date(t); return d.getUTCDate() + ' ' + MOIS[d.getUTCMonth()]; };
+    var fHour = function (t) { var d = new Date(t); return pad2(d.getUTCHours()) + ':' + pad2(d.getUTCMinutes()); };
+    var ICO = { fx: ['rgba(110,139,255,.16)', '#A9BBFF'], co: ['rgba(245,194,107,.16)', '#F5C26B'], cr: ['rgba(183,148,246,.16)', '#CDB5FA'], st: ['rgba(61,220,151,.14)', '#7BEBB9'] };
+    var EMOC = { 'Calme': '#5FD3A5', 'Confiant': '#8FA6FF', 'FOMO': '#F5B87A', 'Stressé': '#FF9A8E', 'Impatient': '#D9A3F0' };
+    var DIRC = { 'Long': ['rgba(110,139,255,.16)', '#A9BBFF'], 'Short': ['rgba(245,166,91,.16)', '#F5B87A'] };
+    var ini = function (sym) { return sym.replace(/[^A-Z0-9]/g, '').slice(0, 2); };
+    var vcol = function (v) { return v >= 0 ? GAINT : LOSST; };
+
+    var openTrade = function (id) {
+      var idx = T.length - 1 - self.pos[id];
+      self.setState({ tab: 'trades', period: 'tout', mk: 'all', res: 'all', dir: 'all', q: '', sort: 'date', desc: true, sel: id, page: Math.floor(idx / 12) });
+    };
+
+    /* Filtres */
+    var days = { '7j': 7, '30j': 30, '90j': 90, 'tout': 0 }[s.period];
+    var periodLabel = { '7j': 'les 7 derniers jours', '30j': 'les 30 derniers jours', '90j': 'les 90 derniers jours', 'tout': 'tout l’historique' }[s.period];
+    var q = (s.q || '').trim().toLowerCase();
+    var F = T.filter(function (t) {
+      if (days && t.t <= END - days * DAY) return false;
+      if (s.mk !== 'all' && t.mk !== s.mk) return false;
+      if (s.dir !== 'all' && t.dir !== s.dir) return false;
+      if (s.res === 'win' && t.R <= 0) return false;
+      if (s.res === 'loss' && t.R > 0) return false;
+      if (q && t.sym.toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    var st = this.stats(F);
+    var hasData = F.length > 0;
+
+    var seg = function (on) { return { bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pressed: on ? 'true' : 'false' }; };
+    var pill = function (on) { return { bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2', pressed: on ? 'true' : 'false' }; };
+    var periods = [['7j', '7 j'], ['30j', '30 j'], ['90j', '90 j'], ['tout', 'Tout']].map(function (p) {
+      var o = seg(s.period === p[0]); o.label = p[1]; o.pick = function () { self.lastP = p[0]; self.sset('tj.period', p[0]); self.setState({ period: p[0], page: 0 }); }; return o;
+    });
+    var dirs = [['all', 'Long + short'], ['Long', 'Long'], ['Short', 'Short']].map(function (p) {
+      var o = seg(s.dir === p[0]); o.label = p[1]; o.pick = function () { self.setState({ dir: p[0], page: 0 }); }; return o;
+    });
+    var markets = [['all', 'Tous les marchés'], ['fx', 'Forex'], ['st', 'Indices et actions'], ['co', 'Matières premières'], ['cr', 'Crypto']].map(function (m) {
+      var o = pill(s.mk === m[0]); o.label = m[1]; o.pick = function () { self.setState({ mk: m[0], page: 0 }); }; return o;
+    });
+    var results = [['all', 'Tous'], ['win', 'Gagnants'], ['loss', 'Perdants']].map(function (m) {
+      var o = pill(s.res === m[0]); o.label = m[1]; o.pick = function () { self.setState({ res: m[0], page: 0 }); }; return o;
+    });
+
+    /* Onglets */
+    var tabs = [
+      ['trades', 'Trades', 'M4 6h16M4 12h16M4 18h10', String(F.length)],
+      ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', ''],
+      ['cal', 'Calendrier', 'M4 5h16v15H4zM4 10h16M9 3v4M15 3v4', '']
+    ].map(function (x) {
+      var on = tab === x[0];
+      return { label: x[1], icon: x[2], count: x[3], sel: on ? 'true' : 'false', fg: on ? '#EEF1F6' : '#8A95AA', bar: on ? accent : 'transparent', pick: function () { self.setState({ tab: x[0] }); } };
+    });
+
+    /* KPI liste */
+    var kpis = [
+      { l: 'Trades', v: String(st.n), s: periodLabel.charAt(0).toUpperCase() + periodLabel.slice(1), c: '#EEF1F6' },
+      { l: 'Taux de réussite', v: Math.round(st.wr) + ' %', s: st.w + ' gagnants · ' + st.l + ' perdants', c: '#EEF1F6' },
+      { l: 'P&L net', v: this.fEur(st.pnl), s: this.fPct(st.pnl / CAP * 100, true) + ' sur le capital', c: st.pnl >= 0 ? GAIN : LOSS },
+      { l: 'Espérance', v: this.fR(st.exp), s: this.fEur(st.expE) + ' par trade en moyenne', c: st.exp >= 0 ? GAIN : LOSS },
+      { l: 'Profit factor', v: this.fPF(st.pf), s: 'Gains bruts / pertes brutes', c: '#EEF1F6' }
+    ];
+
+    /* Table */
+    var S = F.slice();
+    if (s.sort === 'pnl') S.sort(function (a, b) { return s.desc ? (b.pnl - a.pnl || b.t - a.t) : (a.pnl - b.pnl || a.t - b.t); });
+    else if (s.sort === 'dur') S.sort(function (a, b) { return s.desc ? (b.dur - a.dur || b.t - a.t) : (a.dur - b.dur || a.t - b.t); });
+    else S.sort(function (a, b) { return s.desc ? b.t - a.t : a.t - b.t; });
+    var PER = 12, pages = Math.max(1, Math.ceil(S.length / PER)), page = Math.min(s.page, pages - 1);
+    var P = S.slice(page * PER, page * PER + PER);
+    var rows = P.map(function (t) {
+      var on = s.sel === t.id, up = t.R > 0;
+      return {
+        date: fDay(t.t), hour: fHour(t.t), sym: t.sym, ini: ini(t.sym), ibg: ICO[t.mk][0], ifg: ICO[t.mk][1],
+        dir: t.dir, dirFg: DIRC[t.dir][1], ses: t.ses, dur: self.fDur(t.dur), emo: t.emo, emoC: (EMOC[t.emo] || '#4F5A70'),
+        r: self.fR1(t.R), pnl: self.fEur(t.pnl), rc: up ? GAINT : LOSST,
+        bg: on ? '#131A28' : 'transparent', ring: on ? 'inset 0 0 0 1px ' + aLine : 'none', pressed: on ? 'true' : 'false',
+        pick: function () { self.setState({ sel: self.state.sel === t.id ? null : t.id }); }
+      };
+    });
+    var sortBtn = function (key) {
+      var on = s.sort === key;
+      return { fg: on ? '#EEF1F6' : '#8A95AA', arrow: on ? (s.desc ? '↓' : '↑') : '', pick: function () { self.setState({ sort: key, desc: on ? !self.state.desc : true, page: 0 }); } };
+    };
+    var pager = {
+      txt: S.length ? 'Trades ' + (page * PER + 1) + '–' + Math.min(S.length, page * PER + PER) + ' sur ' + S.length : 'Aucun trade',
+      page: (page + 1) + ' / ' + pages, prevDis: page <= 0, nextDis: page >= pages - 1,
+      prev: function () { self.setState({ page: Math.max(0, page - 1) }); },
+      next: function () { self.setState({ page: Math.min(pages - 1, page + 1) }); }
+    };
+
+    /* Détail du trade */
+    var d = null, t = s.sel ? this.byId[s.sel] : null;
+    if (t) {
+      var rr = this.rng(t.seed), sg = t.dir === 'Long' ? 1 : -1, i;
+      var pre = [], v = (rr() - 0.5) * 1.2;
+      for (i = 0; i < 14; i++) { pre.push(v); v += (rr() - 0.5) * 0.45; }
+      var lastPre = pre[13]; pre = pre.map(function (x, k) { return x - lastPre * k / 13; });
+      var N = 40, wk = [0];
+      for (i = 1; i <= N; i++) wk.push(wk[i - 1] + (rr() - 0.5) * 0.42);
+      var dl = wk[N] - t.R; wk = wk.map(function (x, k) { return x - dl * k / N; });
+      var cap = t.R >= 2 ? t.R + 0.4 : 1.9;
+      for (i = 1; i < N; i++) { if (wk[i] < -0.92) wk[i] = -0.92 + rr() * 0.08; if (wk[i] > cap) wk[i] = cap - rr() * 0.08; }
+      var mfe = Math.max.apply(null, wk), mae = Math.min.apply(null, wk);
+      var all = pre.concat(wk).map(function (x) { return x * sg; }).concat([sg * 2, 0, -sg]);
+      var mn = Math.min.apply(null, all), mx = Math.max.apply(null, all);
+      var Y = function (p) { return 14 + (mx - p) / (mx - mn) * 142; };
+      var pPath = 'M' + pre.map(function (x, k) { return (k / 13 * 90).toFixed(1) + ',' + Y(x * sg).toFixed(1); }).join(' L');
+      var tPath = 'M' + wk.map(function (x, k) { return (90 + k / N * 200).toFixed(1) + ',' + Y(x * sg).toFixed(1); }).join(' L');
+      var cA = this.stats(T.filter(function (x) { return x.sym === t.sym; }));
+      var cS = this.stats(T.filter(function (x) { return x.sym === t.sym && x.ses === t.ses; }));
+      var cH = this.stats(T.filter(function (x) { return x.hour === t.hour; }));
+      var ctxV = function (o) { return o.n + ' trades · ' + Math.round(o.wr) + ' % · ' + self.fR(o.exp); };
+      d = {
+        sym: t.sym, ini: ini(t.sym), ibg: ICO[t.mk][0], ifg: ICO[t.mk][1], dir: t.dir, dirBg: DIRC[t.dir][0], dirFg: DIRC[t.dir][1],
+        when: fDay(t.t) + ' 2026 · ' + fHour(t.t) + ' · Session ' + t.ses + (t.manual ? ' · ajouté à la main' : ''),
+        pnl: this.fEur(t.pnl), r: this.fR1(t.R), pc: t.R > 0 ? GAIN : LOSS, rBg: t.R > 0 ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)',
+        pct: this.fPct(t.pnl / CAP * 100, true),
+        pre: pPath, path: tPath, tf: t.dur > 120 ? 'H1' : t.dur > 40 ? 'M15' : 'M5',
+        tgtY: Y(sg * 2).toFixed(1), entY: Y(0).toFixed(1), stpY: Y(-sg).toFixed(1), exY: Y(sg * t.R).toFixed(1),
+        tgtL: 'Objectif ' + this.fPx(t.target, t.dec), entL: 'Entrée ' + this.fPx(t.entry, t.dec), stpL: 'Stop ' + this.fPx(t.stop, t.dec),
+        metrics: [
+          { l: 'Entrée', v: this.fPx(t.entry, t.dec), c: '#EEF1F6' }, { l: 'Sortie', v: this.fPx(t.exit, t.dec), c: '#EEF1F6' }, { l: 'Stop', v: this.fPx(t.stop, t.dec), c: '#EEF1F6' },
+          { l: 'Risque', v: '200 € · 1 %', c: '#EEF1F6' }, { l: 'Durée', v: this.fDur(t.dur), c: '#EEF1F6' }, { l: 'Ratio visé', v: '1 : 2', c: '#EEF1F6' },
+          { l: 'Max favorable', v: this.fR1(mfe), c: GAINT }, { l: 'Max défavorable', v: this.fR1(mae), c: LOSST }, { l: 'Gain laissé', v: this.fR1(Math.max(0, mfe - t.R)), c: '#EEF1F6' }
+        ],
+        ses: t.ses, emo: t.emo, emoC: (EMOC[t.emo] || '#4F5A70'),
+        ctx: [
+          { l: 'Tous tes trades ' + t.sym, v: ctxV(cA), c: vcol(cA.exp) },
+          { l: t.sym + ' · session ' + t.ses, v: ctxV(cS), c: vcol(cS.exp) },
+          { l: 'Entrées entre ' + t.hour + ' h et ' + (t.hour + 1) + ' h', v: ctxV(cH), c: vcol(cH.exp) }
+        ],
+        note: t.note
+      };
+    }
+
+    /* ===== Statistiques ===== */
+    var bars = function (list) {
+      var L = list.filter(function (r) { return r.n > 0; });
+      var mxA = Math.max.apply(null, L.map(function (r) { return Math.abs(r.pnl); }).concat([1]));
+      return L.map(function (r) {
+        var w = Math.abs(r.pnl) / mxA * 50;
+        return { label: r.label, meta: r.n + ' trades · ' + Math.round(r.wr) + ' %', v: self.fEur(r.pnl), vc: vcol(r.pnl), exp: self.fR(r.exp) + ' / trade', l: (r.pnl >= 0 ? 50 : 50 - w).toFixed(2), w: Math.max(w, 0.6).toFixed(2), c: r.pnl >= 0 ? GAIN : LOSS };
+      });
+    };
+    var grp = function (keys, fn) {
+      return keys.map(function (k) { var x = self.stats(F.filter(function (t) { return fn(t) === k[0]; })); x.label = k[1]; x.key = k[0]; return x; });
+    };
+    var cols = function (list, mid) {
+      var mxA = Math.max.apply(null, list.map(function (o) { return Math.abs(o.pnl); }).concat([1]));
+      return list.map(function (o) {
+        var h = o.n ? Math.max(2, Math.abs(o.pnl) / mxA * (mid - 8)) : 0, pos = o.pnl >= 0;
+        return { l: o.label, v: o.n ? self.fEur(o.pnl) : '—', vc: o.n ? vcol(o.pnl) : '#8A95AA', meta: o.meta, h: h.toFixed(1), top: (pos ? mid - h : mid).toFixed(1), rad: pos ? '5px 5px 0 0' : '0 0 5px 5px', c: pos ? GAIN : LOSS };
+      });
+    };
+
+    /* Sessions */
+    var SES = [['Asie', 'Asie', '01 h – 09 h'], ['Londres', 'Londres', '09 h – 14 h'], ['New York', 'New York', '14 h – 22 h']];
+    var sesS = grp(SES, function (t) { return t.ses; });
+    var bestSes = sesS.filter(function (o) { return o.n; }).sort(function (a, b) { return b.pnl - a.pnl; })[0];
+    var sessions = sesS.map(function (o, k) {
+      var isB = bestSes && o.key === bestSes.key;
+      return { l: o.label, hours: SES[k][2], v: o.n ? self.fEur(o.pnl) : '—', vc: vcol(o.pnl), n: o.n, wr: Math.round(o.wr) + ' %', wrN: Math.round(o.wr), pf: self.fPF(o.pf), exp: self.fR(o.exp), best: !!isB, bd: isB ? 'rgba(61,220,151,.35)' : '#1D2433', bar: o.wr >= 50 ? GAIN : '#F5B87A' };
+    });
+
+    /* Heures */
+    var cells = {}, hb = [];
+    F.forEach(function (t) { var k = t.dow + '-' + t.hour; if (!cells[k]) cells[k] = []; cells[k].push(t); });
+    var cellStats = {}, maxAbsC = 1, maxNC = 1;
+    Object.keys(cells).forEach(function (k) { var x = self.stats(cells[k]); cellStats[k] = x; if (Math.abs(x.pnl) > maxAbsC) maxAbsC = Math.abs(x.pnl); if (x.n > maxNC) maxNC = x.n; });
+    var hmRows = [1, 2, 3, 4, 5].map(function (dw) {
+      var cs = [];
+      for (var h = 0; h < 24; h++) {
+        var x = cellStats[dw + '-' + h];
+        if (!x) { cs.push({ bg: '#0B0F17', fg: '#3A4458', txt: '', title: JOURSL[dw] + ' ' + h + ' h : aucun trade' }); continue; }
+        var bg, txt, fg = '#EEF1F6';
+        if (s.hm === 'pnl') { var a = 0.14 + 0.5 * Math.min(1, Math.abs(x.pnl) / maxAbsC); bg = x.pnl >= 0 ? 'rgba(61,220,151,' + a.toFixed(2) + ')' : 'rgba(255,122,107,' + a.toFixed(2) + ')'; txt = (x.pnl >= 0 ? '+' : '−') + Math.abs(Math.round(x.pnl)); }
+        else if (s.hm === 'wr') { var a2 = 0.14 + 0.5 * Math.min(1, Math.abs(x.wr - 50) / 50); bg = x.wr >= 50 ? 'rgba(61,220,151,' + a2.toFixed(2) + ')' : 'rgba(255,122,107,' + a2.toFixed(2) + ')'; txt = Math.round(x.wr) + '%'; }
+        else { bg = self.soft(accent, (0.14 + 0.6 * x.n / maxNC).toFixed(2)); txt = String(x.n); }
+        cs.push({ bg: bg, fg: fg, txt: txt, title: JOURSL[dw] + ' ' + h + ' h : ' + self.fEur(x.pnl) + ' · ' + x.n + ' trades · ' + Math.round(x.wr) + ' % de réussite' });
+      }
+      return { l: JOURS[dw], cells: cs };
+    });
+    var hS = [];
+    for (var hh = 0; hh < 24; hh++) { (function (h) { var x = self.stats(F.filter(function (t) { return t.hour === h; })); x.h = h; hS.push(x); })(hh); }
+    var maxH = Math.max.apply(null, hS.map(function (o) { return Math.abs(o.pnl); }).concat([1]));
+    hb = hS.map(function (o) {
+      var h = o.n ? Math.max(2, Math.abs(o.pnl) / maxH * 56) : 0, pos = o.pnl >= 0;
+      return { n: o.n || '', h: h.toFixed(1), top: (pos ? 60 - h : 60).toFixed(1), rad: pos ? '4px 4px 0 0' : '0 0 4px 4px', c: pos ? GAIN : LOSS, title: o.h + ' h : ' + (o.n ? self.fEur(o.pnl) + ' · ' + o.n + ' trades · ' + Math.round(o.wr) + ' %' : 'aucun trade') };
+    });
+    var hours = []; for (var h2 = 0; h2 < 24; h2++) hours.push(h2 + 'h');
+    var hmModes = [['pnl', 'P&L'], ['wr', 'Réussite'], ['n', 'Nb de trades']].map(function (p) {
+      var o = seg(s.hm === p[0]); o.label = p[1]; o.pick = function () { self.setState({ hm: p[0] }); }; return o;
+    });
+    var hm = {
+      rows: hmRows, bars: hb, hours: hours,
+      bands: [
+        { l: 'Asie', col: '3 / 11', bg: 'rgba(183,148,246,.12)', fg: '#CDB5FA' },
+        { l: 'Londres', col: '11 / 16', bg: 'rgba(110,139,255,.14)', fg: '#A9BBFF' },
+        { l: 'New York', col: '16 / 24', bg: 'rgba(245,194,107,.12)', fg: '#F5C26B' }
+      ],
+      legend: s.hm === 'n' ? 'Peu de trades' : s.hm === 'wr' ? 'Réussite faible' : 'Perte forte',
+      legend2: s.hm === 'n' ? 'beaucoup de trades' : s.hm === 'wr' ? 'réussite élevée' : 'gain fort',
+      scale: s.hm === 'n' ? [this.soft(accent, 0.15), this.soft(accent, 0.3), this.soft(accent, 0.45), this.soft(accent, 0.6), this.soft(accent, 0.75)] : ['rgba(255,122,107,.6)', 'rgba(255,122,107,.25)', '#0B0F17', 'rgba(61,220,151,.25)', 'rgba(61,220,151,.6)']
+    };
+
+    /* Actifs */
+    var SYMS = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'XAU/USD', 'WTI', 'BTC/USD', 'ETH/USD', 'NAS100', 'CAC 40', 'NVDA'];
+    var MKOF = { 'EUR/USD': 'fx', 'GBP/USD': 'fx', 'USD/JPY': 'fx', 'XAU/USD': 'co', 'WTI': 'co', 'BTC/USD': 'cr', 'ETH/USD': 'cr', 'NAS100': 'st', 'CAC 40': 'st', 'NVDA': 'st' };
+    var asS = grp(SYMS.map(function (x) { return [x, x]; }), function (t) { return t.sym; }).filter(function (o) { return o.n; }).sort(function (a, b) { return b.pnl - a.pnl; });
+    var assets = asS.map(function (o) {
+      return { l: o.label, ini: ini(o.label), ibg: ICO[MKOF[o.label]][0], ifg: ICO[MKOF[o.label]][1], n: o.n, wr: Math.round(o.wr) + ' %', v: self.fEur(o.pnl), vc: vcol(o.pnl), pf: self.fPF(o.pf), exp: self.fR(o.exp), dur: self.fDur(o.dur) };
+    });
+
+    /* Long / short */
+    var lsS = grp([['Long', 'Long'], ['Short', 'Short']], function (t) { return t.dir; });
+    var ls = lsS.map(function (o) { return { l: o.label, bg: DIRC[o.key][0], fg: DIRC[o.key][1], v: self.fEur(o.pnl), vc: vcol(o.pnl), n: o.n, wr: Math.round(o.wr) + ' %', pf: self.fPF(o.pf), exp: self.fR(o.exp) }; });
+    var lsShare = { long: F.length ? Math.round(lsS[0].n / F.length * 100) : 0 };
+    lsShare.txt = lsShare.long + ' % long · ' + (100 - lsShare.long) + ' % short';
+
+    /* Jours, mois, distribution */
+    var wdS = grp([[1, 'Lun.'], [2, 'Mar.'], [3, 'Mer.'], [4, 'Jeu.'], [5, 'Ven.']], function (t) { return t.dow; });
+    wdS.forEach(function (o) { o.meta = o.n + ' tr. · ' + Math.round(o.wr) + ' %'; });
+    var wd = cols(wdS, 90);
+    var mList = [];
+    for (var m0 = this.firstYM; m0 <= this.lastYM; m0++) {
+      (function (m) {
+        var my = Math.floor(m / 12), mm = m % 12, a0 = Date.UTC(my, mm, 1), a1 = Date.UTC(my, mm + 1, 1);
+        var x = self.stats(F.filter(function (t) { return t.t >= a0 && t.t < a1; }));
+        x.label = MOISC[mm]; x.meta = x.n ? Math.round(x.wr) + ' % · ' + self.fPct(x.pnl / CAP * 100, true) : 'aucun trade';
+        mList.push(x);
+      })(m0);
+    }
+    var monthly = cols(mList, 90);
+    var BINS = [
+      ['−1 R', function (r) { return r <= -0.75; }, LOSS], ['−0,5 R', function (r) { return r > -0.75 && r < 0; }, LOSS],
+      ['1–1,5', function (r) { return r >= 1 && r < 1.5; }, GAIN], ['1,5–2', function (r) { return r >= 1.5 && r < 2; }, GAIN],
+      ['2–2,5', function (r) { return r >= 2 && r < 2.5; }, GAIN], ['2,5 R +', function (r) { return r >= 2.5; }, GAIN]
+    ];
+    var hc = BINS.map(function (b) { return F.filter(function (t) { return b[1](t.R); }).length; });
+    var hMax = Math.max.apply(null, hc.concat([1]));
+    var hist = BINS.map(function (b, k) { return { l: b[0], n: hc[k], h: Math.max(2, hc[k] / hMax * 120).toFixed(1), c: b[2] }; });
+
+    var durRows = grp([[0, 'Moins de 15 min'], [1, '15 à 60 min'], [2, '1 h à 2 h'], [3, 'Plus de 2 h']], function (t) { return t.dur < 15 ? 0 : t.dur < 60 ? 1 : t.dur < 120 ? 2 : 3; });
+    var emoRows = grp([['Calme', 'Calme'], ['Confiant', 'Confiant'], ['FOMO', 'FOMO'], ['Stressé', 'Stressé'], ['Impatient', 'Impatient']], function (t) { return t.emo; }).sort(function (a, b) { return b.pnl - a.pnl; });
+    var bdA = [{ title: 'Par durée de trade', sub: 'P&L net', rows: bars(durRows) }];
+    var bdB = [{ title: 'Par émotion', sub: 'si renseignée', rows: bars(emoRows) }];
+
+    /* Courbe de capital */
+    var E = [0], cum = 0; F.forEach(function (t) { cum += t.pnl; E.push(cum); });
+    var me = E.length, emn = Math.min.apply(null, E), emx = Math.max.apply(null, E); if (emx === emn) emx = emn + 1;
+    var EY = function (x) { return 14 + (emx - x) / (emx - emn) * 192; };
+    var eLine = 'M' + E.map(function (x, k) { return (k / Math.max(1, me - 1) * 800).toFixed(1) + ',' + EY(x).toFixed(1); }).join(' L');
+    var pk = 0, DD = E.map(function (x) { if (x > pk) pk = x; return x - pk; });
+    var ddMin = Math.min.apply(null, DD.concat([-1]));
+    var ddPath = 'M0,2 L' + DD.map(function (x, k) { return (k / Math.max(1, me - 1) * 800).toFixed(1) + ',' + (2 + x / ddMin * 64).toFixed(1); }).join(' L') + ' L800,2 Z';
+    var eq = {
+      line: eLine, area: eLine + ' L800,220 L0,220 Z', dd: ddPath,
+      yTop: this.fEur(emx), yMid: this.fEur((emx + emn) / 2), yBot: this.fEur(emn), ddBot: '−' + this.fEurU(-ddMin),
+      ddTxt: '−' + this.fEurU(st.dd) + ' (' + this.fPct(st.ddp) + ')',
+      x0: F.length ? fDayS(F[0].t) : '', x1: F.length ? fDayS(F[Math.floor(F.length / 2)].t) : '', x2: F.length ? fDayS(F[F.length - 1].t) : '',
+      range: F.length + ' trades · ' + (F.length ? fDayS(F[0].t) + ' → ' + fDayS(F[F.length - 1].t) : '')
+    };
+
+    /* Toutes les statistiques */
+    var dayMap = {}; F.forEach(function (t) { var k = Math.floor(t.t / DAY); dayMap[k] = (dayMap[k] || 0) + t.pnl; });
+    var dVals = Object.keys(dayMap).map(function (k) { return dayMap[k]; });
+    var nD = dVals.length, gD = dVals.filter(function (x) { return x > 0; }).length;
+    var mean = nD ? dVals.reduce(function (a, b) { return a + b; }, 0) / nD : 0;
+    var sd = nD > 1 ? Math.sqrt(dVals.reduce(function (a, b) { return a + (b - mean) * (b - mean); }, 0) / (nD - 1)) : 0;
+    var sharpe = sd ? mean / sd * Math.sqrt(252) : 0;
+    var bestDay = nD ? Math.max.apply(null, dVals) : 0, worstDay = nD ? Math.min.apply(null, dVals) : 0;
+    var W = '#EEF1F6';
+    var metrics = [
+      { l: 'Rendement sur le capital', v: this.fPct(st.pnl / CAP * 100, true), c: vcol(st.pnl) },
+      { l: 'P&L net', v: this.fEur(st.pnl), c: vcol(st.pnl) },
+      { l: 'Gains bruts', v: '+' + this.fEurU(st.gw), c: GAINT },
+      { l: 'Pertes brutes', v: '−' + this.fEurU(st.gl), c: LOSST },
+      { l: 'Espérance par trade', v: this.fEur(st.expE) + ' · ' + this.fR(st.exp), c: vcol(st.exp) },
+      { l: 'Gain moyen', v: '+' + this.fEurU(st.avgW) + ' · ' + this.fR(st.rW), c: GAINT },
+      { l: 'Perte moyenne', v: '−' + this.fEurU(st.avgL) + ' · −' + st.rL.toFixed(2).replace('.', ',') + ' R', c: LOSST },
+      { l: 'Ratio gain / perte moyen', v: st.avgL ? (st.avgW / st.avgL).toFixed(2).replace('.', ',') : '—', c: W },
+      { l: 'Plus gros gain', v: this.fEur(st.big), c: GAINT },
+      { l: 'Plus grosse perte', v: this.fEur(st.worst), c: LOSST },
+      { l: 'Drawdown max', v: '−' + this.fEurU(st.dd) + ' · ' + this.fPct(st.ddp), c: LOSST },
+      { l: 'Recovery factor', v: st.dd ? (st.pnl / st.dd).toFixed(2).replace('.', ',') : '—', c: W },
+      { l: 'Ratio de Sharpe (annualisé)', v: sharpe.toFixed(2).replace('.', ','), c: W },
+      { l: 'Série gagnante max', v: st.streak + ' trades', c: W },
+      { l: 'Série perdante max', v: st.lstreak + ' trades', c: W },
+      { l: 'Durée moyenne', v: this.fDur(st.dur), c: W },
+      { l: 'Durée moy. des gagnants', v: this.fDur(st.durW), c: W },
+      { l: 'Durée moy. des perdants', v: this.fDur(st.durL), c: W },
+      { l: 'Jours tradés', v: String(nD), c: W },
+      { l: 'Jours gagnants', v: gD + ' · ' + (nD ? Math.round(gD / nD * 100) : 0) + ' %', c: W },
+      { l: 'Trades par jour tradé', v: nD ? (st.n / nD).toFixed(1).replace('.', ',') : '—', c: W },
+      { l: 'Meilleur jour', v: this.fEur(bestDay), c: GAINT },
+      { l: 'Pire jour', v: this.fEur(worstDay), c: LOSST },
+      { l: 'Sorties à −0,5 R (stop remonté)', v: String(F.filter(function (t) { return t.R < 0 && t.R > -0.75; }).length), c: W }
+    ];
+    var hero = [
+      { l: 'P&L net', v: this.fEur(st.pnl), s: this.fPct(st.pnl / CAP * 100, true) + ' sur 20 000 € de capital', c: st.pnl >= 0 ? GAIN : LOSS },
+      { l: 'Taux de réussite', v: Math.round(st.wr) + ' %', s: st.w + ' gagnants · ' + st.l + ' perdants', c: W },
+      { l: 'Profit factor', v: this.fPF(st.pf), s: 'Au-dessus de 1,5 : très solide', c: W },
+      { l: 'Espérance', v: this.fR(st.exp), s: this.fEur(st.expE) + ' par trade en moyenne', c: st.exp >= 0 ? GAIN : LOSS }
+    ];
+
+    /* Insights automatiques */
+    var bestH = hS.filter(function (o) { return o.n >= 4; }).sort(function (a, b) { return b.exp - a.exp; })[0];
+    var worstA = asS.slice().sort(function (a, b) { return a.pnl - b.pnl; })[0];
+    var insights = [
+      { t: 'Ta meilleure session', v: bestSes ? bestSes.label : '—', c: W, d: bestSes ? this.fEur(bestSes.pnl) + ' · ' + Math.round(bestSes.wr) + ' % de réussite sur ' + bestSes.n + ' trades' : '' },
+      { t: 'Ton meilleur créneau horaire', v: bestH ? bestH.h + ' h – ' + (bestH.h + 1) + ' h' : '—', c: W, d: bestH ? this.fR(bestH.exp) + ' par trade · ' + Math.round(bestH.wr) + ' % de réussite sur ' + bestH.n + ' trades' : 'Pas encore assez de trades par heure' },
+      { t: worstA && worstA.pnl < 0 ? 'Ton actif le plus coûteux' : 'Ton actif le moins rentable', v: worstA ? worstA.label : '—', c: W, d: worstA ? this.fEur(worstA.pnl) + ' sur ' + worstA.n + ' trades · ' + Math.round(worstA.wr) + ' % de réussite' : '' }
+    ];
+
+    /* ===== Calendrier ===== */
+    var ym = s.calYM, cy = Math.floor(ym / 12), cm = ym % 12;
+    var first = Date.UTC(cy, cm, 1), dim = new Date(Date.UTC(cy, cm + 1, 0)).getUTCDate();
+    var off = (new Date(first).getUTCDay() + 6) % 7, start = first - off * DAY;
+    var nWeeks = Math.ceil((off + dim) / 7), todayKey = Math.floor(Date.UTC(2026, 10, 6) / DAY);
+    var mDays = [];
+    for (var dd = 1; dd <= dim; dd++) {
+      var key = Math.floor((first + (dd - 1) * DAY) / DAY), L0 = this.byDay[key] || [];
+      if (L0.length) { var x0 = this.stats(L0); mDays.push({ key: key, d: dd, L: L0, pnl: x0.pnl, n: x0.n, w: x0.w }); }
+    }
+    var mMax = Math.max.apply(null, mDays.map(function (o) { return Math.abs(o.pnl); }).concat([1]));
+    var selKey = s.calDay;
+    if (!mDays.some(function (o) { return o.key === selKey; })) selKey = mDays.length ? mDays[mDays.length - 1].key : null;
+    var weeks = [];
+    for (var w = 0; w < nWeeks; w++) {
+      var cs2 = [], wp = 0, wn = 0, wg = 0, wdays = 0;
+      for (var k = 0; k < 7; k++) {
+        var dt = start + (w * 7 + k) * DAY, dk = Math.floor(dt / DAY), D = new Date(dt), inM = D.getUTCMonth() === cm;
+        var LL = inM ? (this.byDay[dk] || []) : [];
+        if (LL.length) {
+          var xs = this.stats(LL), pos = xs.pnl >= 0, al = 0.1 + 0.32 * Math.min(1, Math.abs(xs.pnl) / mMax), on = dk === selKey;
+          wp += xs.pnl; wn += xs.n; wdays++; if (pos) wg++;
+          cs2.push({
+            isTrade: true, isEmpty: false, isWeek: false, num: D.getUTCDate(), today: dk === todayKey,
+            pnl: this.fEur(xs.pnl), nTxt: xs.n + (xs.n > 1 ? ' trades' : ' trade') + ' · ' + Math.round(xs.wr) + ' %',
+            fg: pos ? GAINT : LOSST, bg: pos ? 'rgba(61,220,151,' + al.toFixed(2) + ')' : 'rgba(255,122,107,' + al.toFixed(2) + ')',
+            bd: on ? accent : (pos ? 'rgba(61,220,151,.28)' : 'rgba(255,122,107,.3)'), ring: on ? '0 0 0 2px ' + aLine : 'none',
+            pressed: on ? 'true' : 'false', aria: JOURSL[D.getUTCDay()] + ' ' + D.getUTCDate() + ' ' + MOISL[cm] + ', ' + this.fEur(xs.pnl) + ', ' + xs.n + ' trades',
+            pick: (function (kk) { return function () { self.setState({ calDay: kk }); }; })(dk)
+          });
+        } else {
+          var we = k >= 5;
+          cs2.push({ isTrade: false, isEmpty: true, isWeek: false, num: D.getUTCDate(), fg: inM ? (we ? '#4F5A70' : '#8A95AA') : '#323B4E', bg: inM && !we ? '#0B0F17' : 'transparent', bd: inM ? '#161C29' : 'transparent' });
+        }
+      }
+      cs2.push({ isTrade: false, isEmpty: false, isWeek: true, lbl: 'Semaine ' + (w + 1), pnl: wn ? this.fEur(wp) : '—', fg: !wn ? '#8A95AA' : vcol(wp), nTxt: wn ? wg + ' / ' + wdays + ' jours verts' : 'Aucun trade' });
+      weeks.push({ cells: cs2 });
+    }
+    var mStats = this.stats([].concat.apply([], mDays.map(function (o) { return o.L; })));
+    var bestD = mDays.slice().sort(function (a, b) { return b.pnl - a.pnl; })[0], worstD = mDays.slice().sort(function (a, b) { return a.pnl - b.pnl; })[0];
+    var gDays = mDays.filter(function (o) { return o.pnl >= 0; }).length;
+    var months = [];
+    for (var m = this.firstYM; m <= this.lastYM; m++) {
+      var my = Math.floor(m / 12), mm = m % 12, b0 = Date.UTC(my, mm, 1), b1 = Date.UTC(my, mm + 1, 1);
+      var ms = this.stats(T.filter(function (t) { return t.t >= b0 && t.t < b1; })), onM = m === ym;
+      months.push({ l: MOISC[mm], v: this.fEur(ms.pnl), vc: vcol(ms.pnl), bg: onM ? soft : '#0E131D', bd: onM ? accent : '#1D2433', pressed: onM ? 'true' : 'false', pick: (function (mmm) { return function () { self.setState({ calYM: mmm, calDay: null }); }; })(m) });
+    }
+    var cal = {
+      title: MOISL[cm].charAt(0).toUpperCase() + MOISL[cm].slice(1) + ' ' + cy,
+      prevDis: ym <= this.firstYM, nextDis: ym >= this.lastYM,
+      prev: function () { self.setState({ calYM: Math.max(self.firstYM, ym - 1), calDay: null }); },
+      next: function () { self.setState({ calYM: Math.min(self.lastYM, ym + 1), calDay: null }); },
+      months: months, heads: ['LUN.', 'MAR.', 'MER.', 'JEU.', 'VEN.', 'SAM.', 'DIM.', 'SEMAINE'], weeks: weeks,
+      tiles: [
+        { l: 'P&L du mois', v: this.fEur(mStats.pnl), s: mStats.n + ' trades · ' + Math.round(mStats.wr) + ' % de réussite', c: mStats.pnl >= 0 ? GAIN : LOSS },
+        { l: 'Rendement du mois', v: this.fPct(mStats.pnl / CAP * 100, true), s: 'sur un capital de 20 000 €', c: vcol(mStats.pnl) },
+        { l: 'Jours gagnants', v: gDays + ' / ' + mDays.length, s: 'jours tradés dans le mois', c: W },
+        { l: 'Meilleur jour', v: bestD ? this.fEur(bestD.pnl) : '—', s: bestD ? JOURSL[new Date(bestD.key * DAY).getUTCDay()] + ' ' + bestD.d + ' ' + MOISL[cm] : '', c: GAINT },
+        { l: 'Pire jour', v: worstD ? this.fEur(worstD.pnl) : '—', s: worstD ? JOURSL[new Date(worstD.key * DAY).getUTCDay()] + ' ' + worstD.d + ' ' + MOISL[cm] : '', c: worstD && worstD.pnl < 0 ? LOSST : W }
+      ]
+    };
+    var day = { title: 'Aucun trade ce mois-ci', pnl: '—', c: '#8A95AA', meta: '', trades: [], stats: [] };
+    if (selKey !== null) {
+      var DL = this.byDay[selKey], ds = this.stats(DL), D2 = new Date(selKey * DAY);
+      day = {
+        title: JOURSL[D2.getUTCDay()] + ' ' + D2.getUTCDate() + ' ' + MOISL[D2.getUTCMonth()],
+        pnl: this.fEur(ds.pnl), c: ds.pnl >= 0 ? GAIN : LOSS,
+        meta: ds.n + (ds.n > 1 ? ' trades' : ' trade') + ' · ' + Math.round(ds.wr) + ' % · ' + this.fR(ds.exp) + ' / trade',
+        stats: [
+          { l: 'Meilleur trade', v: this.fEur(ds.big > 0 ? ds.big : Math.max.apply(null, DL.map(function (x) { return x.pnl; }))), c: GAINT },
+          { l: 'Pire trade', v: this.fEur(Math.min.apply(null, DL.map(function (x) { return x.pnl; }))), c: LOSST },
+          { l: 'Durée moy.', v: this.fDur(ds.dur), c: W }
+        ],
+        trades: DL.map(function (x) {
+          return { sym: x.sym, ini: ini(x.sym), ibg: ICO[x.mk][0], ifg: ICO[x.mk][1], dir: x.dir, dirFg: DIRC[x.dir][1], sub: fHour(x.t) + ' · ' + x.ses + ' · ' + self.fDur(x.dur), pnl: self.fEur(x.pnl), r: self.fR1(x.R), rc: x.R > 0 ? GAINT : LOSST, aria: 'Ouvrir le trade ' + x.sym + ' de ' + fHour(x.t), pick: function () { openTrade(x.id); } };
+        })
+      };
+    }
+
+    /* Export */
+    var EXC = [['date', 'Date'], ['hour', 'Heure'], ['sym', 'Actif'], ['dir', 'Sens'], ['ses', 'Session'], ['dur', 'Durée (min)'], ['entry', 'Prix d’entrée'], ['exit', 'Prix de sortie'], ['stop', 'Stop loss'], ['r', 'Résultat (R)'], ['pnl', 'P&L (€)'], ['emo', 'Émotion'], ['note', 'Note']];
+    var EXS = [['kpi', 'Chiffres clés'], ['eq', 'Courbe de capital'], ['hours', 'Heures et sessions'], ['assets', 'Par actif, long / short'], ['cal', 'Calendrier mensuel'], ['list', 'Liste des trades']];
+    var exFmt = s.exFmt || 'csv', isPdf = exFmt === 'pdf';
+    var exPer = s.exPer || s.period, exUseF = s.exUseF !== false;
+    var exCols = s.exCols || { date: 1, hour: 1, sym: 1, dir: 1, ses: 1, dur: 1, entry: 1, exit: 1, stop: 1, r: 1, pnl: 1, emo: 1, note: 0 };
+    var exSec = s.exSec || { kpi: 1, eq: 1, hours: 1, assets: 1, cal: 1, list: 0 };
+    var exDays = { '7j': 7, '30j': 30, '90j': 90, 'tout': 0 }[exPer];
+    var XL = T.filter(function (t) {
+      if (exDays && t.t <= END - exDays * DAY) return false;
+      if (exUseF) {
+        if (s.mk !== 'all' && t.mk !== s.mk) return false;
+        if (s.dir !== 'all' && t.dir !== s.dir) return false;
+        if (s.res === 'win' && t.R <= 0) return false;
+        if (s.res === 'loss' && t.R > 0) return false;
+        if (q && t.sym.toLowerCase().indexOf(q) < 0) return false;
+      }
+      return true;
+    });
+    var xst = this.stats(XL);
+    var MKL = { fx: 'Forex', st: 'Indices et actions', co: 'Matières premières', cr: 'Crypto' };
+    var flt = [];
+    if (s.mk !== 'all') flt.push(MKL[s.mk]);
+    if (s.dir !== 'all') flt.push(s.dir);
+    if (s.res !== 'all') flt.push(s.res === 'win' ? 'gagnants' : 'perdants');
+    if (q) flt.push('« ' + s.q + ' »');
+    var optMap = isPdf ? exSec : exCols, optDef = isPdf ? EXS : EXC;
+    var nSel = optDef.filter(function (o) { return optMap[o[0]]; }).length;
+    var fmtL = { csv: 'CSV', xlsx: 'Excel', pdf: 'Rapport PDF' }[exFmt];
+    var buildCsv = function () {
+      var keys = EXC.filter(function (c) { return exCols[c[0]]; });
+      var esc = function (v) { v = String(v == null ? '' : v); return /[";\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+      var dc = function (v, n) { return (+v).toFixed(n).replace('.', ','); };
+      var lines = [keys.map(function (k) { return esc(k[1]); }).join(';')];
+      XL.slice().reverse().forEach(function (t) {
+        var D = new Date(t.t);
+        lines.push(keys.map(function (k) {
+          var v = { date: D.getUTCFullYear() + '-' + pad2(D.getUTCMonth() + 1) + '-' + pad2(D.getUTCDate()), hour: fHour(t.t), sym: t.sym, dir: t.dir, ses: t.ses, dur: t.dur, entry: dc(t.entry, t.dec), exit: dc(t.exit, t.dec), stop: dc(t.stop, t.dec), r: dc(t.R, 2), pnl: dc(t.pnl, 2), emo: t.emo, note: t.note }[k[0]];
+          return esc(v);
+        }).join(';'));
+      });
+      return '﻿' + lines.join('\r\n');
+    };
+    var exClose = function () { clearTimeout(self.exT); self.setState({ ex: false }); };
+    var ex = {
+      isOpen: !!s.ex, isForm: !s.exStage || s.exStage === 'form', isWorking: s.exStage === 'working', isReady: s.exStage === 'ready',
+      open: function () { self.setState({ ex: true, exStage: 'form', exPer: null }); },
+      close: exClose, stop: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
+      key: function (e) { if (e && e.key === 'Escape') exClose(); },
+      fmts: [
+        ['csv', 'CSV', 'Liste brute des trades, lisible partout.', 'M14 3H6v18h12V7zM14 3v4h4M9 13h6M9 17h6', ''],
+        ['xlsx', 'Excel', 'Une feuille Trades et une feuille Statistiques.', 'M4 4h16v16H4zM4 10h16M10 4v16', ''],
+        ['pdf', 'Rapport PDF', 'Bilan mis en page, prêt à partager.', 'M14 3H6v18h12V7zM14 3v4h4M9 15l2 2 4-4', 'PREMIUM']
+      ].map(function (f) {
+        var on = exFmt === f[0];
+        return { l: f[1], d: f[2], icon: f[3], badge: f[4], pressed: on ? 'true' : 'false', bd: on ? accent : '#2A3346', bg: on ? soft : '#0B0F17', ic: on ? accent : '#A3AEC2', pick: function () { self.setState({ exFmt: f[0] }); } };
+      }),
+      pers: [['7j', '7 j'], ['30j', '30 j'], ['90j', '90 j'], ['tout', 'Tout']].map(function (p) {
+        var o = seg(exPer === p[0]); o.label = p[1]; o.pick = function () { self.setState({ exPer: p[0] }); }; return o;
+      }),
+      useF: exUseF, toggleF: function () { self.setState({ exUseF: !exUseF }); },
+      fltTxt: flt.length ? flt.join(', ') : 'aucun filtre actif',
+      n: XL.length, range: XL.length ? fDayS(XL[0].t) + ' → ' + fDayS(XL[XL.length - 1].t) + ' 2026' : 'aucun trade sur cette période',
+      pnl: XL.length ? this.fEur(xst.pnl) + ' · ' + Math.round(xst.wr) + ' %' : '', pc: xst.pnl >= 0 ? GAINT : LOSST,
+      optTitle: isPdf ? 'Sections du rapport' : 'Colonnes à inclure',
+      allTxt: nSel === optDef.length ? 'Tout décocher' : 'Tout cocher',
+      all: function () { var v = nSel === optDef.length ? 0 : 1, m = {}; optDef.forEach(function (o) { m[o[0]] = v; }); self.setState(isPdf ? { exSec: m } : { exCols: m }); },
+      opts: optDef.map(function (o) {
+        var on = !!optMap[o[0]];
+        return { l: o[1], on: on, bd: on ? aLine : '#1D2433', bg: on ? '#111622' : 'transparent', toggle: function () { var m = {}; Object.keys(optMap).forEach(function (k) { m[k] = optMap[k]; }); m[o[0]] = on ? 0 : 1; self.setState(isPdf ? { exSec: m } : { exCols: m }); } };
+      }),
+      note: exFmt === 'xlsx' ? 'Feuille Statistiques incluse : chiffres clés, par session, par actif et par mois.' : isPdf ? 'Le rapport reprend le design du site, avec ton nom et la période en en-tête.' : 'Séparateur point-virgule et virgule décimale : s’ouvre directement dans Excel en français.',
+      warn: !XL.length ? 'Aucun trade à exporter sur cette période.' : !nSel ? 'Choisis au moins un élément.' : '', warnC: LOSST,
+      cant: !XL.length || !nSel, goTxt: 'Télécharger · ' + fmtL, fmtL: fmtL,
+      go: function () {
+        if (!XL.length || !nSel) return;
+        var ext = exFmt === 'pdf' ? 'pdf' : 'csv';
+        var name = 'journal_' + (isPdf ? 'rapport' : 'trades') + '_' + exPer + '_2026-11-06.' + ext;
+        var url = '';
+        if (!isPdf) { try { if (self.exUrl) URL.revokeObjectURL(self.exUrl); url = URL.createObjectURL(new Blob([buildCsv()], { type: 'text/csv;charset=utf-8' })); self.exUrl = url; } catch (e) { url = ''; } }
+        var size = isPdf ? Math.round(180 + nSel * 60) : Math.max(1, Math.round(XL.length * nSel * 9 / 1024));
+        self.setState({ exStage: 'working' });
+        clearTimeout(self.exT);
+        self.exT = setTimeout(function () { self.setState({ exStage: 'ready', exUrl: url, exName: name, exSize: size + ' Ko' }); }, 1200);
+      },
+      again: function () { self.setState({ exStage: 'form' }); },
+      fileName: s.exName || '', url: s.exUrl || '', hasUrl: !!s.exUrl,
+      fileMeta: XL.length + ' trades · ' + fmtL + ' · ' + (s.exSize || ''),
+      readyNote: isPdf ? 'Dans la maquette, le rapport PDF est simulé : seuls les exports CSV et Excel produisent un vrai fichier.' : exFmt === 'xlsx' ? 'Dans la maquette, l’export Excel produit un fichier CSV qui s’ouvre dans Excel.' : ''
+    };
+
+    /* Menu */
+    var noop = function () {};
+    var navDef = [
+      { title: 'PRINCIPAL', items: [
+        ['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', '', '', 'Dashboard.dc.html'],
+        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6'],
+        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2']
+      ] },
+      { title: 'OUTILS', items: [
+        ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '2', 'warn'],
+        ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', 'NOUVEAU', 'accent']
+      ] },
+      { title: 'COMPTE', items: [
+        ['set', 'Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4'],
+        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01']
+      ] }
+    ];
+    var navOn = tab === 'stats' ? 'stats' : 'journal';
+    var navGroups = navDef.map(function (g) {
+      return { title: g.title, items: g.items.map(function (n) {
+        var on = navOn === n[0];
+        var pick = n[0] === 'journal' ? function () { self.setState({ tab: 'trades' }); } : n[0] === 'stats' ? function () { self.setState({ tab: 'stats' }); } : noop;
+        return { label: n[1], icon: n[2], badge: n[3] || '', href: n[5] || '#top', bBg: n[4] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: n[4] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false', pick: pick };
+      }) };
+    });
+
+    return {
+      accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim',
+      navGroups: navGroups,
+      subtitle: T.length + ' trades enregistrés · 10 actifs · dernier import il y a 12 min',
+      tabs: tabs,
+      showFilters: tab !== 'cal',
+      showEmpty: tab !== 'cal' && !hasData,
+      showTrades: tab === 'trades' && hasData,
+      showStats: tab === 'stats' && hasData,
+      showCal: tab === 'cal',
+      periods: periods, dirs: dirs, markets: markets, results: results, periodLabel: periodLabel,
+      q: s.q, onQ: function (e) { self.setState({ q: e.target.value, page: 0 }); },
+      resetFilters: function () { self.setState({ period: 'tout', mk: 'all', res: 'all', dir: 'all', q: '', page: 0 }); },
+      kpis: kpis, rows: rows, sortDate: sortBtn('date'), sortPnl: sortBtn('pnl'), sortDur: sortBtn('dur'), pager: pager,
+      hasSel: !!d, d: d || {}, closeSel: function () { self.setState({ sel: null }); },
+      insights: insights, hero: hero, eq: eq, sessions: sessions, metrics: metrics,
+      hm: hm, hmModes: hmModes, assets: assets, ls: ls, lsShare: lsShare,
+      wd: wd, hist: hist, bdA: bdA, bdB: bdB, monthly: monthly,
+      cal: cal, day: day, ex: ex
+    };
+  }
+}
+</script>
+</body>
+</html>

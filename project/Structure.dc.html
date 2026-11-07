@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Structure du site</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#A3AEC2}a:hover{color:#FFFFFF}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1000px; box-sizing: border-box; padding: 56px 64px; background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 32px">
+
+<div>
+<h1 class="h" style="font-size: 40px; margin: 0; font-weight: 700">Structure du site</h1>
+<p style="font-size: 17px; color: #A3AEC2; margin: 10px 0 0">Deux espaces : la vitrine publique pour convaincre, l'application pour travailler.</p>
+</div>
+
+<section style="border: 1px solid #222A3A; border-radius: 18px; padding: 24px; background: #0E131D">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: .1em; color: #94A0B4">SITE PUBLIC</span>
+<span style="font-size: 13px; color: #8A95AA">accessible sans compte</span>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px">
+<span style="padding: 12px 18px; border-radius: 12px; background: #151B28; border: 1px solid #2A3346; font-size: 15px; font-weight: 600">Accueil</span>
+<span style="padding: 12px 18px; border-radius: 12px; background: #151B28; border: 1px solid #2A3346; font-size: 15px">Fonctionnalités</span>
+<span style="padding: 12px 18px; border-radius: 12px; background: #151B28; border: 1px solid #2A3346; font-size: 15px">Tarifs</span>
+<span style="padding: 12px 18px; border-radius: 12px; background: #151B28; border: 1px solid #2A3346; font-size: 15px">Académie / Blog</span>
+<span style="padding: 12px 18px; border-radius: 12px; background: {{accentSoft}}; border: 1px solid {{accent}}; font-size: 15px; font-weight: 600">Inscription / Connexion</span>
+<span style="padding: 12px 18px; border-radius: 12px; background: #151B28; border: 1px solid #2A3346; font-size: 15px; color: #A3AEC2">Pages légales (CGU, RGPD, mentions)</span>
+</div>
+</section>
+
+<section style="border: 1px solid #222A3A; border-radius: 18px; padding: 24px; background: #0E131D; flex: 1; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: .1em; color: #94A0B4">APPLICATION</span>
+<span style="font-size: 13px; color: #8A95AA">après connexion · menu latéral, chaque module à 1 clic</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-top: 16px; flex: 1">
+<sc-for list="{{modules}}" as="m" hint-placeholder-count="5">
+<div style="background: #111622; border: 1px solid #222A3A; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+<h2 class="h" style="font-size: 19px; margin: 0; font-weight: 600">{{m.name}}</h2>
+<sc-if value="{{m.phase}}" hint-placeholder-val="{{true}}"><span style="font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: {{m.pbg}}; color: {{m.pfg}}; white-space: nowrap">{{m.phase}}</span></sc-if>
+</div>
+<p style="font-size: 13px; line-height: 1.5; color: #94A0B4; margin: 0">{{m.desc}}</p>
+<ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{m.items}}" as="it" hint-placeholder-count="4">
+<li style="font-size: 14px; color: #C9D3E6; padding: 9px 11px; border-radius: 9px; background: #0D111A; border: 1px solid #1D2433">{{it}}</li>
+</sc-for>
+</ul>
+</div>
+</sc-for>
+</div>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px">
+<div style="border-left: 0; border: 1px solid #222A3A; border-radius: 14px; padding: 18px; background: #0E131D">
+<div class="h" style="font-size: 16px; font-weight: 600">Peu d'entrées dans le menu</div>
+<p style="font-size: 14px; line-height: 1.5; color: #A3AEC2; margin: 6px 0 0">Un nouveau voit 5 modules clairs, les options avancées sont rangées dedans.</p>
+</div>
+<div style="border: 1px solid #222A3A; border-radius: 14px; padding: 18px; background: #0E131D">
+<div class="h" style="font-size: 16px; font-weight: 600">Accueil guidé en 3 étapes</div>
+<p style="font-size: 14px; line-height: 1.5; color: #A3AEC2; margin: 6px 0 0">Choisir ses marchés, importer ses trades, voir ses premières stats. Moins de 2 minutes.</p>
+</div>
+<div style="border: 1px solid #222A3A; border-radius: 14px; padding: 18px; background: #0E131D">
+<div class="h" style="font-size: 16px; font-weight: 600">Le même design partout</div>
+<p style="font-size: 14px; line-height: 1.5; color: #A3AEC2; margin: 6px 0 0">Mêmes cartes, mêmes couleurs, mêmes boutons : on apprend une fois, on comprend tout.</p>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  renderVals() {
+    var accent = this.props.accent ?? '#6E8BFF';
+    var p1 = { bg: 'rgba(61,220,151,.16)', fg: '#7BEBB9' };
+    var p2 = { bg: 'rgba(110,139,255,.18)', fg: '#A9BBFF' };
+    var p3 = { bg: 'rgba(245,166,91,.16)', fg: '#F5B87A' };
+    return {
+      accent: accent,
+      accentSoft: this.soft(accent, 0.14),
+      modules: [
+        { name: 'Tableau de bord', phase: 'Phase 1', pbg: p1.bg, pfg: p1.fg, desc: "La vue d'ensemble en un coup d'œil.", items: ['Stats clés', 'Courbe de capital', 'Prochaines annonces', 'Conseil du coach IA'] },
+        { name: 'Journal', phase: 'Phase 1', pbg: p1.bg, pfg: p1.fg, desc: 'Le cœur du produit, utilisé chaque jour.', items: ['Liste des trades', 'Ajout manuel / import', 'Statistiques détaillées', 'Heures et sessions', 'Calendrier de performance'] },
+        { name: 'News', phase: 'Phase 2', pbg: p2.bg, pfg: p2.fg, desc: 'Tout ce qui fait bouger les marchés.', items: ['Calendrier économique', "Résultats d'entreprises", 'Actus éco et géopolitiques', 'Alertes personnalisées'] },
+        { name: 'Backtesting', phase: 'Phase 3', pbg: p3.bg, pfg: p3.fg, desc: 'Tester une stratégie avant de risquer son argent.', items: ['Mes sessions', 'Replay graphique', 'Résultats → journal', 'Comparaison backtest / réel'] },
+        { name: 'Compte', phase: '', pbg: '', pfg: '', desc: 'Réglages et abonnement.', items: ['Profil', 'Abonnement (Stripe)', 'Connexions brokers', 'Préférences'] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
