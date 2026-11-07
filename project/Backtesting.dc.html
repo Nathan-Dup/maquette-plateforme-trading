@@ -160,7 +160,7 @@ button:disabled{opacity:.4;cursor:default !important}
 
 <sc-if value="{{isStats}}" hint-placeholder-val="{{false}}">
 <div role="tablist" aria-label="Sections des statistiques du backtest" class="fu d2" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px">
-<sc-for list="{{j.stSubs}}" as="t" hint-placeholder-count="5">
+<sc-for list="{{j.stSubs}}" as="t" hint-placeholder-count="4">
 <button type="button" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}" class="stab" style="flex: 1 1 0; min-width: 158px; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid {{t.bd}}; background: {{t.bg}}; text-align: left; cursor: pointer">
 <span style="flex: none; width: 34px; height: 34px; border-radius: 10px; background: {{t.ibg}}; color: {{t.ic}}; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg></span>
 <span style="min-width: 0"><span style="display: block; font-size: 14px; font-weight: 600; color: {{t.fg}}; white-space: nowrap">{{t.l}}</span><span style="display: block; font-size: 11px; color: #8A95AA; margin-top: 2px; white-space: nowrap">{{t.hint}}</span></span>
@@ -462,73 +462,6 @@ button:disabled{opacity:.4;cursor:default !important}
 </div>
 </section>
 </div>
-</sc-if>
-<sc-if value="{{j.stBe}}" hint-placeholder-val="{{false}}">
-<sc-if value="{{j.noIns}}" hint-placeholder-val="{{false}}"><div style="font-size: 13px; color: #8A95AA">{{j.advNote}}</div></sc-if>
-<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
-<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Quand tu enchaînes les trades</h2>
-<div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Ton résultat moyen selon que c'est ton 1er, 2e, 3e… trade de la journée.</div>
-<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px">
-<sc-for list="{{j.be.day}}" as="c" hint-placeholder-count="3">
-<div style="flex: 1 1 150px; padding: 14px 16px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
-<div style="font-size: 12px; color: #94A0B4">{{c.l}}</div>
-<div class="h num" style="font-size: 24px; font-weight: 600; margin-top: 6px; color: {{c.c}}">{{c.v}}</div>
-<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{c.meta}}</div>
-<div style="height: 5px; border-radius: 3px; background: #1A2130; margin-top: 10px; overflow: hidden"><div class="growx" style="width: {{c.w}}%; height: 100%; border-radius: 3px; background: {{c.bar}}"></div></div>
-</div>
-</sc-for>
-</div>
-<sc-if value="{{j.be.dayTxt}}" hint-placeholder-val="{{false}}"><div style="display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: {{accentSoft}}; border: 1px solid {{accentLine}}; font-size: 14px; line-height: 1.5; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg><span class="num">{{j.be.dayTxt}}</span></div></sc-if>
-</section>
-<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
-<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Après un gain ou une perte</h2>
-<div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Ton résultat moyen sur le trade suivant. Utile pour repérer quand tu cherches à te refaire.</div>
-<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px">
-<sc-for list="{{j.be.after}}" as="c" hint-placeholder-count="4">
-<div style="flex: 1 1 150px; padding: 14px 16px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
-<div style="font-size: 12px; color: #94A0B4">{{c.l}}</div>
-<div class="h num" style="font-size: 24px; font-weight: 600; margin-top: 6px; color: {{c.c}}">{{c.v}}</div>
-<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{c.meta}}</div>
-<div class="num" style="font-size: 11px; color: #6F7A90; margin-top: 2px">{{c.vs}}</div>
-</div>
-</sc-for>
-</div>
-<sc-if value="{{j.be.afterTxt}}" hint-placeholder-val="{{false}}"><div style="display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: {{accentSoft}}; border: 1px solid {{accentLine}}; font-size: 14px; line-height: 1.5; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg><span class="num">{{j.be.afterTxt}}</span></div></sc-if>
-</section>
-<section class="fu d2" aria-labelledby="bn-t" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
-<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap">
-<div>
-<h2 id="bn-t" class="h" style="font-size: 17px; margin: 0; font-weight: 600">Trades près des news fortes</h2>
-<div style="font-size: 13px; color: #8A95AA; margin-top: 4px">{{bn.sub}}</div>
-</div>
-<div style="display: flex; align-items: center; gap: 8px">
-<label for="bn-min" style="font-size: 12px; font-weight: 600; color: #C9D3E6">Fenêtre autour de la news</label>
-<select id="bn-min" class="inp" value="{{bn.min}}" onChange="{{bn.onMin}}" style="height: 40px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark">
-<sc-for list="{{bn.opts}}" as="o" hint-placeholder-count="4"><option value="{{o.v}}">{{o.l}}</option></sc-for>
-</select>
-</div>
-</div>
-<sc-if value="{{bn.ok}}" hint-placeholder-val="{{true}}">
-<div style="display: flex; flex-wrap: wrap; gap: 12px">
-<sc-for list="{{bn.groups}}" as="g" hint-placeholder-count="2">
-<div style="flex: 1 1 280px; min-width: 0; padding: 16px; border-radius: 14px; background: #111622; border: 1px solid {{g.bd}}">
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
-<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: {{g.fg}}"><span style="width: 8px; height: 8px; border-radius: 4px; background: {{g.dot}}"></span>{{g.l}}</span>
-<sc-if value="{{g.faible}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 2px 6px; border-radius: 5px; background: rgba(245,166,91,.14); color: #F5B87A">ÉCHANTILLON FAIBLE</span></sc-if>
-</div>
-<div style="display: flex; gap: 10px; margin-top: 12px">
-<div style="flex: 1; min-width: 0"><div style="font-size: 11px; color: #8A95AA">Trades</div><div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 3px">{{g.n}}</div></div>
-<div style="flex: 1; min-width: 0"><div style="font-size: 11px; color: #8A95AA">Réussite</div><div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 3px">{{g.wr}}</div></div>
-<div style="flex: 1; min-width: 0"><div style="font-size: 11px; color: #8A95AA">Expectancy</div><div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 3px; color: {{g.ec}}">{{g.exp}}</div></div>
-</div>
-</div>
-</sc-for>
-</div>
-<div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: {{bn.boxBg}}; border: 1px solid {{bn.boxBd}}; font-size: 14px; line-height: 1.5; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{bn.icC}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="{{bn.icon}}"></path></svg><span class="num">{{bn.phrase}}</span></div>
-<sc-if value="{{bn.hasTop}}" hint-placeholder-val="{{false}}"><div class="num" style="font-size: 12px; color: #8A95AA">{{bn.top}}</div></sc-if>
-</sc-if>
-<sc-if value="{{bn.off}}" hint-placeholder-val="{{false}}"><div style="font-size: 13px; color: #8A95AA">{{bn.offMsg}}</div></sc-if>
-</section>
 </sc-if>
 <sc-if value="{{j.stEv}}" hint-placeholder-val="{{false}}">
 <section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
@@ -947,7 +880,6 @@ class Component extends DCLogic {
       ['ov', 'Vue d’ensemble', 'Chiffres clés et courbe', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z'],
       ['hr', 'Heures et sessions', 'Quand tu gagnes', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 7v5l3 2'],
       ['as', 'Actifs et sens', 'Sur quoi tu gagnes', 'M4 20V10M10 20V4M16 20v-7M22 20H2'],
-      ['be', 'Comportement', 'Tes habitudes', 'M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8M4 21a8 8 0 0 1 16 0'],
       ['ev', 'Évolution', 'Ta progression', 'M3 17l6-6 4 4 8-8M15 7h6v6']
     ];
     var stSubs = SUBS.map(function (x) { var on = stSub === x[0]; return { l: x[1], hint: x[2], icon: x[3], sel: on ? 'true' : 'false', bd: on ? aLine : '#1D2433', bg: on ? soft : '#0E131D', fg: on ? '#EEF1F6' : '#C9D3E6', ibg: on ? accent : '#1A2130', ic: on ? '#0A0D14' : '#A3AEC2', pick: function () { self.setState({ bsSub: x[0] }); } }; });
