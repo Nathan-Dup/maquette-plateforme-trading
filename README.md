@@ -18,6 +18,8 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 | `project/Statistiques.dc.html` | Copie du Journal qui s'ouvre directement sur l'onglet Statistiques |
 | `project/Importer.dc.html` | Importer des trades (fichier, connexion broker, historique) |
 | `project/NouveauTrade.dc.html` | Ajouter un trade à la main |
+| `project/Backtesting.dc.html` | Backtesting : mes sessions, nouvelle session, réel vs backtest |
+| `project/Replay.dc.html` | Backtesting : replay bougie par bougie avec prise de positions |
 | `project/canvas.json` | Disposition des écrans sur le canevas |
 
 ## Ce que fait l'application
@@ -43,6 +45,13 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 5. Évolution : comparaison avec la période précédente, progression sur les 20 derniers trades, performance par mois.
 
 **Règle des 15 trades** : toutes les statistiques sont toujours affichées. Les conseils rédigés automatiquement (meilleure session, meilleur créneau, analyses du Coach IA) n'apparaissent qu'à partir de 15 trades sur la sélection.
+
+**Backtesting**
+- Liste des sessions (en cours ou terminées) avec progression, trades, réussite et résultat en R.
+- Nouvelle session : actif, unité de temps (M15, H1, H4), période, capital, risque par trade.
+- Replay : lecture, pause, bougie suivante, vitesse ×1 à ×4. Ordres Acheter / Vendre avec stop (serré, normal, large) et objectif (1:1 à 1:3). Fermeture automatique au stop ou à l'objectif. Stop au point d'entrée, clôture manuelle, niveaux horizontaux, bilan de fin de session.
+- Réel vs backtest : comparaison d'une session avec les vrais trades sur le même actif.
+- Les trades de test restent séparés des statistiques réelles. Dans la maquette, les prix sont simulés ; le vrai produit aura besoin de données historiques de marché.
 
 **Nouvel utilisateur** : un écran d'accueil propose de connecter son broker, d'importer un fichier ou de saisir un trade. Il est visible avec le réglage « nouvelUtilisateur ».
 

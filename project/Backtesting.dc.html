@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Backtesting</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#A3AEC2;text-decoration:none}a:hover{color:#FFFFFF}
+button,input,select{font-family:inherit}
+button:disabled{opacity:.4;cursor:default !important}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{animation:fu .7s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}.d4{animation-delay:.28s}
+@keyframes growx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.growx{transform-origin:left;animation:growx .8s cubic-bezier(.2,.7,.2,1) .2s both}
+@keyframes draw{from{stroke-dashoffset:1200}to{stroke-dashoffset:0}}
+.draw{stroke-dasharray:1200;animation:draw 1.4s cubic-bezier(.4,0,.2,1) .2s both}
+.nav{transition:background .2s,color .2s}.nav:hover{background:#131927;color:#EEF1F6}
+.chip{transition:background .2s,color .2s,border-color .2s}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28;border-color:#36415B}
+.scard{transition:border-color .25s,transform .25s}.scard:hover{border-color:#36415B !important;transform:translateY(-2px)}
+.inp:focus{outline:none;border-color:#6E8BFF !important;box-shadow:0 0 0 3px rgba(110,139,255,.2)}
+.noanim *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; min-height: 100vh">
+<aside style="flex: 1 1 248px; background: #0B0F17; border-right: 1px solid #171D2A; padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px">
+<span style="width: 32px; height: 32px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 19px; font-weight: 700">[NOM]</span>
+</div>
+<nav aria-label="Menu de l'application" style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
+<div>
+<sc-if value="{{g.title}}" hint-placeholder-val="{{true}}"><div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div></sc-if>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="3">
+<a class="nav" href="{{n.href}}" aria-current="{{n.current}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; background: {{n.bg}}; color: {{n.fg}}; font-weight: {{n.fw}}">
+<span style="position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: {{n.bar}}"></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+<span style="flex: 1">{{n.label}}</span>
+<sc-if value="{{n.badge}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 999px; background: {{n.bBg}}; color: {{n.bFg}}">{{n.badge}}</span></sc-if>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid #1A2130">
+<span style="width: 34px; height: 34px; border-radius: 17px; background: #1D2433; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #DCE2EC">AM</span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 600">Alex Martin</div><div style="font-size: 11px; color: #8A95AA">Premium · renouvellement le 6 déc.</div></div>
+</div>
+</aside>
+<main id="top" style="flex: 999 1 560px; min-width: 0; padding: 26px 36px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+
+<div class="fu" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div>
+<div style="font-size: 13px; color: #8A95AA">Outils · Backtesting</div>
+<h1 class="h" style="font-size: 30px; margin: 6px 0 0; font-weight: 700">Backtesting</h1>
+<p style="font-size: 14px; color: #A3AEC2; margin: 6px 0 0">Teste une idée sur l'historique, bougie par bougie, sans risquer un euro.</p>
+</div>
+<button class="btn" type="button" onClick="{{nw.open}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; padding: 0 18px; height: 44px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Nouvelle session</button>
+</div>
+
+<div class="fu d1" style="display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+<div style="flex: 1 1 200px; background: #0E131D; border: 1px solid #1D2433; border-radius: 16px; padding: 16px 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="font-size: 12px; color: #94A0B4">{{k.l}}</div>
+<div class="h num" style="font-size: 26px; font-weight: 600; margin-top: 6px; color: {{k.c}}">{{k.v}}</div>
+<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{k.s}}</div>
+</div>
+</sc-for>
+</div>
+
+<section class="fu d2" aria-labelledby="sess-t" style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<h2 id="sess-t" class="h" style="font-size: 20px; margin: 0; font-weight: 600">Mes sessions</h2>
+<div role="group" aria-label="Afficher" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{flt}}" as="p" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 34px; background: {{p.bg}}; color: {{p.fg}}">{{p.l}}</button>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{noSess}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 48px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center">
+<div class="h" style="font-size: 18px; font-weight: 600">{{emptyT}}</div>
+<div style="font-size: 14px; color: #A3AEC2; max-width: 460px">Une session = une idée testée sur un actif et une période. Tu avances bougie par bougie et tu prends tes décisions comme en direct.</div>
+<button class="btn" type="button" onClick="{{nw.open}}" style="cursor: pointer; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; padding: 0 18px; height: 44px; border-radius: 11px">Créer ma première session</button>
+</div>
+</sc-if>
+
+<div style="display: flex; flex-direction: column; gap: 12px">
+<sc-for list="{{sess}}" as="x" hint-placeholder-count="4">
+<div class="scard" style="background: #0E131D; border: 1px solid {{x.bd}}; border-radius: 18px; padding: 18px 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: center">
+<div style="flex: 2 1 260px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+<span class="h" style="font-size: 17px; font-weight: 600">{{x.name}}</span>
+<span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 7px; border-radius: 6px; background: {{x.stBg}}; color: {{x.stFg}}">{{x.st}}</span>
+</div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px">
+<span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{x.ibg}}; color: {{x.ifg}}">{{x.sym}}</span>
+<span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: #1A2130; color: #C9D3E6">{{x.tf}}</span>
+<span class="num" style="font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: #1A2130; color: #C9D3E6">{{x.per}}</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; margin-top: 12px">
+<span style="flex: 1; height: 6px; border-radius: 3px; background: #1A2130; overflow: hidden"><span class="growx" style="display: block; width: {{x.prog}}%; height: 100%; border-radius: 3px; background: {{x.pc}}"></span></span>
+<span class="num" style="font-size: 12px; color: #A3AEC2; white-space: nowrap">{{x.progTxt}}</span>
+</div>
+</div>
+<div style="flex: 3 1 360px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+<div style="flex: 1 1 70px"><div style="font-size: 11px; color: #8A95AA">Trades</div><div class="h num" style="font-size: 18px; font-weight: 600; margin-top: 3px">{{x.n}}</div></div>
+<div style="flex: 1 1 70px"><div style="font-size: 11px; color: #8A95AA">Réussite</div><div class="h num" style="font-size: 18px; font-weight: 600; margin-top: 3px">{{x.wr}}</div></div>
+<div style="flex: 1 1 90px"><div style="font-size: 11px; color: #8A95AA">Résultat</div><div class="h num" style="font-size: 18px; font-weight: 600; margin-top: 3px; color: {{x.rc}}">{{x.tot}}</div></div>
+<svg viewBox="0 0 120 40" preserveAspectRatio="none" style="flex: 1 1 110px; height: 40px; min-width: 90px" aria-hidden="true"><path d="{{x.spark}}" fill="none" stroke="{{x.rc}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg>
+</div>
+<div style="flex: 1 1 180px; display: flex; gap: 8px; justify-content: flex-end; align-items: center">
+<a class="btn" href="Replay.dc.html" onClick="{{x.open}}" style="display: inline-flex; align-items: center; gap: 8px; background: {{x.btnBg}}; color: {{x.btnFg}}; border: 1px solid {{x.btnBd}}; font-size: 13px; font-weight: 700; padding: 0 16px; height: 40px; border-radius: 10px; white-space: nowrap"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg>{{x.btn}}</a>
+<button class="ghost" type="button" onClick="{{x.ask}}" aria-label="Supprimer la session {{x.name}}" style="flex: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #A3AEC2; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg></button>
+</div>
+</div>
+<sc-if value="{{x.confirm}}" hint-placeholder-val="{{false}}">
+<div role="alert" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: rgba(255,122,107,.08); border: 1px solid rgba(255,122,107,.3)">
+<span style="flex: 1 1 260px; font-size: 13px; color: #FFC2BA">Supprimer « {{x.name}} » et ses {{x.n}} trades de test ? Cette action est définitive.</span>
+<button class="ghost" type="button" onClick="{{x.cancel}}" style="cursor: pointer; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600; padding: 0 12px; height: 36px; border-radius: 9px">Annuler</button>
+<button class="btn" type="button" onClick="{{x.del}}" style="cursor: pointer; border: 0; background: #FF7A6B; color: #0A0D14; font-size: 13px; font-weight: 700; padding: 0 14px; height: 36px; border-radius: 9px">Supprimer</button>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+
+<sc-if value="{{cmp.show}}" hint-placeholder-val="{{true}}">
+<section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap">
+<div>
+<h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Réel vs backtest</h2>
+<div style="font-size: 13px; color: #8A95AA; margin-top: 4px">Est-ce que tu obtiens en réel les mêmes résultats qu'en test, sur le même actif ?</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 240px">
+<label for="cmp-s" style="font-size: 12px; font-weight: 600; color: #C9D3E6">Session comparée</label>
+<select id="cmp-s" class="inp" value="{{cmp.id}}" onChange="{{cmp.onPick}}" style="height: 40px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark">
+<sc-for list="{{cmp.opts}}" as="o" hint-placeholder-count="4"><option value="{{o.id}}">{{o.l}}</option></sc-for>
+</select>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px">
+<sc-for list="{{cmp.rows}}" as="r" hint-placeholder-count="3">
+<div style="flex: 1 1 220px; padding: 14px 16px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
+<div style="font-size: 12px; color: #94A0B4">{{r.l}}</div>
+<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px">
+<div style="display: grid; grid-template-columns: 70px minmax(0, 1fr) 70px; align-items: center; gap: 8px; font-size: 12px"><span style="color: #F5B87A; font-weight: 600">Backtest</span><span style="height: 6px; border-radius: 3px; background: #1A2130; overflow: hidden"><span class="growx" style="display: block; width: {{r.bw}}%; height: 100%; background: #F5B87A"></span></span><span class="num" style="text-align: right; font-weight: 700">{{r.bv}}</span></div>
+<div style="display: grid; grid-template-columns: 70px minmax(0, 1fr) 70px; align-items: center; gap: 8px; font-size: 12px"><span style="color: #A9BBFF; font-weight: 600">Réel</span><span style="height: 6px; border-radius: 3px; background: #1A2130; overflow: hidden"><span class="growx" style="display: block; width: {{r.rw}}%; height: 100%; background: {{accent}}"></span></span><span class="num" style="text-align: right; font-weight: 700">{{r.rv}}</span></div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: {{accentSoft}}; border: 1px solid {{accentLine}}; font-size: 14px; line-height: 1.5; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg><span class="num">{{cmp.txt}}</span></div>
+</section>
+</sc-if>
+
+<div style="font-size: 11px; color: #6F7A90">Sessions et résultats d'exemple pour la maquette · les trades de test restent séparés de tes statistiques réelles.</div>
+</main>
+
+<sc-if value="{{nw.isOpen}}" hint-placeholder-val="{{false}}">
+<div onClick="{{nw.close}}" style="position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 60; background: rgba(5,7,12,.74); display: flex; align-items: flex-start; justify-content: center; padding: 48px 16px; box-sizing: border-box; overflow-y: auto">
+<div role="dialog" aria-modal="true" aria-labelledby="nw-t" onClick="{{nw.stop}}" onKeyDown="{{nw.key}}" class="fu" style="width: 100%; max-width: 600px; background: #0E131D; border: 1px solid #2A3346; border-radius: 22px; box-shadow: 0 30px 80px rgba(0,0,0,.55); display: flex; flex-direction: column">
+<div style="display: flex; align-items: flex-start; gap: 12px; padding: 20px 22px; border-bottom: 1px solid #1A2130">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 12px; background: rgba(245,166,91,.14); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5B87A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z"></path></svg></span>
+<div style="flex: 1"><h2 id="nw-t" class="h" style="font-size: 20px; margin: 0; font-weight: 600">{{nw.title}}</h2><div style="font-size: 13px; color: #A3AEC2; margin-top: 3px">Choisis ce que tu veux tester. Tu pourras tout revoir plus tard.</div></div>
+<button class="ghost" type="button" onClick="{{nw.close}}" aria-label="Fermer" style="flex: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<sc-if value="{{nw.isForm}}" hint-placeholder-val="{{true}}">
+<div style="padding: 20px 22px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="nw-name" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Nom de la session *</label>
+<input id="nw-name" class="inp" type="text" value="{{nw.f.name}}" onChange="{{nw.on.name}}" placeholder="ex. Cassure de Londres sur l'euro" aria-invalid="{{nw.invName}}" style="height: 44px; padding: 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{nw.bdName}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; width: 100%">
+<sc-if value="{{nw.errName}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #FF9A8E">{{nw.errName}}</span></sc-if>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap">
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+<label for="nw-sym" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Actif</label>
+<select id="nw-sym" class="inp" value="{{nw.f.sym}}" onChange="{{nw.on.sym}}" style="height: 44px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; color-scheme: dark">
+<sc-for list="{{nw.syms}}" as="o" hint-placeholder-count="8"><option value="{{o}}">{{o}}</option></sc-for>
+</select>
+</div>
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+<span id="nw-l-tf" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Unité de temps</span>
+<div role="group" aria-labelledby="nw-l-tf" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #2A3346; border-radius: 10px; padding: 3px; height: 44px; box-sizing: border-box">
+<sc-for list="{{nw.tfs}}" as="t" hint-placeholder-count="3"><button class="chip" type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="flex: 1; cursor: pointer; border: 0; border-radius: 7px; font-size: 13px; font-weight: 600; background: {{t.bg}}; color: {{t.fg}}">{{t.l}}</button></sc-for>
+</div>
+</div>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap">
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+<label for="nw-from" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Début de la période</label>
+<input id="nw-from" class="inp num" type="date" value="{{nw.f.from}}" onChange="{{nw.on.from}}" style="height: 44px; padding: 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{nw.bdDate}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; color-scheme: dark">
+</div>
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+<label for="nw-to" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Fin de la période</label>
+<input id="nw-to" class="inp num" type="date" value="{{nw.f.to}}" onChange="{{nw.on.to}}" style="height: 44px; padding: 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{nw.bdDate}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; color-scheme: dark">
+</div>
+</div>
+<sc-if value="{{nw.errDate}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #FF9A8E; margin-top: -8px">{{nw.errDate}}</span></sc-if>
+<div style="display: flex; gap: 16px; flex-wrap: wrap">
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+<label for="nw-cap" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Capital de départ</label>
+<div style="position: relative"><input id="nw-cap" class="inp num" type="text" inputmode="decimal" value="{{nw.f.cap}}" onChange="{{nw.on.cap}}" style="height: 44px; padding: 0 34px 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{nw.bdCap}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; width: 100%"><span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: #8A95AA">€</span></div>
+</div>
+<div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px">
+<span id="nw-l-risk" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Risque par trade</span>
+<div role="group" aria-labelledby="nw-l-risk" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #2A3346; border-radius: 10px; padding: 3px; height: 44px; box-sizing: border-box">
+<sc-for list="{{nw.risks}}" as="t" hint-placeholder-count="4"><button class="chip" type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="flex: 1; cursor: pointer; border: 0; border-radius: 7px; font-size: 13px; font-weight: 600; background: {{t.bg}}; color: {{t.fg}}">{{t.l}}</button></sc-for>
+</div>
+</div>
+</div>
+<div class="num" style="padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433; font-size: 13px; line-height: 1.5; color: #A3AEC2">{{nw.recap}}</div>
+</div>
+<div style="display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; padding: 16px 22px; border-top: 1px solid #1A2130">
+<button class="btn ghost" type="button" onClick="{{nw.close}}" style="cursor: pointer; border: 1px solid transparent; background: transparent; color: #A3AEC2; font-size: 14px; font-weight: 600; padding: 0 14px; height: 44px; border-radius: 11px">Annuler</button>
+<button class="btn" type="button" onClick="{{nw.create}}" style="cursor: pointer; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; padding: 0 20px; height: 44px; border-radius: 11px">Créer la session</button>
+</div>
+</sc-if>
+<sc-if value="{{nw.isDone}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px 22px 28px; text-align: center">
+<span style="width: 56px; height: 56px; border-radius: 28px; background: rgba(61,220,151,.14); display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3DDC97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>
+<div class="h" style="font-size: 20px; font-weight: 600">{{nw.doneName}}</div>
+<div class="num" style="font-size: 13px; color: #A3AEC2">{{nw.doneSub}}</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 8px">
+<a class="btn" href="Replay.dc.html" onClick="{{nw.go}}" style="display: inline-flex; align-items: center; gap: 8px; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; padding: 0 20px; height: 44px; border-radius: 11px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg>Lancer le replay</a>
+<button class="btn ghost" type="button" onClick="{{nw.close}}" style="cursor: pointer; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 16px; height: 44px; border-radius: 11px">Plus tard</button>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":1260}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.lastSess = this.sget('bt.sessions') || '';
+    this.state = { sessions: this.loadSessions(), flt: 'all', del: null, nw: null, cmpId: null };
+  }
+  sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
+  sset(k, v) { try { if (v === null) window.sessionStorage.removeItem(k); else window.sessionStorage.setItem(k, v); } catch (e) {} }
+  rng(seed) {
+    var s = seed;
+    return function () { s = (s * 1664525 + 1013904223) % 4294967296; return s / 4294967296; };
+  }
+  btSyms() {
+    return {
+      'EUR/USD': { p: 1.0820, v: 0.0009, d: 5, mk: 'fx' }, 'GBP/USD': { p: 1.2650, v: 0.0011, d: 5, mk: 'fx' }, 'USD/JPY': { p: 149.5, v: 0.09, d: 3, mk: 'fx' },
+      'XAU/USD': { p: 2050, v: 2.4, d: 2, mk: 'co' }, 'WTI': { p: 76, v: 0.18, d: 2, mk: 'co' },
+      'NAS100': { p: 17800, v: 22, d: 1, mk: 'st' }, 'CAC 40': { p: 7600, v: 9, d: 1, mk: 'st' },
+      'BTC/USD': { p: 52000, v: 260, d: 0, mk: 'cr' }
+    };
+  }
+  mkSession(id, name, sym, tf, from, to, cap, risk, prog, n, p, seed, created) {
+    var r = this.rng(seed), r2 = this.rng(seed + 1000), trades = [], span = (to - from) * prog;
+    for (var i = 0; i < n; i++) {
+      var win = r() < p, R = win ? Math.round((1.2 + r() * 1.4) * 10) / 10 : -1;
+      trades.push({ dir: r2() < 0.55 ? 'Long' : 'Short', R: R, t: Math.round(from + span * (i + 0.5) / n) });
+    }
+    return { id: id, name: name, sym: sym, tf: tf, from: from, to: to, cap: cap, risk: risk, prog: prog, trades: trades, done: prog >= 1, created: created, last: created };
+  }
+  defSessions() {
+    return [
+      this.mkSession('s1', 'Cassure de Londres', 'EUR/USD', 'M15', Date.UTC(2025, 2, 3), Date.UTC(2025, 5, 30), 10000, 1, 0.68, 142, 0.54, 19, Date.UTC(2026, 10, 6, 7, 40)),
+      this.mkSession('s2', 'Pullback sur l’or', 'XAU/USD', 'H1', Date.UTC(2025, 0, 6), Date.UTC(2025, 3, 30), 10000, 1, 1, 64, 0.5, 23, Date.UTC(2026, 10, 2, 20, 10)),
+      this.mkSession('s3', 'Range Nasdaq en session US', 'NAS100', 'M15', Date.UTC(2025, 8, 1), Date.UTC(2025, 10, 28), 10000, 0.5, 0.35, 40, 0.45, 31, Date.UTC(2026, 9, 28, 21, 0)),
+      this.mkSession('s4', 'Swing Bitcoin', 'BTC/USD', 'H4', Date.UTC(2024, 9, 1), Date.UTC(2025, 2, 31), 10000, 1, 1, 28, 0.43, 37, Date.UTC(2026, 9, 12, 18, 30))
+    ];
+  }
+  loadSessions() { try { var l = JSON.parse(this.sget('bt.sessions') || 'null'); if (l && l.length !== undefined) return l; } catch (e) {} return this.defSessions(); }
+  saveSessions(l) { var v = JSON.stringify(l); this.lastSess = v; this.sset('bt.sessions', v); }
+  sStats(trades, cap, risk) {
+    var n = trades.length, w = 0, sr = 0, eq = [0], cum = 0, peak = 0, dd = 0;
+    trades.forEach(function (t) { if (t.R > 0) w++; sr += t.R; cum += t.R; eq.push(cum); if (cum > peak) peak = cum; if (peak - cum > dd) dd = peak - cum; });
+    return { n: n, w: w, wr: n ? w / n * 100 : 0, exp: n ? sr / n : 0, tot: sr, eq: eq, dd: dd, eur: sr * cap * risk / 100 };
+  }
+  fR(r) { return (r >= 0 ? '+' : '−') + Math.abs(r).toFixed(2).replace('.', ',') + ' R'; }
+  fR1(r) { return (r >= 0 ? '+' : '−') + Math.abs(r).toFixed(1).replace('.', ',') + ' R'; }
+  fEur(v) { return (v >= 0 ? '+' : '−') + Math.abs(Math.round(v)).toLocaleString('fr-FR') + ' €'; }
+  fPx(v, d) { return v.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  fMonth(t) { var M = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']; var d = new Date(t); return M[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); }
+  fDate(t) { var M = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']; var d = new Date(t); return d.getUTCDate() + ' ' + M[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  componentDidMount() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var self = this;
+    var tick = function () {
+      var up = {};
+      var v = self.sget('bt.sessions') || '';
+      if (v && v !== self.lastSess) { self.lastSess = v; up.sessions = self.loadSessions(); }
+      try {
+        var g = JSON.parse(self.sget('tj.go') || 'null');
+        if (g && g.to === 'bt' && Date.now() - g.t < 15000) { self.sset('tj.go', null); if (g.action === 'new') up.nw = self.blankNew(); }
+      } catch (e) {}
+      if (Object.keys(up).length) self.setState(up);
+    };
+    tick();
+    this.iv = setInterval(tick, 500);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  blankNew() { return { step: 'form', tried: false, f: { name: '', sym: 'EUR/USD', tf: 'M15', from: '2025-09-01', to: '2025-11-28', cap: '10000', risk: 1 } }; }
+  realTrades() {
+    var r = this.rng(42), out = [], day = Date.UTC(2026, 10, 6), id = 0;
+    var A = [['EUR/USD', 'fx'], ['GBP/USD', 'fx'], ['USD/JPY', 'fx'], ['XAU/USD', 'co'], ['WTI', 'co'], ['BTC/USD', 'cr'], ['ETH/USD', 'cr'], ['NAS100', 'st'], ['CAC 40', 'st'], ['NVDA', 'st']];
+    var EMO = ['Calme', 'Confiant', 'FOMO', 'Stressé', 'Impatient'], EW = [0.36, 0.24, 0.14, 0.14, 0.12], guard = 0;
+    while (out.length < 230 && guard < 400) {
+      guard++;
+      var dow = new Date(day).getUTCDay();
+      if (dow !== 0 && dow !== 6) {
+        var n = Math.floor(r() * 3.3);
+        for (var k = 0; k < n; k++) {
+          var a = A[Math.floor(r() * A.length)];
+          var x = r(), e = 0, acc = 0;
+          for (var j = 0; j < EW.length; j++) { acc += EW[j]; if (x < acc) { e = j; break; } }
+          var emo = EMO[e], rs = r();
+          var ses = rs < 0.2 ? 'Asie' : rs < 0.6 ? 'Londres' : 'New York';
+          var p = emo === 'Calme' ? 0.62 : emo === 'Confiant' ? 0.57 : emo === 'Stressé' ? 0.42 : 0.33;
+          if (ses === 'Londres') p += 0.05;
+          if (ses === 'Asie') p -= 0.07;
+          var win = r() < p;
+          var R = win ? Math.round((1 + r() * 1.9) * 10) / 10 : (r() < 0.2 ? -0.5 : -1);
+          r(); r();
+          out.push({ sym: a[0], R: R });
+        }
+      }
+      day -= 86400000;
+    }
+    return out;
+  }
+  renderVals() {
+    var self = this, s = this.state;
+    var GAIN = '#3DDC97', LOSS = '#FF7A6B', GAINT = '#7BEBB9', LOSST = '#FF9A8E';
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var soft = this.soft(accent, 0.13), aLine = this.soft(accent, 0.38);
+    var ICO = { fx: ['rgba(110,139,255,.16)', '#A9BBFF'], co: ['rgba(245,194,107,.16)', '#F5C26B'], cr: ['rgba(183,148,246,.16)', '#CDB5FA'], st: ['rgba(61,220,151,.14)', '#7BEBB9'] };
+    var SY = this.btSyms();
+    var L = s.sessions;
+    var setSess = function (l, extra) { self.saveSessions(l); var o = { sessions: l }; for (var k in (extra || {})) o[k] = extra[k]; self.setState(o); };
+
+    /* KPI */
+    var allT = [].concat.apply([], L.map(function (x) { return x.trades; }));
+    var ga = this.sStats(allT, 10000, 1);
+    var running = L.filter(function (x) { return !x.done; }).length;
+    var kpis = [
+      { l: 'Sessions', v: String(L.length), s: running + ' en cours · ' + (L.length - running) + ' terminée' + (L.length - running > 1 ? 's' : ''), c: '#EEF1F6' },
+      { l: 'Trades testés', v: String(ga.n), s: 'sur toutes tes sessions', c: '#EEF1F6' },
+      { l: 'Taux de réussite', v: ga.n ? Math.round(ga.wr) + ' %' : '—', s: ga.w + ' gagnants · ' + (ga.n - ga.w) + ' perdants', c: '#EEF1F6' },
+      { l: 'Espérance moyenne', v: ga.n ? this.fR(ga.exp) : '—', s: 'ce que rapporte un trade de test', c: ga.exp >= 0 ? GAIN : LOSS }
+    ];
+
+    /* Sessions */
+    var flt = [['all', 'Toutes'], ['run', 'En cours'], ['done', 'Terminées']].map(function (f) {
+      var on = s.flt === f[0];
+      return { l: f[1], pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.setState({ flt: f[0] }); } };
+    });
+    var shown = L.filter(function (x) { return s.flt === 'all' || (s.flt === 'done' ? x.done : !x.done); }).slice().sort(function (a, b) { return (b.last || 0) - (a.last || 0); });
+    var sess = shown.map(function (x) {
+      var st = self.sStats(x.trades, x.cap, x.risk), sp = SY[x.sym] || { mk: 'fx' };
+      var eq = st.eq.length > 1 ? st.eq : [0, 0], mn = Math.min.apply(null, eq), mx = Math.max.apply(null, eq); if (mx === mn) mx = mn + 1;
+      var spark = 'M' + eq.map(function (v, i) { return (i / (eq.length - 1) * 120).toFixed(1) + ',' + (36 - (v - mn) / (mx - mn) * 32).toFixed(1); }).join(' L');
+      var prog = Math.round(x.prog * 100);
+      return {
+        name: x.name, sym: x.sym, tf: x.tf, per: self.fMonth(x.from) + ' → ' + self.fMonth(x.to), ibg: ICO[sp.mk][0], ifg: ICO[sp.mk][1],
+        st: x.done ? 'TERMINÉE' : 'EN COURS', stBg: x.done ? '#1A2130' : 'rgba(245,166,91,.16)', stFg: x.done ? '#A3AEC2' : '#F5B87A',
+        prog: prog, progTxt: x.done ? (prog >= 99 ? 'Période testée en entier' : 'Arrêtée à ' + prog + ' % de la période') : prog + ' % de la période testée', pc: x.done ? '#3A4458' : '#F5B87A',
+        n: st.n, wr: st.n ? Math.round(st.wr) + ' %' : '—', tot: st.n ? self.fR1(st.tot) : '—', rc: st.tot >= 0 ? GAIN : LOSS, spark: spark,
+        btn: x.done ? 'Revoir' : st.n || x.prog ? 'Reprendre' : 'Commencer', btnBg: x.done ? 'transparent' : accent, btnFg: x.done ? '#EEF1F6' : '#0A0D14', btnBd: x.done ? '#2A3346' : accent,
+        bd: s.del === x.id ? 'rgba(255,122,107,.5)' : '#1D2433', confirm: s.del === x.id,
+        open: function () { self.sset('bt.current', x.id); },
+        ask: function () { self.setState({ del: x.id }); }, cancel: function () { self.setState({ del: null }); },
+        del: function () { setSess(self.state.sessions.filter(function (y) { return y.id !== x.id; }), { del: null }); }
+      };
+    });
+
+    /* Réel vs backtest */
+    var withT = L.filter(function (x) { return x.trades.length > 0; });
+    var cs = withT.filter(function (x) { return x.id === s.cmpId; })[0] || withT[0];
+    var cmp = { show: !!cs };
+    if (cs) {
+      var bs = this.sStats(cs.trades, cs.cap, cs.risk);
+      var real = this.realTrades().filter(function (t) { return t.sym === cs.sym; });
+      var rs2 = this.sStats(real, 10000, 1);
+      var mxE = Math.max(Math.abs(bs.exp), Math.abs(rs2.exp), 0.1);
+      cmp.id = cs.id;
+      cmp.opts = withT.map(function (x) { return { id: x.id, l: x.name + ' · ' + x.sym }; });
+      cmp.onPick = function (e) { self.setState({ cmpId: e.target.value }); };
+      cmp.rows = [
+        { l: 'Taux de réussite', bv: Math.round(bs.wr) + ' %', bw: Math.round(bs.wr), rv: rs2.n ? Math.round(rs2.wr) + ' %' : '—', rw: Math.round(rs2.wr) },
+        { l: 'Espérance par trade', bv: this.fR(bs.exp), bw: Math.max(2, Math.abs(bs.exp) / mxE * 100).toFixed(0), rv: rs2.n ? this.fR(rs2.exp) : '—', rw: Math.max(2, Math.abs(rs2.exp) / mxE * 100).toFixed(0) },
+        { l: 'Nombre de trades', bv: String(bs.n), bw: 100, rv: String(rs2.n), rw: Math.min(100, Math.round(rs2.n / Math.max(1, bs.n) * 100)) }
+      ];
+      var gap = Math.round(rs2.wr) - Math.round(bs.wr);
+      cmp.txt = !rs2.n ? 'Tu n’as pas encore de trade réel sur ' + cs.sym + ' : la comparaison apparaîtra dès ton premier trade.'
+        : rs2.n < 15 ? 'Seulement ' + rs2.n + ' trades réels sur ' + cs.sym + ' : attends d’en avoir au moins 15 pour comparer sérieusement.'
+        : gap <= -8 ? 'En réel sur ' + cs.sym + ', tu réussis ' + Math.abs(gap) + ' points de moins qu’en backtest. L’écart vient souvent de l’exécution : entrées trop tôt, sorties trop rapides ou trades hors de ton idée de départ.'
+        : gap >= 8 ? 'En réel sur ' + cs.sym + ', tu fais mieux qu’en backtest (+' + gap + ' points de réussite). Bon signe : ton idée tient en conditions réelles.'
+        : 'En réel sur ' + cs.sym + ', tes résultats sont proches de ton backtest (' + (gap >= 0 ? '+' : '−') + Math.abs(gap) + ' points). Ton exécution suit ton test.';
+    }
+
+    /* Nouvelle session */
+    var nwS = s.nw;
+    var nw = { isOpen: !!nwS, isForm: !!nwS && nwS.step === 'form', isDone: !!nwS && nwS.step === 'done', title: nwS && nwS.step === 'done' ? 'Session créée' : 'Nouvelle session de backtest' };
+    nw.open = function () { self.setState({ nw: self.blankNew() }); };
+    nw.close = function () { self.setState({ nw: null }); };
+    nw.stop = function (e) { if (e && e.stopPropagation) e.stopPropagation(); };
+    nw.key = function (e) { if (e && e.key === 'Escape') self.setState({ nw: null }); };
+    if (nwS) {
+      var f = nwS.f;
+      var setF = function (k, v) { var o = {}; for (var x in f) o[x] = f[x]; o[k] = v; var n2 = { step: nwS.step, tried: nwS.tried, f: o }; self.setState({ nw: n2 }); };
+      var pd = function (v) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || ''); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : null; };
+      var d0 = pd(f.from), d1 = pd(f.to), capN = parseFloat(String(f.cap).replace(/\s/g, '').replace(',', '.'));
+      var err = {};
+      if (!f.name.trim()) err.name = 'Donne un nom à ta session, par exemple l’idée que tu testes.';
+      if (d0 === null || d1 === null) err.date = 'Indique une date de début et de fin.';
+      else if (d1 <= d0) err.date = 'La fin doit être après le début.';
+      else if (d1 > Date.UTC(2026, 10, 6)) err.date = 'La fin ne peut pas être dans le futur.';
+      else if (d1 - d0 > 366 * 86400000) err.date = 'Pour garder le replay fluide, choisis une période d’un an maximum.';
+      if (!(capN > 0)) err.cap = 'capital';
+      var tr = nwS.tried;
+      nw.f = f; nw.syms = Object.keys(SY);
+      nw.on = { name: function (e) { setF('name', e.target.value); }, sym: function (e) { setF('sym', e.target.value); }, from: function (e) { setF('from', e.target.value); }, to: function (e) { setF('to', e.target.value); }, cap: function (e) { setF('cap', e.target.value); } };
+      nw.tfs = ['M15', 'H1', 'H4'].map(function (t) { var on = f.tf === t; return { l: t, pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { setF('tf', t); } }; });
+      nw.risks = [0.5, 1, 2].map(function (rk) { var on = f.risk === rk; return { l: String(rk).replace('.', ',') + ' %', pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { setF('risk', rk); } }; });
+      nw.errName = tr ? (err.name || '') : ''; nw.errDate = tr ? (err.date || '') : '';
+      nw.invName = tr && err.name ? 'true' : 'false';
+      nw.bdName = tr && err.name ? 'rgba(255,122,107,.7)' : '#2A3346'; nw.bdDate = tr && err.date ? 'rgba(255,122,107,.7)' : '#2A3346'; nw.bdCap = tr && err.cap ? 'rgba(255,122,107,.7)' : '#2A3346';
+      var days = d0 !== null && d1 !== null && d1 > d0 ? Math.round((d1 - d0) / 86400000) : 0;
+      nw.recap = days ? 'Tu vas rejouer ' + days + ' jours de ' + f.sym + ' en ' + f.tf + '. Avec ' + (capN > 0 ? Math.round(capN).toLocaleString('fr-FR') + ' €' : '—') + ' et ' + String(f.risk).replace('.', ',') + ' % de risque, chaque trade perdant coûte ' + (capN > 0 ? Math.round(capN * f.risk / 100).toLocaleString('fr-FR') + ' €' : '—') + ' (1 R).' : 'Choisis une période pour voir le récapitulatif.';
+      nw.create = function () {
+        if (Object.keys(err).length) { var n3 = { step: 'form', tried: true, f: f }; self.setState({ nw: n3 }); return; }
+        var id = 'b' + Date.now().toString(36);
+        var ns = { id: id, name: f.name.trim(), sym: f.sym, tf: f.tf, from: d0, to: d1, cap: Math.round(capN), risk: f.risk, prog: 0, trades: [], done: false, created: Date.now(), last: Date.now() };
+        var l = [ns].concat(self.state.sessions);
+        setSess(l, { nw: { step: 'done', tried: false, f: f, id: id }, flt: 'all' });
+      };
+      nw.doneName = f.name; nw.doneSub = f.sym + ' · ' + f.tf + ' · ' + (d0 ? self.fDate(d0) : '') + ' → ' + (d1 ? self.fDate(d1) : '');
+      nw.go = function () { if (nwS.id) self.sset('bt.current', nwS.id); };
+    }
+
+    var navDef = [
+      { title: '', items: [
+        ['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', 'Dashboard.dc.html']
+      ] },
+      { title: 'OUTILS', items: [
+        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
+        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html'],
+        ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', 'Backtesting.dc.html'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '#top', '2', 'warn'],
+        ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', '#top', 'NOUVEAU', 'accent']
+      ] },
+      { title: 'COMPTE', items: [
+        ['set', 'Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4', '#top'],
+        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01', '#top']
+      ] }
+    ];
+    var navGroups = navDef.map(function (g) {
+      return { title: g.title, items: g.items.map(function (n) {
+        var on = n[0] === 'bt';
+        return { label: n[1], icon: n[2], href: n[3], badge: n[4] || '', bBg: n[5] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: n[5] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false' };
+      }) };
+    });
+
+    return {
+      accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
+      kpis: kpis, flt: flt, sess: sess, noSess: sess.length === 0, emptyT: L.length ? 'Aucune session dans cette catégorie' : 'Aucune session pour l’instant',
+      cmp: cmp, nw: nw
+    };
+  }
+}
+</script>
+</body>
+</html>

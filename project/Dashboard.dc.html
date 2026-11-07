@@ -248,7 +248,7 @@ button{font-family:inherit}
 <div style="display: flex; align-items: center; gap: 10px">
 <span style="width: 36px; height: 36px; border-radius: 11px; background: rgba(245,166,91,.12); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5B87A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path><path d="M10 9l5 3-5 3z"></path></svg></span>
 <div style="flex: 1"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Backtesting</h2><div style="font-size: 11px; color: #8A95AA; margin-top: 2px">Dernière session · il y a 2 h</div></div>
-<a href="#top" style="font-size: 13px; color: {{accent}}; font-weight: 600">Sessions</a>
+<a href="Backtesting.dc.html" style="font-size: 13px; color: {{accent}}; font-weight: 600">Sessions</a>
 </div>
 <div style="padding: 14px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
@@ -279,8 +279,8 @@ button{font-family:inherit}
 <div style="font-size: 12px; color: #8A95AA; margin-top: 8px">{{bt.gapTxt}}</div>
 </div>
 <div style="display: flex; gap: 8px; margin-top: auto">
-<a class="btn" href="#top" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 600; height: 40px; border-radius: 10px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg>Reprendre</a>
-<a class="btn ghost" href="#top" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; font-weight: 600; height: 40px; border-radius: 10px">Nouvelle session</a>
+<a class="btn" href="Replay.dc.html" onClick="{{goReplay}}" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 600; height: 40px; border-radius: 10px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg>Reprendre</a>
+<a class="btn ghost" href="Backtesting.dc.html" onClick="{{goNewBt}}" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; font-weight: 600; height: 40px; border-radius: 10px">Nouvelle session</a>
 </div>
 </section>
 </sc-if>
@@ -812,7 +812,7 @@ class Component extends DCLogic {
     var navGroups = navDef.map(function (g) {
       return { title: g.title, items: g.items.map(function (n) {
         var on = s.nav === n[0];
-        return { label: n[1], icon: n[2], badge: n[3] || '', href: ({ journal: 'Journal.dc.html', stats: 'Statistiques.dc.html' })[n[0]] || '#top', bBg: n[4] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: n[4] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false', pick: function () { if (n[0] !== 'journal' && n[0] !== 'stats') self.setState({ nav: n[0] }); } };
+        return { label: n[1], icon: n[2], badge: n[3] || '', href: ({ journal: 'Journal.dc.html', stats: 'Statistiques.dc.html', bt: 'Backtesting.dc.html' })[n[0]] || '#top', bBg: n[4] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: n[4] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false', pick: function () { if (n[0] !== 'journal' && n[0] !== 'stats' && n[0] !== 'bt') self.setState({ nav: n[0] }); } };
       }) };
     });
 
@@ -842,6 +842,8 @@ class Component extends DCLogic {
       },
       eqLeave: function () { self.setState({ hov: -1 }); },
       coach: coach, watch: watch, bt: btv,
+      goReplay: function () { self.sset('bt.current', 's1'); },
+      goNewBt: function () { self.go('bt', { action: 'new' }); },
       goTrades: function () { self.go('journal', { tab: 'trades' }); },
       goStats: function () { self.go('stats', { tab: 'stats' }); },
       goWeek: function () { self.go('stats', { tab: 'stats', period: '7j' }); },

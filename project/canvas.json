@@ -89,6 +89,24 @@
       "w": 1440,
       "x": 12280,
       "y": 0
+    },
+    "Backtesting.dc.html": {
+      "expand": "fill",
+      "h": 1260,
+      "is_interactive": true,
+      "title": "Backtesting : mes sessions",
+      "w": 1440,
+      "x": 13800,
+      "y": 0
+    },
+    "Replay.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "is_interactive": true,
+      "title": "Backtesting : replay",
+      "w": 1440,
+      "x": 15320,
+      "y": 0
     }
   },
   "createdOnFiles": {
@@ -119,7 +137,9 @@
     "Journal.dc.html",
     "Statistiques.dc.html",
     "Importer.dc.html",
-    "NouveauTrade.dc.html"
+    "NouveauTrade.dc.html",
+    "Backtesting.dc.html",
+    "Replay.dc.html"
   ],
   "pages": [],
   "title": "Maquette plateforme trading"
