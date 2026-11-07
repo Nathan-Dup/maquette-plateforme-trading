@@ -270,20 +270,20 @@ class Component extends DCLogic {
     };
     var groups = [
       { t: 'JOURNAL', c: B.c, soft: B.soft, i: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', rows: [
-        R('Trades enregistrés', '[X] / mois', 'Illimité'), R('Import MT4 / MT5 / cTrader / CSV', true, true), R('Statistiques essentielles', true, true),
-        R('Statistiques avancées (heures, sessions, comportement, évolution…)', false, true), R('Conseils automatiques à partir de 15 trades', false, true), R('Captures de graphique', '[X] / mois', 'Illimité'), R('Suivi des émotions', false, true), R('Plusieurs comptes', '1 compte', 'Illimité')
+        R('Trades enregistrés', '[X] / mois', 'Illimité'), R('Import MT4 / MT5 / cTrader / CSV', true, true), R('Statistiques essentielles (vue d’ensemble, calendrier)', true, true),
+        R('Statistiques avancées (heures et sessions, actifs, comportement, évolution)', false, true), R('Conseils automatiques à partir de 15 trades', false, true), R('Captures de graphique', '[X] / mois', 'Illimité'), R('Suivi des émotions', false, true), R('Plusieurs comptes', '1 compte', 'Illimité')
       ] },
       { t: 'BACKTESTING', c: O.c, soft: O.soft, i: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', rows: [
-        R('Replay bougie par bougie', false, true), R('Forex, actions, crypto, matières premières', false, true), R('Sessions sauvegardées', false, 'Illimité'), R('Comparaison réel vs backtest', false, true)
+        R('Replay bougie par bougie', false, true), R('Jusqu’à 4 actifs par session', false, true), R('Forex, actions, crypto, matières premières', false, true), R('Sessions sauvegardées', false, 'Illimité'), R('Statistiques du backtest, séparées du réel', false, true), R('Comparaison réel vs backtest', false, true)
       ] },
       { t: 'NEWS', c: V.c, soft: V.soft, i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', rows: [
-        R('Calendrier économique', true, true), R('Résultats d’entreprises et géopolitique', false, true), R('Résumés IA en français', false, true), R('Alertes personnalisées', false, true)
+        R('Calendrier économique', true, true), R('Filtres par pays, importance et actifs', true, true), R('Résultats d’entreprises et actualités', false, true), R('Réaction passée de tes actifs aux annonces', false, true), R('Résumés IA en français', false, true), R('Alertes personnalisées', false, true), R('Annonces affichées dans ton journal et le replay', false, true)
       ] },
       { t: 'COACH IA', c: G.c, soft: G.soft, i: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', rows: [
         R('Analyse automatique de tes trades', false, true), R('Bilan chaque semaine', false, true), R('Questions au coach', false, 'Illimité')
       ] },
       { t: 'COMPTE ET SUPPORT', c: '#C9D3E6', soft: '#1A2130', i: 'M12 12a4 4 0 1 0 0-8a4 4 0 1 0 0 8M4 21a8 8 0 0 1 16 0', rows: [
-        R('Export PDF et CSV', false, true), R('Support en français', 'Par e-mail', 'Prioritaire'), R('Nouveautés en avant-première', false, true)
+        R('Export CSV de tes trades', true, true), R('Rapport PDF et export Excel', false, true), R('Support en français', 'Par e-mail', 'Prioritaire'), R('Nouveautés en avant-première', false, true)
       ] }
     ];
     var FAQ = [
@@ -302,14 +302,14 @@ class Component extends DCLogic {
     return {
       rootRef: this.rootRef, accent: accent, accentGlow: this.soft(accent, 0.18), rootClass: anim ? '' : 'noanim',
       periods: periods, monthly: !s.annual, annual: s.annual,
-      freeList: ['Journal limité à [X] trades par mois', 'Import depuis MT4, MT5, cTrader ou CSV', 'Statistiques essentielles', 'Calendrier économique', '1 compte de trading'],
+      freeList: ['Journal limité à [X] trades par mois', 'Import depuis MT4, MT5, cTrader ou CSV', 'Statistiques essentielles', 'Calendrier économique', '1 compte de trading', 'Export CSV de tes trades'],
       premList: [
         { t: 'Journal illimité et statistiques avancées', c: B.c, soft: B.soft },
         { t: 'Captures de graphique et suivi des émotions', c: B.c, soft: B.soft },
         { t: 'Backtesting en replay sur les 4 marchés', c: O.c, soft: O.soft },
         { t: 'News, résultats d’entreprises et alertes', c: V.c, soft: V.soft },
         { t: 'Coach IA et bilan chaque semaine', c: G.c, soft: G.soft },
-        { t: 'Comptes illimités et export PDF / CSV', c: '#C9D3E6', soft: '#1A2130' }
+        { t: 'Comptes illimités, rapport PDF et Excel', c: '#C9D3E6', soft: '#1A2130' }
       ],
       guar: [
         { t: 'Sans engagement', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M8 12l3 3 5-6' },

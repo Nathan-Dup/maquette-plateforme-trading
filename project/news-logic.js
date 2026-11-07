@@ -429,7 +429,7 @@
     if (etat.code === 'mitige') {
       var h = etat.fortesActives.filter(function (c) { return c.valeur > 0; })[0], b = etat.fortesActives.filter(function (c) { return c.valeur < 0; })[0];
       morceaux.push('Les dernières news fortes se contredisent : ' + h.analyse.info.court + ' pousse ' + actif + ' à la hausse, ' + b.analyse.info.court + ' à la baisse.');
-      if (etat.prochaineForte) morceaux.push('Mieux vaut attendre la prochaine : ' + prochaine(etat.prochaineForte) + '.');
+      if (etat.prochaineForte) morceaux.push('La prochaine news forte pourrait trancher : ' + prochaine(etat.prochaineForte) + '.');
       return morceaux.join(' ');
     }
     if (!d) {
@@ -648,7 +648,7 @@
       phrase = 'Tes trades proches des news ont une expectancy de ' + R(avec.esperance) + ' contre ' + R(sans.esperance) + ' sans news' +
         ' (réussite ' + Math.round(avec.reussite) + ' % contre ' + Math.round(sans.reussite) + ' %)';
       var ecart = avec.esperance - sans.esperance;
-      phrase += ecart < -0.15 ? ' : éviter les ' + min + ' minutes autour des news fortes améliorerait tes résultats.'
+      phrase += ecart < -0.15 ? ' : tes trades pris loin des news fortes font nettement mieux.'
         : ecart > 0.15 ? ' : les news te réussissent plutôt bien.' : ' : pas de différence nette.';
     }
     return { minutes: min, avec: avec, sans: sans, suffisant: suffisant, phrase: phrase, tags: tags };

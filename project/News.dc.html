@@ -88,16 +88,6 @@ button,input,select{font-family:inherit}
 <button class="ghost" type="button" onClick="{{nfpAlert.pick}}" aria-pressed="{{nfpAlert.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid {{nfpAlert.bd}}; background: {{nfpAlert.bg}}; color: {{nfpAlert.fg}}; font-size: 13px; font-weight: 600; padding: 0 14px; height: 40px; border-radius: 10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg>{{nfpAlert.l}}</button>
 </div>
 
-<div class="fu d1" style="display: flex; flex-wrap: wrap; gap: 12px">
-<sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
-<div style="flex: 1 1 200px; background: #0E131D; border: 1px solid #1D2433; border-radius: 16px; padding: 16px 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
-<div style="font-size: 12px; color: #94A0B4">{{k.l}}</div>
-<div class="h num" style="font-size: 26px; font-weight: 600; margin-top: 6px; color: {{k.c}}">{{k.v}}</div>
-<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{k.s}}</div>
-</div>
-</sc-for>
-</div>
-
 <sc-if value="{{flash}}" hint-placeholder-val="{{false}}">
 <div role="status" class="open" style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(61,220,151,.08); border: 1px solid rgba(61,220,151,.3); font-size: 13px; color: #BDF5DC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><span style="flex: 1">{{flash}}</span></div>
 </sc-if>
@@ -119,6 +109,9 @@ button,input,select{font-family:inherit}
 <sc-if value="{{nfp.open}}" hint-placeholder-val="{{false}}">
 <div onClick="{{nfp.close}}" style="position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 34"></div>
 <div role="group" aria-label="Filtres des news" style="position: absolute; right: 0; top: 46px; z-index: 35; width: 400px; max-width: calc(100vw - 32px); box-sizing: border-box; background: #0E131D; border: 1px solid #2A3346; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.55); padding: 18px; display: flex; flex-direction: column; gap: 18px">
+<div><div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; margin-bottom: 8px">ACTIFS</div>
+<button type="button" role="checkbox" aria-checked="{{mine.pressed}}" onClick="{{mine.pick}}" style="cursor: pointer; width: 100%; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid {{mine.bd}}; background: {{mine.bg}}; color: {{mine.fg}}; font-size: 13px; font-weight: 600; text-align: left"><span style="flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 4px; border: 1.5px solid {{mine.bd}}; background: {{mine.box}}; display: flex; align-items: center; justify-content: center"><sc-if value="{{mine.on}}" hint-placeholder-val="{{false}}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span><span style="flex: 1; min-width: 0">Seulement mes actifs</span><span class="num" style="font-size: 11px; color: #8A95AA">{{mine.list}}</span></button>
+</div>
 <div><div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; margin-bottom: 8px">IMPORTANCE</div><div role="group" aria-label="Importance" style="display: flex; gap: 6px; flex-wrap: wrap">
 <sc-for list="{{nfp.imps}}" as="c" hint-placeholder-count="3">
 <button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; padding: 0 12px; min-height: 34px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}"><span aria-hidden="true" style="display: flex; gap: 2px; align-items: flex-end"><span style="width: 4px; height: 7px; border-radius: 1px; background: {{c.c1}}"></span><span style="width: 4px; height: 10px; border-radius: 1px; background: {{c.c2}}"></span><span style="width: 4px; height: 13px; border-radius: 1px; background: {{c.c3}}"></span></span>{{c.l}}</button>
@@ -140,9 +133,6 @@ button,input,select{font-family:inherit}
 </div>
 </sc-if>
 </div>
-</sc-if>
-<sc-if value="{{showMine}}" hint-placeholder-val="{{true}}">
-<button class="chip" type="button" onClick="{{mine.pick}}" aria-pressed="{{mine.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 0 12px; min-height: 36px; border-radius: 999px; border: 1px solid {{mine.bd}}; background: {{mine.bg}}; color: {{mine.fg}}"><span style="width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid {{mine.bd}}; background: {{mine.box}}; display: flex; align-items: center; justify-content: center"><sc-if value="{{mine.on}}" hint-placeholder-val="{{false}}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span>Mes actifs seulement</button>
 </sc-if>
 </div>
 </div>
@@ -504,7 +494,7 @@ class Component extends DCLogic {
     return [
       { id: 'e1', type: 'PROD_INDUS_DE', d: 0, t: '08:00', cur: 'EUR', pays: 'Allemagne', title: 'Production industrielle Allemagne (m/m)', lvl: 1, prev: '−0,4 %', fc: '0,2 %', act: '0,5 %', good: true, mine: true, assets: 'EUR/USD · DAX', sum: "Une industrie allemande qui repart rassure sur la croissance européenne : léger soutien pour l'euro." },
       { id: 'e2', type: 'HALIFAX', d: 0, t: '10:30', cur: 'GBP', title: 'Prix des logements Halifax (m/m)', lvl: 1, prev: '0,3 %', fc: '0,2 %', act: '−0,1 %', good: false, mine: false, assets: 'GBP/USD', sum: "Un immobilier britannique qui ralentit peut inciter la Banque d'Angleterre à baisser ses taux plus tôt, ce qui pèse sur la livre." },
-      { id: 'e3', type: 'NFP', d: 0, t: '14:30', cur: 'USD', title: 'NFP — Emplois non agricoles', lvl: 3, prev: '142 k', fc: '165 k', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Le chiffre le plus suivi du mois. Plus d'emplois que prévu = dollar plus fort et or souvent en baisse ; un chiffre faible fait l'inverse. Les premières minutes sont très agitées : évite d'entrer juste avant." },
+      { id: 'e3', type: 'NFP', d: 0, t: '14:30', cur: 'USD', title: 'NFP — Emplois non agricoles', lvl: 3, prev: '142 k', fc: '165 k', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Le chiffre le plus suivi du mois. Plus d'emplois que prévu = dollar plus fort et or souvent en baisse ; un chiffre faible fait l'inverse. Les premières minutes sont souvent très agitées, avec des écarts (spreads) plus larges." },
       { id: 'e4', type: 'CHOMAGE_US', d: 0, t: '14:30', cur: 'USD', title: 'Taux de chômage', lvl: 3, prev: '4,2 %', fc: '4,2 %', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Publié en même temps que le NFP. Un chômage qui monte renforce l'idée de baisses de taux de la Fed." },
       { id: 'e5', type: 'EMPLOI_CA', d: 0, t: '14:30', cur: 'CAD', title: 'Emploi Canada', lvl: 2, prev: '22,1 k', fc: '15,0 k', act: '', mine: false, assets: 'USD/CAD', sum: "Tombe à la même minute que le NFP : le dollar canadien peut partir dans les deux sens." },
       { id: 'e6', type: 'MICHIGAN', d: 0, t: '16:00', cur: 'USD', title: 'Confiance des consommateurs (Michigan)', lvl: 2, prev: '70,5', fc: '71,2', act: '', mine: true, assets: 'USD · Indices US', sum: "Un moral des ménages en hausse soutient l'idée d'une consommation solide aux États-Unis, plutôt favorable au dollar." },
@@ -599,30 +589,6 @@ class Component extends DCLogic {
         pick: function () { self.setState({ tlDay: di }); } };
     });
 
-    // ---- timeline « zones à éviter » du jour choisi
-    var tl = { ok: false };
-    if (TJ) {
-      var dd = DAYS[s.tlDay][2], J = TJ.journeeParis(2026, 10, dd), span = J.fin - J.debut;
-      var pos = function (t) { return Math.max(0, Math.min(100, (t - J.debut) / span * 100)); };
-      var evDay = EV.filter(function (e) { return e.d === s.tlDay && e.mine && e.lvl >= 2; });
-      var zones = TJ.zonesAEviter(evDay.map(function (e) { return { t: e.ts, impact: e.lvl, nom: e.title.replace(/ \(.*\)$/, '') }; }), s.zAv, s.zAp);
-      var SC = { Asie: ['rgba(183,148,246,.30)', '#DCCCFB'], Londres: ['rgba(110,139,255,.32)', '#C9D3FF'], 'New York': ['rgba(61,220,151,.26)', '#BDF5DC'] };
-      var opts = [5, 10, 15, 30, 60].map(function (v) { return { v: String(v), l: v + ' min' }; });
-      tl = {
-        ok: true, title: DAYS[s.tlDay][0].toLowerCase(), av: String(s.zAv), ap: String(s.zAp), opts: opts,
-        onAv: function (ev) { self.setState({ zAv: Number(ev.target.value) }); },
-        onAp: function (ev) { self.setState({ zAp: Number(ev.target.value) }); },
-        sessions: TJ.sessionsJour(2026, 10, dd).map(function (se) { var l = pos(se.debut), r = pos(se.fin); return { nom: se.nom, h: F.heureParis(se.debut) + '–' + F.heureParis(se.fin), l: l.toFixed(2), w: (r - l).toFixed(2), bg: SC[se.nom][0], fg: SC[se.nom][1] }; }),
-        zones: zones.map(function (z) { var l = pos(z.debut), r = pos(z.fin); return { l: l.toFixed(2), w: Math.max(r - l, 0.3).toFixed(2), col: z.niveau === 3 ? 'rgba(255,122,107,.12)' : 'rgba(245,166,91,.07)', bar: z.niveau === 3 ? 'rgba(255,122,107,.85)' : 'rgba(245,166,91,.5)' }; }),
-        marks: evDay.map(function (e) { return { l: pos(e.ts).toFixed(2) }; }),
-        chips: zones.map(function (z) { return { h: F.heureParis(z.debut) + '–' + F.heureParis(z.fin), noms: ' · ' + z.noms.join(', '), bg: z.niveau === 3 ? 'rgba(255,122,107,.12)' : 'rgba(245,166,91,.10)', fg: z.niveau === 3 ? '#FFC2BA' : '#F5C28F' }; }),
-        empty: zones.length === 0,
-        ticks: [0, 3, 6, 9, 12, 15, 18, 21, 24].map(function (h) { return { t: pad2(h % 24) + ':00', l: (h / 24 * 100).toFixed(2), tx: h === 0 ? '0' : h === 24 ? '-100%' : '-50%' }; }),
-        showNow: s.tlDay === 0, now: pos(now).toFixed(2), nowL: 'maintenant ' + F.heureParis(now),
-        aria: 'Journée du ' + DAYS[s.tlDay][0] + '. ' + (zones.length ? 'Zones à éviter : ' + zones.map(function (z) { return F.heureParis(z.debut) + ' à ' + F.heureParis(z.fin) + ' (' + (z.niveau === 3 ? 'news forte' : 'news moyenne') + ' : ' + z.noms.join(', ') + ')'; }).join(' ; ') + '.' : 'Aucune zone à éviter.')
-      };
-    }
-
     // ---- calendrier
     var evOk = function (e) { return lvOk(e.lvl) && paysOk(e.pays) && (!s.mine || e.mine); };
     var days = [];
@@ -667,7 +633,7 @@ class Component extends DCLogic {
 
     // ---- résultats d'entreprises, vus depuis le NAS100 (poids approximatifs, données d'exemple)
     var EARN = [
-      { co: 'NVIDIA', tick: 'NVDA', day: 'Mer. 18 nov.', when: 'après clôture', poids: 9.0, move: 7.8, ndx: 1.4, eps: '0,87 $', epsPrev: '0,81 $', sum: "La publication la plus attendue du trimestre : avec près d'un dixième de l'indice, NVIDIA peut faire bouger tout le NAS100 à elle seule. Réduis tes positions avant si tu n'es pas sûr." },
+      { co: 'NVIDIA', tick: 'NVDA', day: 'Mer. 18 nov.', when: 'après clôture', poids: 9.0, move: 7.8, ndx: 1.4, eps: '0,87 $', epsPrev: '0,81 $', sum: "La publication la plus attendue du trimestre : avec près d'un dixième de l'indice, NVIDIA peut faire bouger tout le NAS100 à elle seule, souvent dès la réouverture du marché." },
       { co: 'Cisco', tick: 'CSCO', day: 'Mer. 11 nov.', when: 'après clôture', poids: 1.3, move: 5.2, ndx: 0.3, eps: '0,98 $', epsPrev: '0,94 $', sum: "Donne une indication sur les dépenses des entreprises en réseau et en IA, mais pèse peu dans l'indice." },
       { co: 'Applied Materials', tick: 'AMAT', day: 'Jeu. 12 nov.', when: 'après clôture', poids: 0.8, move: 6.4, ndx: 0.4, eps: '2,31 $', epsPrev: '2,18 $', sum: "Fournisseur des fabricants de puces : sa réaction peut entraîner le reste des semi-conducteurs." },
       { co: 'Palo Alto Networks', tick: 'PANW', day: 'Mar. 17 nov.', when: 'après clôture', poids: 0.7, move: 7.1, ndx: 0.3, eps: '0,89 $', epsPrev: '0,78 $', sum: "Gros mouvements sur l'action, mais effet limité sur l'indice." }
@@ -829,12 +795,13 @@ class Component extends DCLogic {
       { l: 'Résultats à suivre (NAS100)', v: String(EARN.length), s: 'NVIDIA le 18 nov. : ≈ 9 % de l’indice', c: '#EEF1F6' },
       { l: 'Alertes actives', v: String(onCount), s: onCount ? 'sur ' + s.alerts.length + ' créée' + (s.alerts.length > 1 ? 's' : '') : 'aucune pour l’instant', c: onCount ? '#EEF1F6' : '#8A95AA' }
     ];
-    var tabs = [['cal', 'Calendrier économique', 'M4 5h16v15H4zM4 9h16M9 3v4M15 3v4', ''], ['earn', "Résultats d'entreprises", 'M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6', ''], ['news', 'Actualités', 'M5 4h12v16H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1M17 8h3v10a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3', ''], ['alerts', 'Alertes', 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0', String(onCount)]].map(function (x) {
+    var tabs = [['cal', 'Calendrier économique', 'M4 5h16v15H4zM4 9h16M9 3v4M15 3v4', ''], ['earn', "Résultats d'entreprises", 'M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6', String(EARN.length)], ['news', 'Actualités', 'M5 4h12v16H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1M17 8h3v10a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3', ''], ['alerts', 'Alertes', 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0', String(onCount)]].map(function (x) {
       var on = s.tab === x[0];
       return { label: x[1], icon: x[2], count: x[3], sel: on ? 'true' : 'false', fg: on ? '#EEF1F6' : '#8A95AA', bar: on ? accent : 'transparent', pick: function () { self.setState({ tab: x[0] }); } };
     });
     var LVN = { 3: 'Forte', 2: 'Moyenne', 1: 'Faible' };
     var nfChipsAct = [];
+    if (s.mine) nfChipsAct.push({ l: 'Mes actifs seulement', clear: function () { try { window.sessionStorage.setItem('tj.mesActifs', '0'); } catch (e) {} self.setState({ mine: false }); } });
     if (s.lv.length < 3) nfChipsAct.push({ l: 'Importance : ' + (s.lv.length ? [3, 2, 1].filter(lvOk).map(function (l) { return LVN[l].toLowerCase(); }).join(', ') : 'aucune'), clear: function () { setNf([3, 2, 1], s.paysOff); } });
     var paysOn = PAYS.filter(function (p) { return paysOk(p[0]); });
     if (s.paysOff.length && s.paysOff.length <= 3) s.paysOff.forEach(function (p) { nfChipsAct.push({ l: 'Sans ' + p, clear: function () { setNf(s.lv, s.paysOff.filter(function (x) { return x !== p; })); } }); });
@@ -863,7 +830,7 @@ class Component extends DCLogic {
     };
 
     var mineOn = s.mine;
-    var mine = { on: mineOn, pressed: mineOn ? 'true' : 'false', bg: mineOn ? soft : 'transparent', bd: mineOn ? accent : '#2A3346', fg: mineOn ? '#EEF1F6' : '#A3AEC2', box: mineOn ? accent : 'transparent',
+    var mine = { list: MES.join(' · '), on: mineOn, pressed: mineOn ? 'true' : 'false', bg: mineOn ? soft : 'transparent', bd: mineOn ? accent : '#2A3346', fg: mineOn ? '#EEF1F6' : '#A3AEC2', box: mineOn ? accent : 'transparent',
       pick: function () { var v = !self.state.mine; try { window.sessionStorage.setItem('tj.mesActifs', v ? '1' : '0'); } catch (e) {} self.setState({ mine: v }); } };
 
     var navDef = [
@@ -893,7 +860,7 @@ class Component extends DCLogic {
       accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
       cd: cd, nfpAlert: nfpAlert, kpis: kpis, flash: s.flash, tabs: tabs, mine: mine, showMine: s.tab !== 'alerts',
       isCal: s.tab === 'cal', isEarn: s.tab === 'earn', isNews: s.tab === 'news', isAlerts: s.tab === 'alerts',
-      week: week, tl: tl, nfp: nfp, days: days, calEmpty: days.length === 0,
+      week: week, nfp: nfp, days: days, calEmpty: days.length === 0,
       forteTxt: TJ ? F.nombre(TJ.SEUILS.FORTE_SURPRISE_Z, 1) : '1,5',
       earnUp: earnUp, earnDone: earnDone,
       nfChips: nfChips, feed: feed, newsEmpty: feed.length === 0, nAsset: nAsset, assetOpts: assetOpts,

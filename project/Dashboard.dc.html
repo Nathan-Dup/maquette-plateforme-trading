@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <title>Tableau de bord</title>
 <script src="./support.js"></script>
+<script src="./news-logic.js"></script>
+<script src="./donnees-exemple.js"></script>
 </head>
 <body>
 <x-dc>
@@ -428,14 +430,25 @@ class Component extends DCLogic {
     this.trades = this.base;
     this.mergeAdded();
     this.curM = 2;
-    var rb = this.rng(19), bcum = 0, beq = [0], bw = 0, bsum = 0;
-    for (var bi = 0; bi < 142; bi++) {
-      var bwin = rb() < 0.54;
-      var bR = bwin ? Math.round((1.2 + rb() * 1.4) * 10) / 10 : -1;
-      if (bwin) bw++;
-      bsum += bR; bcum += bR; beq.push(bcum);
+    // Carte Backtesting = session « Cassure de Londres » (s1), mêmes trades que sur la page Backtesting.
+    var bRs = null;
+    try { var bl0 = JSON.parse(this.sget('bt.sessions') || 'null'); var bs1 = bl0 && bl0.filter ? bl0.filter(function (x) { return x.id === 's1'; })[0] : null; if (bs1 && bs1.trades) bRs = bs1.trades.map(function (t) { return t.R; }); } catch (e) {}
+    if (!bRs) {
+      // même tirage que mkSession('s1', …) de Backtesting.dc.html : EUR/USD, 3 mars → 30 juin 2025, 68 % parcourus, 142 trades, 54 %
+      var rb = this.rng(19), rb4 = this.rng(19 + 3000), bFrom = Date.UTC(2025, 2, 3), bSpan = (Date.UTC(2025, 5, 30) - bFrom) * 0.68, TJ = window.TJNews;
+      var bNews = TJ && TJ.exemple ? TJ.exemple.newsFortesPeriode(['EUR/USD'], bFrom, bFrom + bSpan) : [];
+      bRs = [];
+      for (var bi = 0; bi < 142; bi++) {
+        var bnw = bNews.length && rb4() < 0.32 ? bNews[Math.floor(rb4() * bNews.length)] : null;
+        var bwin = rb() < (bnw ? 0.54 - 0.16 : 0.54);
+        bRs.push(bwin ? Math.round((1.2 + rb() * 1.4) * 10) / 10 : -1);
+        if (bnw) rb4();
+      }
     }
-    this.bt = { eq: beq, n: 142, wr: bw / 142 * 100, exp: bsum / 142, tot: bcum };
+    var bcum = 0, beq = [0], bw = 0;
+    bRs.forEach(function (R) { if (R > 0) bw++; bcum += R; beq.push(bcum); });
+    var bn = bRs.length || 1;
+    this.bt = { eq: beq, n: bRs.length, wr: bw / bn * 100, exp: bcum / bn, tot: bcum };
     var r = this.rng(77);
     var W = [
       ['EUR/USD', 'Euro / Dollar US', 'fx', 1.1624, 0.18, 4],

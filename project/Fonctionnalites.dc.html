@@ -447,13 +447,13 @@ class Component extends DCLogic {
     mz.slB = Y(97.75).toFixed(2);
 
     var bfeat = [
-      { t: 'Bougie par bougie', d: 'Avance pas à pas ou en lecture continue.', i: 'M5 4l11 8-11 8zM17 4h3v16h-3z' },
-      { t: 'Vitesse x1 à x4', d: 'Accélère sur les phases calmes.', i: 'M13 5l7 7-7 7M4 5l7 7-7 7' },
+      { t: 'Bougie par bougie', d: 'Avance pas à pas ou en lecture continue, de x1 à x4.', i: 'M5 4l11 8-11 8zM17 4h3v16h-3z' },
+      { t: 'Jusqu’à 4 actifs', d: 'Teste plusieurs actifs sur la même période, un onglet par actif.', i: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z' },
       { t: 'Multi-unités de temps', d: 'De M1 à D1, comme sur ta plateforme.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 7v5l3 2' },
       { t: 'Outils de dessin', d: 'Tendances, niveaux, rectangles, Fibonacci.', i: 'M4 20L20 4M3 19h2v2H3zM19 3h2v2h-2z' },
       { t: 'Ordres complets', d: 'Stop, objectif, taille de position, ratio.', i: 'M4 6h16M4 12h10M4 18h6' },
       { t: 'Sessions sauvegardées', d: 'Reprends exactement là où tu t’es arrêté.', i: 'M5 3h11l3 3v15H5zM8 3v6h8V3M8 21v-7h8v7' },
-      { t: 'Résultats au journal', d: 'Chaque trade de test rejoint tes statistiques.', i: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6' },
+      { t: 'Statistiques à part', d: 'Tes trades de test ont leurs propres statistiques, séparées de tes vrais trades.', i: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6' },
       { t: 'Réel vs backtest', d: 'Compare tes résultats réels à ceux de tes tests.', i: 'M4 20V10M10 20V4M16 20v-7M22 20H2' }
     ];
     var markets = [
@@ -495,7 +495,7 @@ class Component extends DCLogic {
     var extras = [
       { t: 'Plusieurs comptes', d: 'Compte réel, challenges prop firm et démo : séparés ou cumulés.', i: 'M3 7h18v13H3zM8 7V4h8v3', soon: false },
       { t: 'Suivi des prop firms', d: 'Règles du challenge, drawdown max et objectif suivis en direct.', i: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7zM9 12l2 2 4-4', soon: true },
-      { t: 'Export PDF et CSV', d: 'Tes rapports et ton historique, prêts à partager ou archiver.', i: 'M12 4v12M6 10l6 6 6-6M4 20h16', soon: false },
+      { t: 'Export CSV, Excel et PDF', d: 'Ton historique en CSV pour tous, rapports PDF et Excel en Premium.', i: 'M12 4v12M6 10l6 6 6-6M4 20h16', soon: false },
       { t: 'Données protégées', d: 'Connexions chiffrées et données qui restent les tiennes.', i: 'M6 10V7a6 6 0 0 1 12 0v3M5 10h14v11H5z', soon: false },
       { t: 'Support en français', d: 'Une vraie personne pour répondre à tes questions.', i: 'M4 5h16v11H8l-4 4z', soon: false },
       { t: 'Nouveautés régulières', d: 'Le produit évolue avec les retours des membres.', i: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', soon: false }
