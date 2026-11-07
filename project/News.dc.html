@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>News</title>
+<script src="./support.js"></script>
+<script src="./news-logic.js"></script>
+<script src="./donnees-exemple.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#A3AEC2;text-decoration:none}a:hover{color:#FFFFFF}
+button,input,select{font-family:inherit}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{animation:fu .7s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}
+@keyframes sl{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.open{animation:sl .3s ease both}
+@keyframes puo{0%{box-shadow:0 0 0 0 rgba(245,166,91,.6)}100%{box-shadow:0 0 0 9px rgba(245,166,91,0)}}
+.puo{animation:puo 1.8s ease-out infinite}
+.nav{transition:background .2s,color .2s}.nav:hover{background:#131927;color:#EEF1F6}
+.chip{transition:background .2s,color .2s,border-color .2s}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28;border-color:#36415B}
+.row{transition:background .2s}.row:hover{background:#121826 !important}
+.scard{transition:border-color .25s,transform .25s}.scard:hover{border-color:#36415B !important;transform:translateY(-2px)}
+.wk{transition:border-color .2s,background .2s}.wk:hover{border-color:#36415B !important;background:#111724 !important}
+.inp:focus{outline:none;border-color:#6E8BFF !important;box-shadow:0 0 0 3px rgba(110,139,255,.2)}
+.sw{transition:background .2s}.sw span{transition:transform .2s}
+.noanim *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; min-height: 100vh">
+<aside style="flex: 1 1 248px; background: #0B0F17; border-right: 1px solid #171D2A; padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px">
+<span style="width: 32px; height: 32px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 19px; font-weight: 700">[NOM]</span>
+</div>
+<nav aria-label="Menu de l'application" style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
+<div>
+<sc-if value="{{g.title}}" hint-placeholder-val="{{true}}"><div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div></sc-if>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="3">
+<a class="nav" href="{{n.href}}" aria-current="{{n.current}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; background: {{n.bg}}; color: {{n.fg}}; font-weight: {{n.fw}}">
+<span style="position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: {{n.bar}}"></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+<span style="flex: 1">{{n.label}}</span>
+<sc-if value="{{n.badge}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 999px; background: {{n.bBg}}; color: {{n.bFg}}">{{n.badge}}</span></sc-if>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid #1A2130">
+<span style="width: 34px; height: 34px; border-radius: 17px; background: #1D2433; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #DCE2EC">AM</span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 600">Alex Martin</div><div style="font-size: 11px; color: #8A95AA">Premium · renouvellement le 6 déc.</div></div>
+</div>
+</aside>
+<main id="top" style="flex: 999 1 560px; min-width: 0; padding: 26px 36px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+
+<div class="fu" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div>
+<div style="font-size: 13px; color: #8A95AA">Outils · News</div>
+<h1 class="h" style="font-size: 30px; margin: 6px 0 0; font-weight: 700">News</h1>
+<p style="font-size: 14px; color: #A3AEC2; margin: 6px 0 0">Tout ce qui fait bouger tes actifs : annonces, résultats d'entreprises et actualité.</p>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<a class="ghost" href="Marche.dc.html" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 16px; height: 44px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 16a8.5 8.5 0 1 1 17 0M12 16l4-5"></path></svg>État du marché</a>
+<button class="btn" type="button" onClick="{{newAlert}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; padding: 0 18px; height: 44px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg>Créer une alerte</button>
+</div>
+</div>
+
+<div class="fu d1" style="display: flex; align-items: center; gap: 16px; padding: 16px 18px; border-radius: 16px; background: rgba(245,166,91,.08); border: 1px solid rgba(245,166,91,.32); flex-wrap: wrap">
+<div style="flex: 1 1 280px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #F5B87A"><span class="puo" style="width: 7px; height: 7px; border-radius: 4px; background: #F5A65B"></span>PROCHAINE ANNONCE · AUJOURD'HUI 14:30 · USD · IMPACT FORT</div>
+<div class="h" style="font-size: 18px; font-weight: 600; margin-top: 6px">NFP — Emplois non agricoles</div>
+<div style="font-size: 13px; color: #A3AEC2; margin-top: 3px">Concerne 3 de tes actifs : EUR/USD, XAU/USD, NAS100 · Prévision 165 k, précédent 142 k</div>
+</div>
+<div style="text-align: right"><div style="font-size: 11px; color: #F5B87A">dans</div><div class="h num" style="font-size: 26px; font-weight: 600; color: #F5C28F">{{cd}}</div></div>
+<button class="ghost" type="button" onClick="{{nfpAlert.pick}}" aria-pressed="{{nfpAlert.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid {{nfpAlert.bd}}; background: {{nfpAlert.bg}}; color: {{nfpAlert.fg}}; font-size: 13px; font-weight: 600; padding: 0 14px; height: 40px; border-radius: 10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg>{{nfpAlert.l}}</button>
+</div>
+
+<div class="fu d1" style="display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+<div style="flex: 1 1 200px; background: #0E131D; border: 1px solid #1D2433; border-radius: 16px; padding: 16px 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="font-size: 12px; color: #94A0B4">{{k.l}}</div>
+<div class="h num" style="font-size: 26px; font-weight: 600; margin-top: 6px; color: {{k.c}}">{{k.v}}</div>
+<div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 4px">{{k.s}}</div>
+</div>
+</sc-for>
+</div>
+
+<sc-if value="{{flash}}" hint-placeholder-val="{{false}}">
+<div role="status" class="open" style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(61,220,151,.08); border: 1px solid rgba(61,220,151,.3); font-size: 13px; color: #BDF5DC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><span style="flex: 1">{{flash}}</span></div>
+</sc-if>
+
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid #1A2130">
+<div role="tablist" aria-label="Rubriques des news" class="fu d2" style="display: flex; gap: 4px; flex-wrap: wrap">
+<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="4">
+<button type="button" role="tab" aria-selected="{{tb.sel}}" onClick="{{tb.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 16px; margin-bottom: -1px; border: 0; background: transparent; cursor: pointer; font-size: 14px; font-weight: 600; color: {{tb.fg}}; box-shadow: inset 0 -2px 0 {{tb.bar}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{tb.icon}}"></path></svg><span>{{tb.label}}</span><sc-if value="{{tb.count}}" hint-placeholder-val="{{false}}"><span class="num" style="font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: #1A2130; color: #C9D3E6">{{tb.count}}</span></sc-if></button>
+</sc-for>
+</div>
+<sc-if value="{{showMine}}" hint-placeholder-val="{{true}}">
+<button class="chip" type="button" onClick="{{mine.pick}}" aria-pressed="{{mine.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; font-weight: 600; padding: 0 12px; min-height: 36px; border-radius: 999px; border: 1px solid {{mine.bd}}; background: {{mine.bg}}; color: {{mine.fg}}"><span style="width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid {{mine.bd}}; background: {{mine.box}}; display: flex; align-items: center; justify-content: center"><sc-if value="{{mine.on}}" hint-placeholder-val="{{false}}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span>Mes actifs seulement</button>
+</sc-if>
+</div>
+
+<sc-if value="{{isCal}}" hint-placeholder-val="{{true}}">
+<section aria-label="Calendrier économique" class="fu d2" style="display: flex; flex-direction: column; gap: 14px">
+
+<nav aria-label="Semaine" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px">
+<sc-for list="{{week}}" as="w" hint-placeholder-count="6">
+<a class="wk" href="{{w.href}}" onClick="{{w.pick}}" aria-current="{{w.current}}" aria-label="{{w.aria}}" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 14px; background: {{w.bg}}; border: 1px solid {{w.bd}}; color: #EEF1F6">
+<span style="display: flex; justify-content: space-between; align-items: center; gap: 6px"><span style="font-size: 13px; font-weight: 700">{{w.l}}</span><sc-if value="{{w.busy}}" hint-placeholder-val="{{false}}"><span style="font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 2px 6px; border-radius: 5px; background: rgba(255,122,107,.16); color: #FF9A8E">CHARGÉE</span></sc-if><sc-if value="{{w.today}}" hint-placeholder-val="{{false}}"><span style="font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 2px 6px; border-radius: 5px; background: {{accentSoft}}; color: #C9D3FF">AUJ.</span></sc-if></span>
+<span style="display: flex; gap: 12px; font-size: 12px; color: #A3AEC2">
+<span class="num" style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: {{w.fC}}"></span><b style="color: #EEF1F6">{{w.f}}</b> {{w.fL}}</span>
+<span class="num" style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: {{w.mC}}"></span><b style="color: #EEF1F6">{{w.m}}</b> {{w.mL}}</span>
+</span>
+</a>
+</sc-for>
+</nav>
+
+<sc-if value="{{tl.ok}}" hint-placeholder-val="{{true}}">
+<div style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 18px 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Zones à éviter · {{tl.title}}</h2><div style="font-size: 12px; color: #8A95AA; margin-top: 3px">Heure de Paris · news de tes actifs · clique un jour au-dessus pour changer</div></div>
+<div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+<label for="tl-av" style="font-size: 12px; color: #A3AEC2">Avant</label>
+<select id="tl-av" class="inp" value="{{tl.av}}" onChange="{{tl.onAv}}" style="height: 36px; padding: 0 8px; border-radius: 9px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark"><sc-for list="{{tl.opts}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.l}}</option></sc-for></select>
+<label for="tl-ap" style="font-size: 12px; color: #A3AEC2">Après</label>
+<select id="tl-ap" class="inp" value="{{tl.ap}}" onChange="{{tl.onAp}}" style="height: 36px; padding: 0 8px; border-radius: 9px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark"><sc-for list="{{tl.opts}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.l}}</option></sc-for></select>
+</div>
+</div>
+<div style="overflow-x: auto">
+<div role="img" aria-label="{{tl.aria}}" style="position: relative; min-width: 620px; padding-top: 4px">
+<div style="position: relative; display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{tl.zones}}" as="z" hint-placeholder-count="2"><span style="position: absolute; top: -4px; bottom: -4px; left: {{z.l}}%; width: {{z.w}}%; background: {{z.col}}; border-radius: 4px; z-index: 1"></span></sc-for>
+<sc-for list="{{tl.sessions}}" as="se" hint-placeholder-count="3">
+<div style="position: relative; height: 20px; border-radius: 6px; background: #111622">
+<span style="position: absolute; top: 0; bottom: 0; left: {{se.l}}%; width: {{se.w}}%; border-radius: 6px; background: {{se.bg}}; display: flex; align-items: center; padding-left: 8px; box-sizing: border-box; overflow: hidden; white-space: nowrap; font-size: 11px; font-weight: 600; color: {{se.fg}}">{{se.nom}} · {{se.h}}</span>
+</div>
+</sc-for>
+<div style="position: relative; height: 30px; border-radius: 8px; background: #151B28; margin-top: 4px">
+<sc-for list="{{tl.zones}}" as="z" hint-placeholder-count="2"><span style="position: absolute; top: 0; bottom: 0; left: {{z.l}}%; width: {{z.w}}%; background: {{z.bar}}; border-radius: 5px; z-index: 2"></span></sc-for>
+<sc-for list="{{tl.marks}}" as="mk" hint-placeholder-count="3"><span style="position: absolute; top: 6px; bottom: 6px; left: {{mk.l}}%; width: 2px; margin-left: -1px; background: #0A0D14; z-index: 3; opacity: .6"></span></sc-for>
+</div>
+<sc-if value="{{tl.showNow}}" hint-placeholder-val="{{true}}">
+<span style="position: absolute; top: -10px; bottom: -6px; left: {{tl.now}}%; width: 2px; margin-left: -1px; background: #EEF1F6; z-index: 4; box-shadow: 0 0 0 2px rgba(10,13,20,.6)"></span>
+<span class="num" style="position: absolute; top: -26px; left: {{tl.now}}%; transform: translateX(-50%); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 5px; background: #EEF1F6; color: #0A0D14; z-index: 4; white-space: nowrap">{{tl.nowL}}</span>
+</sc-if>
+</div>
+<div style="position: relative; height: 16px; margin-top: 6px">
+<sc-for list="{{tl.ticks}}" as="tk" hint-placeholder-count="9"><span class="num" style="position: absolute; left: {{tk.l}}%; transform: translateX({{tk.tx}}); font-size: 10px; color: #6F7A90">{{tk.t}}</span></sc-for>
+</div>
+</div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+<sc-if value="{{tl.empty}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #8A95AA">Aucune news forte ou moyenne sur tes actifs ce jour-là : pas de zone à éviter.</span></sc-if>
+<sc-for list="{{tl.chips}}" as="c" hint-placeholder-count="2">
+<span class="num" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 5px 10px; border-radius: 8px; background: {{c.bg}}; color: {{c.fg}}"><b>{{c.h}}</b>{{c.noms}}</span>
+</sc-for>
+<span style="margin-left: auto; display: inline-flex; gap: 12px; font-size: 11px; color: #8A95AA"><span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 10px; height: 10px; border-radius: 3px; background: rgba(255,122,107,.85)"></span>news forte</span><span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 10px; height: 10px; border-radius: 3px; background: rgba(245,166,91,.5)"></span>news moyenne</span></span>
+</div>
+</div>
+</sc-if>
+
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="font-size: 13px; color: #8A95AA">Heures de Paris · semaine du 6 au 13 novembre</div>
+<div role="group" aria-label="Impact" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{impChips}}" as="p" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 34px; background: {{p.bg}}; color: {{p.fg}}">{{p.l}}</button>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{calEmpty}}" hint-placeholder-val="{{false}}">
+<div style="padding: 40px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center; font-size: 14px; color: #A3AEC2">Aucune annonce avec ces filtres cette semaine.</div>
+</sc-if>
+
+<sc-for list="{{days}}" as="d" hint-placeholder-count="3">
+<div id="{{d.anchor}}" style="scroll-margin-top: 16px; background: #0E131D; border: 1px solid {{d.bd}}; border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; background: #0B1019; border-bottom: 1px solid #1A2130">
+<div style="display: flex; align-items: center; gap: 10px"><h2 class="h" style="font-size: 16px; margin: 0; font-weight: 600">{{d.label}}</h2><sc-if value="{{d.today}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 7px; border-radius: 6px; background: {{accentSoft}}; color: #C9D3FF">AUJOURD'HUI</span></sc-if></div>
+<span class="num" style="font-size: 12px; color: #8A95AA">{{d.count}}</span>
+</div>
+<div style="overflow-x: auto">
+<div style="min-width: 760px">
+<div style="display: grid; grid-template-columns: 64px 56px minmax(0, 1fr) 48px repeat(2, 84px) 104px; gap: 12px; padding: 8px 18px; font-size: 11px; font-weight: 600; color: #6F7A90; border-bottom: 1px solid #151B27">
+<span>Heure</span><span>Devise</span><span>Annonce</span><span>Impact</span><span style="text-align: right">Précédent</span><span style="text-align: right">Prévision</span><span style="text-align: right">Réel</span>
+</div>
+<sc-for list="{{d.items}}" as="e" hint-placeholder-count="3">
+<div style="border-top: 1px solid #151B27; background: {{e.bg}}">
+<button class="row" type="button" onClick="{{e.pick}}" aria-expanded="{{e.expanded}}" style="width: 100%; text-align: left; cursor: pointer; border: 0; background: transparent; color: #EEF1F6; display: grid; grid-template-columns: 64px 56px minmax(0, 1fr) 48px repeat(2, 84px) 104px; gap: 12px; align-items: center; padding: 12px 18px; opacity: {{e.op}}">
+<span class="num" style="font-size: 13px; font-weight: 600">{{e.t}}</span>
+<span style="justify-self: start; font-size: 11px; font-weight: 800; padding: 3px 7px; border-radius: 6px; background: #1A2130; color: #C9D3E6">{{e.cur}}</span>
+<span style="min-width: 0; display: flex; align-items: center; gap: 8px"><span style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{e.title}}</span><sc-if value="{{e.forte}}" hint-placeholder-val="{{false}}"><span style="flex: none; font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 2px 6px; border-radius: 5px; background: rgba(245,166,91,.16); color: #F5B87A">FORTE SURPRISE</span></sc-if><sc-if value="{{e.mine}}" hint-placeholder-val="{{false}}"><span style="flex: none; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 5px; background: {{accentSoft}}; color: #C9D3FF">tes actifs</span></sc-if><sc-if value="{{e.alert}}" hint-placeholder-val="{{false}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5B87A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Alerte active" style="flex: none"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg></sc-if></span>
+<span role="img" aria-label="{{e.aria}}" style="display: flex; gap: 2px; align-items: flex-end"><span style="width: 4px; height: 7px; border-radius: 1px; background: {{e.c1}}"></span><span style="width: 4px; height: 10px; border-radius: 1px; background: {{e.c2}}"></span><span style="width: 4px; height: 13px; border-radius: 1px; background: {{e.c3}}"></span></span>
+<span class="num" style="text-align: right; font-size: 13px; color: #A3AEC2">{{e.prev}}</span>
+<span class="num" style="text-align: right; font-size: 13px; color: #DCE2EC">{{e.fc}}</span>
+<span class="num" style="text-align: right; font-size: {{e.actFs}}; font-weight: {{e.actFw}}; color: {{e.actC}}">{{e.act}}</span>
+</button>
+<sc-if value="{{e.hasLecture}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; align-items: center; gap: 8px; padding: 0 18px 12px 158px; margin-top: -4px; font-size: 12px; color: {{e.lectC}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{e.lectIcon}}"></path></svg><span>{{e.lecture}}</span></div>
+</sc-if>
+<sc-if value="{{e.open}}" hint-placeholder-val="{{false}}">
+<div class="open" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; padding: 4px 18px 18px 158px">
+<div style="flex: 1 1 320px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .06em; color: {{accent}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>POURQUOI ÇA COMPTE</div>
+<div style="font-size: 13px; line-height: 1.55; color: #C9D3E6; margin-top: 6px">{{e.sum}}</div>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 6px">Actifs concernés : <span style="color: #DCE2EC; font-weight: 600">{{e.assets}}</span></div>
+<div style="margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433">
+<div style="font-size: 12px; font-weight: 600; color: #C9D3E6">{{e.histT}}</div>
+<sc-if value="{{e.histWait}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; color: #8A95AA; margin-top: 6px">Calcul de l'historique…</div></sc-if>
+<div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px">
+<sc-for list="{{e.hist}}" as="hh" hint-placeholder-count="3">
+<div class="num" style="font-size: 13px; line-height: 1.5; color: #A3AEC2"><b style="color: #EEF1F6">{{hh.a}}</b> : {{hh.t}}</div>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<button class="ghost" type="button" onClick="{{e.alertPick}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600; padding: 0 14px; height: 40px; border-radius: 10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg>{{e.alertL}}</button>
+<sc-if value="{{e.canSurp}}" hint-placeholder-val="{{false}}">
+<button class="ghost" type="button" onClick="{{e.surpPick}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600; padding: 0 14px; height: 40px; border-radius: 10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"></path></svg>Alerte sur la surprise</button>
+</sc-if>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-for>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #8A95AA">
+<span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #7BEBB9"></span>Surprise favorable à la devise</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #FF9A8E"></span>Surprise défavorable</span>
+<span>« Forte surprise » : écart d'au moins {{forteTxt}} fois l'écart habituel de cette annonce</span>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{isEarn}}" hint-placeholder-val="{{false}}">
+<section aria-labelledby="earn-up" class="fu d2" style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+<h2 id="earn-up" class="h" style="font-size: 20px; margin: 0; font-weight: 600">À venir · vu depuis le NAS100</h2>
+<span style="font-size: 12px; color: #8A95AA">Classé par poids dans le Nasdaq 100 · effet potentiel ≈ poids × mouvement attendu</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{earnUp}}" as="x" hint-placeholder-count="4">
+<div class="scard" style="flex: {{x.flex}}; min-width: 0; background: {{x.cardBg}}; border: 1px solid {{x.bd}}; border-radius: 18px; padding: {{x.pad}}; display: flex; flex-direction: column; gap: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap">
+<span class="h" style="flex: none; width: {{x.logo}}; height: {{x.logo}}; border-radius: 12px; background: #151B28; border: 1px solid #222A3A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #DCE2EC">{{x.ini}}</span>
+<div style="flex: 1 1 200px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap"><span class="h" style="font-size: {{x.nameFs}}; font-weight: 600">{{x.co}}</span><span style="font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: #1A2130; color: #C9D3E6">{{x.tick}}</span><sc-if value="{{x.top}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 7px; border-radius: 6px; background: rgba(255,122,107,.16); color: #FF9A8E">ÉVÉNEMENT MAJEUR POUR LE NAS100</span></sc-if></div>
+<div class="num" style="font-size: 12px; color: #A3AEC2; margin-top: 4px">{{x.day}} · {{x.when}}</div>
+</div>
+<div style="margin-left: auto; text-align: right"><div style="font-size: 11px; color: #8A95AA">Poids dans le NAS100</div><div class="h num" style="font-size: {{x.wFs}}; font-weight: 700; color: {{x.wC}}">{{x.poids}}</div></div>
+</div>
+<div style="height: 8px; border-radius: 4px; background: #1A2130; overflow: hidden"><span style="display: block; height: 100%; width: {{x.wBar}}%; border-radius: 4px; background: {{x.wC}}"></span></div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<div style="flex: 1 1 120px; min-width: 0; padding: 10px 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Mouvement attendu (options)</div><div class="h num" style="font-size: 17px; font-weight: 600; margin-top: 3px; color: #F5B87A">{{x.move}}</div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">sur l'action, le lendemain</div></div>
+<div style="flex: 1 1 120px; min-width: 0; padding: 10px 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">Effet potentiel sur le NAS100</div><div class="h num" style="font-size: 17px; font-weight: 600; margin-top: 3px; color: {{x.impC}}">{{x.impact}}</div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">poids × mouvement attendu</div></div>
+<div style="flex: 1 1 120px; min-width: 0; padding: 10px 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">NAS100 après ses résultats</div><div class="h num" style="font-size: 17px; font-weight: 600; margin-top: 3px">{{x.ndx}}</div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">en moyenne, 4 derniers</div></div>
+<div style="flex: 1 1 120px; min-width: 0; padding: 10px 12px; border-radius: 12px; background: #111622"><div style="font-size: 11px; color: #8A95AA">BPA attendu</div><div class="h num" style="font-size: 17px; font-weight: 600; margin-top: 3px">{{x.eps}}</div><div class="num" style="font-size: 11px; color: #8A95AA; margin-top: 2px">avant : {{x.epsPrev}}</div></div>
+</div>
+<div style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap">
+<div style="flex: 1 1 260px; font-size: 13px; line-height: 1.5; color: #C9D3E6">{{x.sum}}</div>
+<button class="ghost" type="button" onClick="{{x.alertPick}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600; padding: 0 14px; height: 40px; border-radius: 10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg>{{x.alertL}}</button>
+</div>
+</div>
+</sc-for>
+</div>
+
+<h2 class="h" style="font-size: 20px; margin: 10px 0 0; font-weight: 600">Publiés cette semaine</h2>
+<div style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; overflow-x: auto; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="min-width: 780px">
+<div style="display: grid; grid-template-columns: minmax(0, 1.6fr) 90px 100px 100px 90px 90px 110px; gap: 12px; padding: 12px 18px; font-size: 11px; font-weight: 600; color: #6F7A90; border-bottom: 1px solid #151B27">
+<span>Entreprise</span><span style="text-align: right">Poids NAS100</span><span style="text-align: right">BPA attendu</span><span style="text-align: right">BPA publié</span><span style="text-align: right">Surprise</span><span style="text-align: right">Action</span><span style="text-align: right">NAS100 ce jour-là</span>
+</div>
+<sc-for list="{{earnDone}}" as="x" hint-placeholder-count="4">
+<div style="display: grid; grid-template-columns: minmax(0, 1.6fr) 90px 100px 100px 90px 90px 110px; gap: 12px; align-items: center; padding: 12px 18px; border-top: 1px solid #151B27">
+<div style="min-width: 0; display: flex; align-items: center; gap: 10px"><span style="font-size: 14px; font-weight: 600">{{x.co}}</span><span style="font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: #1A2130; color: #C9D3E6">{{x.tick}}</span><span class="num" style="font-size: 12px; color: #8A95AA">{{x.day}}</span></div>
+<span class="num" style="text-align: right; font-size: 13px; font-weight: 600">{{x.poids}}</span>
+<span class="num" style="text-align: right; font-size: 13px; color: #A3AEC2">{{x.eps}}</span>
+<span class="num" style="text-align: right; font-size: 13px; font-weight: 600">{{x.act}}</span>
+<span class="num" style="text-align: right; font-size: 13px; font-weight: 700; color: {{x.sc}}">{{x.surp}}</span>
+<span class="num" style="justify-self: end; font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{x.rBg}}; color: {{x.rc}}">{{x.react}}</span>
+<span class="num" style="text-align: right; font-size: 13px; font-weight: 700; color: {{x.nc}}">{{x.ndx}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="font-size: 11px; color: #6F7A90">Poids approximatifs dans le Nasdaq 100, mouvements attendus et réactions : données d'exemple pour la maquette.</div>
+</section>
+</sc-if>
+
+<sc-if value="{{isNews}}" hint-placeholder-val="{{false}}">
+<section aria-label="Actualités" class="fu d2" style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+<div role="group" aria-label="Catégorie" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{nfChips}}" as="c" hint-placeholder-count="4">
+<button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 14px; min-height: 36px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}">{{c.l}}</button>
+</sc-for>
+</div>
+<div style="display: flex; gap: 8px; align-items: center">
+<label for="nf-asset" style="font-size: 13px; color: #A3AEC2">Actif</label>
+<select id="nf-asset" class="inp" value="{{nAsset}}" onChange="{{onNAsset}}" style="height: 38px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark">
+<sc-for list="{{assetOpts}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.l}}</option></sc-for>
+</select>
+</div>
+</div>
+<sc-if value="{{newsEmpty}}" hint-placeholder-val="{{false}}">
+<div style="padding: 40px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center; font-size: 14px; color: #A3AEC2">Aucune actualité avec ces filtres.</div>
+</sc-if>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{feed}}" as="n" hint-placeholder-count="6">
+<div style="background: #0E131D; border: 1px solid {{n.bd}}; border-radius: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<button class="row" type="button" onClick="{{n.pick}}" aria-expanded="{{n.expanded}}" style="width: 100%; text-align: left; cursor: pointer; border: 0; background: transparent; border-radius: 16px; color: #EEF1F6; display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px">
+<span class="num" style="flex: none; width: 64px; font-size: 11px; color: #8A95AA; line-height: 1.4"><span style="display: block; color: #EEF1F6; font-weight: 600; font-size: 14px">{{n.time}}</span>{{n.day}}</span>
+<span style="flex: 1; min-width: 0">
+<span style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 6px; background: {{n.catBg}}; color: {{n.catFg}}">{{n.cat}}</span><sc-for list="{{n.tags}}" as="tg" hint-placeholder-count="2"><span style="font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 6px; background: {{tg.bg}}; color: {{tg.fg}}">{{tg.l}}</span></sc-for></span>
+<span style="display: block; font-size: 15px; font-weight: 600; margin-top: 6px; line-height: 1.4">{{n.title}}</span>
+<span style="display: block; font-size: 13px; color: #A3AEC2; margin-top: 4px; line-height: 1.45">{{n.resume}}</span>
+</span>
+<span role="img" aria-label="{{n.aria}}" style="flex: none; display: flex; gap: 2px; align-items: flex-end; margin-top: 4px"><span style="width: 4px; height: 7px; border-radius: 1px; background: {{n.c1}}"></span><span style="width: 4px; height: 10px; border-radius: 1px; background: {{n.c2}}"></span><span style="width: 4px; height: 13px; border-radius: 1px; background: {{n.c3}}"></span></span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px; transform: {{n.rot}}"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{n.open}}" hint-placeholder-val="{{false}}">
+<div class="open" style="margin: 0 18px 16px 96px; padding-top: 12px; border-top: 1px solid #1D2433">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .06em; color: {{accent}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>RÉSUMÉ IA</div>
+<div style="font-size: 14px; line-height: 1.55; color: #C9D3E6; margin-top: 6px">{{n.sum}}</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{isAlerts}}" hint-placeholder-val="{{false}}">
+<section aria-label="Mes alertes" class="fu d2" style="display: flex; flex-direction: column; gap: 14px">
+<sc-if value="{{form.show}}" hint-placeholder-val="{{false}}">
+<div class="open" style="background: #0E131D; border: 1px solid {{accentLine}}; border-radius: 20px; padding: 20px 22px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Nouvelle alerte</h2><button class="ghost" type="button" onClick="{{form.close}}" aria-label="Fermer" style="flex: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span id="al-type" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Me prévenir pour</span>
+<div role="group" aria-labelledby="al-type" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{form.types}}" as="t" hint-placeholder-count="4"><button class="chip" type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 14px; min-height: 40px; border-radius: 999px; border: 1px solid {{t.bd}}; background: {{t.bg}}; color: {{t.fg}}">{{t.l}}</button></sc-for>
+</div>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap">
+<sc-if value="{{form.isSel}}" hint-placeholder-val="{{true}}">
+<div style="flex: 2 1 280px; display: flex; flex-direction: column; gap: 6px">
+<label for="al-subj" style="font-size: 13px; font-weight: 600; color: #C9D3E6">{{form.subjL}}</label>
+<select id="al-subj" class="inp" value="{{form.subj}}" onChange="{{form.onSubj}}" style="height: 44px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; color-scheme: dark">
+<sc-for list="{{form.opts}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.v}}</option></sc-for>
+</select>
+</div>
+</sc-if>
+<sc-if value="{{form.isKw}}" hint-placeholder-val="{{false}}">
+<div style="flex: 2 1 280px; display: flex; flex-direction: column; gap: 6px">
+<label for="al-kw" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Mot-clé *</label>
+<input id="al-kw" class="inp" type="text" value="{{form.kw}}" onChange="{{form.onKw}}" placeholder="ex. OPEP, Fed, droits de douane" aria-invalid="{{form.invKw}}" style="height: 44px; padding: 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{form.kwBd}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; width: 100%">
+<sc-if value="{{form.errKw}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #FF9A8E">{{form.errKw}}</span></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{form.isSurp}}" hint-placeholder-val="{{false}}">
+<div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+<label for="al-seuil" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Si le réel s'écarte de la prévision de plus de *</label>
+<div style="position: relative"><input id="al-seuil" class="inp num" type="text" inputmode="decimal" value="{{form.seuil}}" onChange="{{form.onSeuil}}" aria-invalid="{{form.invSeuil}}" aria-describedby="al-seuil-h" style="height: 44px; padding: 0 44px 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{form.seuilBd}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; width: 100%"><span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: #8A95AA">{{form.unit}}</span></div>
+<span id="al-seuil-h" class="num" style="font-size: 12px; color: #8A95AA">{{form.seuilHint}}</span>
+<sc-if value="{{form.errSeuil}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #FF9A8E">{{form.errSeuil}}</span></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{form.hasWhen}}" hint-placeholder-val="{{true}}">
+<div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 6px">
+<span id="al-when" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Quand</span>
+<div role="group" aria-labelledby="al-when" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #2A3346; border-radius: 10px; padding: 3px; min-height: 44px; box-sizing: border-box; flex-wrap: wrap">
+<sc-for list="{{form.whens}}" as="t" hint-placeholder-count="3"><button class="chip" type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="flex: 1; cursor: pointer; border: 0; border-radius: 7px; font-size: 13px; font-weight: 600; padding: 0 8px; min-height: 36px; white-space: nowrap; background: {{t.bg}}; color: {{t.fg}}">{{t.l}}</button></sc-for>
+</div>
+<sc-if value="{{form.isAvant}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; align-items: center; gap: 8px; margin-top: 4px">
+<input id="al-min" class="inp num" type="text" inputmode="numeric" value="{{form.min}}" onChange="{{form.onMin}}" aria-invalid="{{form.invMin}}" style="width: 90px; height: 40px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid {{form.minBd}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; color-scheme: dark">
+<label for="al-min" style="font-size: 13px; color: #A3AEC2">minutes avant l'annonce</label>
+</div>
+<sc-if value="{{form.errMin}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #FF9A8E">{{form.errMin}}</span></sc-if>
+</sc-if>
+</div>
+</sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span id="al-ch" style="font-size: 13px; font-weight: 600; color: #C9D3E6">Recevoir sur</span>
+<div role="group" aria-labelledby="al-ch" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{form.chans}}" as="c" hint-placeholder-count="2"><button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 0 14px; min-height: 40px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg>{{c.l}}</button></sc-for>
+</div>
+<sc-if value="{{form.errCh}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #FF9A8E">{{form.errCh}}</span></sc-if>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid #1A2130">
+<div style="flex: 1 1 260px; font-size: 13px; color: #A3AEC2">{{form.recap}}</div>
+<div style="display: flex; gap: 10px">
+<button class="btn ghost" type="button" onClick="{{form.close}}" style="cursor: pointer; border: 1px solid transparent; background: transparent; color: #A3AEC2; font-size: 14px; font-weight: 600; padding: 0 14px; height: 44px; border-radius: 11px">Annuler</button>
+<button class="btn" type="button" onClick="{{form.save}}" style="cursor: pointer; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; padding: 0 20px; height: 44px; border-radius: 11px">Créer l'alerte</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{noAlerts}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 48px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center">
+<div class="h" style="font-size: 18px; font-weight: 600">Aucune alerte pour l'instant</div>
+<div style="font-size: 14px; color: #A3AEC2; max-width: 460px">Choisis une annonce, une entreprise ou un mot-clé : on te prévient avant que le marché bouge.</div>
+<button class="btn" type="button" onClick="{{newAlert}}" style="cursor: pointer; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; padding: 0 18px; height: 44px; border-radius: 11px">Créer ma première alerte</button>
+</div>
+</sc-if>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{alerts}}" as="a" hint-placeholder-count="3">
+<div style="background: #0E131D; border: 1px solid #1D2433; border-radius: 16px; padding: 16px 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 12px; background: {{a.icBg}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{a.icFg}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{a.icon}}"></path></svg></span>
+<div style="flex: 1 1 240px; min-width: 0; opacity: {{a.op}}">
+<div style="font-size: 15px; font-weight: 600">{{a.title}}</div>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 3px">{{a.desc}}</div>
+</div>
+<button class="sw" type="button" role="switch" aria-checked="{{a.checked}}" aria-label="Activer l'alerte {{a.title}}" onClick="{{a.toggle}}" style="flex: none; cursor: pointer; width: 46px; height: 28px; border-radius: 14px; border: 0; padding: 3px; background: {{a.swBg}}; display: flex; align-items: center"><span style="width: 22px; height: 22px; border-radius: 11px; background: #EEF1F6; transform: {{a.knob}}"></span></button>
+<button class="ghost" type="button" onClick="{{a.del}}" aria-label="Supprimer l'alerte {{a.title}}" style="flex: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #A3AEC2; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg></button>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<div style="font-size: 11px; color: #6F7A90">Données d'exemple · annonces, résultats et actualités générés pour la maquette · les résumés IA seront générés à partir des vraies sources.</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":2200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var mesActifs = null;
+    try { mesActifs = window.sessionStorage.getItem('tj.mesActifs'); } catch (e) {}
+    this.histo = {};
+    this.state = { tab: 'cal', imp: 'all', mine: mesActifs === '1', open: 'e3', nf: 'all', nAsset: 'all', nOpen: 0, el: 0, form: null, flash: '', alerts: this.defAlerts(), seq: 5, tlDay: 0, zAv: 15, zAp: 15, histoV: 0 };
+  }
+  defAlerts() {
+    return [
+      { id: 'a1', type: 'eco', subj: 'Toutes les annonces à impact fort sur mes actifs', when: 'avant', min: 15, ch: ['app', 'mail'], on: true },
+      { id: 'a2', type: 'surp', subj: 'NFP — Emplois non agricoles', seuil: 40, ch: ['app'], on: true },
+      { id: 'a3', type: 'earn', subj: 'NVIDIA (NVDA)', when: 'veille', ch: ['app'], on: true },
+      { id: 'a4', type: 'kw', subj: 'OPEP', when: 'pub', ch: ['app'], on: false }
+    ];
+  }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  componentDidMount() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var self = this, t0 = Date.now();
+    this.iv = setInterval(function () { self.setState({ el: Math.floor((Date.now() - t0) / 1000) }); }, 1000);
+    // le module de calcul (news-logic.js) peut finir de charger après le premier affichage
+    if (!window.TJNews) {
+      var essais = 0;
+      this.lw = setInterval(function () { essais++; if (window.TJNews || essais > 25) { clearInterval(self.lw); self.forceUpdate(); } }, 200);
+    }
+  }
+  componentWillUnmount() { clearInterval(this.iv); clearInterval(this.lw); clearTimeout(this.ft); clearTimeout(this.ht); }
+  say(msg) {
+    var self = this;
+    clearTimeout(this.ft);
+    this.ft = setTimeout(function () { self.setState({ flash: '' }); }, 4000);
+    return msg;
+  }
+  num(v) { var x = parseFloat(String(v).replace(/\s/g, '').replace('−', '-').replace(',', '.')); return isNaN(x) ? null : x; }
+  // Réaction historique de mes actifs à un type d'annonce : calculée à part (quelques dizaines de ms), puis mise en cache.
+  histoPour(type) {
+    var self = this, TJ = window.TJNews;
+    if (this.histo[type] || !TJ) return this.histo[type] || null;
+    if (!this.ht) {
+      this.ht = setTimeout(function () {
+        self.ht = null;
+        var res = TJ.mesActifsConcernes(type).map(function (a) {
+          var jeu = TJ.exemple.jeuActif(a);
+          return { actif: a, h: TJ.reactionHistorique(a, type, jeu.publications.filter(function (p) { return p.type === type; }), jeu.bougies), variable: TJ.EFFETS[type].actifs[a] === 0 };
+        });
+        self.histo[type] = res;
+        self.setState({ histoV: self.state.histoV + 1 });
+      }, 30);
+    }
+    return null;
+  }
+  events() {
+    // d : jour (0 = ven. 6 nov.) ; t : heure de Paris ; type : clé du module de calcul
+    return [
+      { id: 'e1', type: 'PROD_INDUS_DE', d: 0, t: '08:00', cur: 'EUR', title: 'Production industrielle Allemagne (m/m)', lvl: 1, prev: '−0,4 %', fc: '0,2 %', act: '0,5 %', good: true, mine: true, assets: 'EUR/USD · DAX', sum: "Une industrie allemande qui repart rassure sur la croissance européenne : léger soutien pour l'euro." },
+      { id: 'e2', type: 'HALIFAX', d: 0, t: '10:30', cur: 'GBP', title: 'Prix des logements Halifax (m/m)', lvl: 1, prev: '0,3 %', fc: '0,2 %', act: '−0,1 %', good: false, mine: false, assets: 'GBP/USD', sum: "Un immobilier britannique qui ralentit peut inciter la Banque d'Angleterre à baisser ses taux plus tôt, ce qui pèse sur la livre." },
+      { id: 'e3', type: 'NFP', d: 0, t: '14:30', cur: 'USD', title: 'NFP — Emplois non agricoles', lvl: 3, prev: '142 k', fc: '165 k', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Le chiffre le plus suivi du mois. Plus d'emplois que prévu = dollar plus fort et or souvent en baisse ; un chiffre faible fait l'inverse. Les premières minutes sont très agitées : évite d'entrer juste avant." },
+      { id: 'e4', type: 'CHOMAGE_US', d: 0, t: '14:30', cur: 'USD', title: 'Taux de chômage', lvl: 3, prev: '4,2 %', fc: '4,2 %', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Publié en même temps que le NFP. Un chômage qui monte renforce l'idée de baisses de taux de la Fed." },
+      { id: 'e5', type: 'EMPLOI_CA', d: 0, t: '14:30', cur: 'CAD', title: 'Emploi Canada', lvl: 2, prev: '22,1 k', fc: '15,0 k', act: '', mine: false, assets: 'USD/CAD', sum: "Tombe à la même minute que le NFP : le dollar canadien peut partir dans les deux sens." },
+      { id: 'e6', type: 'MICHIGAN', d: 0, t: '16:00', cur: 'USD', title: 'Confiance des consommateurs (Michigan)', lvl: 2, prev: '70,5', fc: '71,2', act: '', mine: true, assets: 'USD · Indices US', sum: "Un moral des ménages en hausse soutient l'idée d'une consommation solide aux États-Unis, plutôt favorable au dollar." },
+      { id: 'e7', type: 'PIB_EZ', d: 1, t: '11:00', cur: 'EUR', title: 'PIB zone euro (estimation)', lvl: 2, prev: '0,3 %', fc: '0,2 %', act: '', mine: true, assets: 'EUR/USD · DAX · CAC 40', sum: "Une croissance plus faible que prévu pèserait sur l'euro et renforcerait les attentes de baisse de taux de la BCE." },
+      { id: 'e8', type: 'CHOMAGE_UK', d: 2, t: '08:00', cur: 'GBP', title: 'Taux de chômage Royaume-Uni', lvl: 2, prev: '4,1 %', fc: '4,2 %', act: '', mine: false, assets: 'GBP/USD · FTSE 100', sum: "Deux jours avant la Banque d'Angleterre : un marché du travail plus faible rendrait une baisse de taux plus probable." },
+      { id: 'e9', type: 'ZEW_DE', d: 2, t: '11:00', cur: 'EUR', title: 'Indice ZEW Allemagne', lvl: 2, prev: '13,1', fc: '14,0', act: '', mine: true, assets: 'EUR/USD · DAX', sum: "Le moral des investisseurs allemands donne le ton pour l'euro et le DAX sur la journée." },
+      { id: 'e10', type: 'CPI_US', d: 3, t: '14:30', cur: 'USD', title: 'Inflation CPI (a/a)', lvl: 3, prev: '2,6 %', fc: '2,5 %', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100 · BTC/USD', sum: "Une inflation plus haute que prévu éloigne les baisses de taux : dollar en hausse, indices et or sous pression." },
+      { id: 'e11', type: 'EIA_PETROLE', d: 3, t: '16:30', cur: 'USD', title: 'Stocks de pétrole (EIA)', lvl: 2, prev: '+2,1 M', fc: '−0,8 M', act: '', mine: false, assets: 'WTI · Brent', sum: "Des stocks qui baissent signalent une demande solide et soutiennent le prix du pétrole." },
+      { id: 'e12', type: 'BOE_TAUX', d: 4, t: '13:00', cur: 'GBP', title: "Décision de taux de la Banque d'Angleterre", lvl: 3, prev: '4,75 %', fc: '4,75 %', act: '', mine: false, assets: 'GBP/USD · FTSE 100', sum: "Le marché attend un statu quo ; le ton du communiqué guidera la livre sterling." },
+      { id: 'e13', type: 'INSCRIPTIONS_US', d: 4, t: '14:30', cur: 'USD', title: 'Inscriptions hebdomadaires au chômage', lvl: 2, prev: '221 k', fc: '224 k', act: '', mine: true, assets: 'EUR/USD · NAS100', sum: "Un indicateur rapide du marché de l'emploi américain, surveillé de près après le NFP." },
+      { id: 'e14', type: 'PIB_UK', d: 5, t: '08:00', cur: 'GBP', title: 'PIB Royaume-Uni (t/t)', lvl: 2, prev: '0,2 %', fc: '0,1 %', act: '', mine: false, assets: 'GBP/USD', sum: "Une croissance proche de zéro mettrait la livre sous pression." },
+      { id: 'e15', type: 'VENTES_DETAIL_US', d: 5, t: '14:30', cur: 'USD', title: 'Ventes au détail (m/m)', lvl: 2, prev: '0,4 %', fc: '0,3 %', act: '', mine: true, assets: 'EUR/USD · NAS100', sum: "La consommation fait les deux tiers de l'économie américaine : un chiffre fort soutient le dollar et les indices." }
+    ];
+  }
+  impBars(lvl) {
+    if (lvl === 3) return { c1: '#FF9A8E', c2: '#FF9A8E', c3: '#FF9A8E', aria: 'Impact fort' };
+    if (lvl === 2) return { c1: '#F5B87A', c2: '#F5B87A', c3: '#2A3346', aria: 'Impact moyen' };
+    return { c1: '#8A95AA', c2: '#2A3346', c3: '#2A3346', aria: 'Impact faible' };
+  }
+  renderVals() {
+    var self = this, s = this.state;
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var soft = this.soft(accent, 0.13), aLine = this.soft(accent, 0.38);
+    var GAINT = '#7BEBB9', LOSST = '#FF9A8E', GREY = '#8A95AA';
+    var TJ = window.TJNews, F = TJ ? TJ.formats : null;
+    var NOW0 = Date.UTC(2026, 10, 6, 12, 3), now = NOW0 + s.el * 1000; // ven. 6 nov. 13:03 à Paris
+    var MES = TJ ? TJ.MES_ACTIFS : ['EUR/USD', 'XAU/USD', 'NAS100'];
+    var DAYS = [['Vendredi 6 novembre', 'Ven. 6', 6], ['Lundi 9 novembre', 'Lun. 9', 9], ['Mardi 10 novembre', 'Mar. 10', 10], ['Mercredi 11 novembre', 'Mer. 11', 11], ['Jeudi 12 novembre', 'Jeu. 12', 12], ['Vendredi 13 novembre', 'Ven. 13', 13]];
+    var WHEN = { pub: 'Dès la publication', avant: 'X min avant', veille: 'La veille au soir' };
+    var CH = { app: 'Appli', mail: 'E-mail' };
+    var pad2 = function (v) { return (v < 10 ? '0' : '') + v; };
+
+    // ---- annonces : heure UTC, valeurs chiffrées, surprise et lecture (module commun)
+    var EV = this.events();
+    EV.forEach(function (e) {
+      var hm = e.t.split(':');
+      e.ts = Date.UTC(2026, 10, DAYS[e.d][2], Number(hm[0]) - 1, Number(hm[1])); // Paris = UTC+1 en novembre
+      e.unit = (/\s(k|M|%)$/.exec(e.fc) || ['', ''])[1];
+      e.unitTxt = e.unit ? ' ' + e.unit : '';
+      e.fcN = self.num(e.fc);
+      e.reelN = e.act ? self.num(e.act) : null;
+      if (TJ && TJ.EFFETS[e.type]) {
+        e.mine = TJ.mesActifsConcernes(e.type).length > 0;
+        e.passees = TJ.exemple.publications(e.type).filter(function (p) { return p.t < e.ts - 3600000; });
+        if (e.reelN !== null) {
+          e.sp = TJ.surprise({ reel: e.reelN, prevision: e.fcN }, e.passees);
+          var dev = TJ.effetDevise(e.type, e.sp);
+          if (dev.sens !== 0) e.good = dev.sens > 0;
+          e.forte = e.sp && e.sp.forte;
+          e.lecture = TJ.lectureSurprise(e.type, e.sp, TJ.mesActifsConcernes(e.type));
+        }
+        var ech = TJ.surprise({ reel: 0, prevision: 0 }, e.passees);
+        e.echelle = ech ? ech.echelle : null;
+      }
+    });
+
+    // ---- alertes actives
+    var actives = s.alerts.filter(function (a) { return a.on; });
+    var hiAlert = actives.some(function (a) { return a.type === 'eco' && a.subj === 'Toutes les annonces à impact fort sur mes actifs'; });
+    var alerteSur = function (e) { return actives.some(function (a) { return (a.type === 'eco' || a.type === 'surp') && a.subj === e.title; }) || (hiAlert && e.lvl === 3 && e.mine); };
+
+    var openForm = function (type, subj, extra) {
+      var f = Object.assign({ type: type, subj: subj || '', kw: '', when: type === 'earn' ? 'veille' : type === 'kw' ? 'pub' : 'avant', min: '15', seuil: '', ch: ['app'], tried: false }, extra || {});
+      self.setState({ tab: 'alerts', form: f, flash: '' });
+      try { window.scrollTo(0, 0); } catch (e) {}
+    };
+    var defSeuil = function (e) { if (!e || !e.echelle) return ''; var d = e.fc.indexOf(',') >= 0 ? e.fc.split(',')[1].replace(/\D/g, '').length : 0; return String(Number(e.echelle.toFixed(d))).replace('.', ','); };
+
+    // ---- semaine : une case par jour, news fortes et moyennes sur mes actifs
+    var week = DAYS.map(function (D, di) {
+      var mineDay = EV.filter(function (e) { return e.d === di && e.mine; });
+      var f = mineDay.filter(function (e) { return e.lvl === 3; }).length, m = mineDay.filter(function (e) { return e.lvl === 2; }).length;
+      var busy = TJ ? (f >= TJ.SEUILS.JOURNEE_CHARGEE_FORTES || f + m >= TJ.SEUILS.JOURNEE_CHARGEE_TOTAL) : f >= 2;
+      var on = s.tlDay === di;
+      return { l: D[1], f: f, m: m, fL: f > 1 ? 'fortes' : 'forte', mL: m > 1 ? 'moyennes' : 'moyenne', busy: busy, today: di === 0, href: '#jour-' + di, current: on ? 'true' : 'false',
+        aria: D[0] + ' : ' + f + ' news fortes et ' + m + ' moyennes sur tes actifs' + (busy ? ', journée chargée' : ''),
+        fC: f ? '#FF7A6B' : '#2A3346', mC: m ? '#F5A65B' : '#2A3346',
+        bg: on ? '#111724' : '#0E131D', bd: on ? accent : (busy ? 'rgba(255,122,107,.35)' : '#1D2433'),
+        pick: function () { self.setState({ tlDay: di, imp: 'all' }); } };
+    });
+
+    // ---- timeline « zones à éviter » du jour choisi
+    var tl = { ok: false };
+    if (TJ) {
+      var dd = DAYS[s.tlDay][2], J = TJ.journeeParis(2026, 10, dd), span = J.fin - J.debut;
+      var pos = function (t) { return Math.max(0, Math.min(100, (t - J.debut) / span * 100)); };
+      var evDay = EV.filter(function (e) { return e.d === s.tlDay && e.mine && e.lvl >= 2; });
+      var zones = TJ.zonesAEviter(evDay.map(function (e) { return { t: e.ts, impact: e.lvl, nom: e.title.replace(/ \(.*\)$/, '') }; }), s.zAv, s.zAp);
+      var SC = { Asie: ['rgba(183,148,246,.30)', '#DCCCFB'], Londres: ['rgba(110,139,255,.32)', '#C9D3FF'], 'New York': ['rgba(61,220,151,.26)', '#BDF5DC'] };
+      var opts = [5, 10, 15, 30, 60].map(function (v) { return { v: String(v), l: v + ' min' }; });
+      tl = {
+        ok: true, title: DAYS[s.tlDay][0].toLowerCase(), av: String(s.zAv), ap: String(s.zAp), opts: opts,
+        onAv: function (ev) { self.setState({ zAv: Number(ev.target.value) }); },
+        onAp: function (ev) { self.setState({ zAp: Number(ev.target.value) }); },
+        sessions: TJ.sessionsJour(2026, 10, dd).map(function (se) { var l = pos(se.debut), r = pos(se.fin); return { nom: se.nom, h: F.heureParis(se.debut) + '–' + F.heureParis(se.fin), l: l.toFixed(2), w: (r - l).toFixed(2), bg: SC[se.nom][0], fg: SC[se.nom][1] }; }),
+        zones: zones.map(function (z) { var l = pos(z.debut), r = pos(z.fin); return { l: l.toFixed(2), w: Math.max(r - l, 0.3).toFixed(2), col: z.niveau === 3 ? 'rgba(255,122,107,.12)' : 'rgba(245,166,91,.07)', bar: z.niveau === 3 ? 'rgba(255,122,107,.85)' : 'rgba(245,166,91,.5)' }; }),
+        marks: evDay.map(function (e) { return { l: pos(e.ts).toFixed(2) }; }),
+        chips: zones.map(function (z) { return { h: F.heureParis(z.debut) + '–' + F.heureParis(z.fin), noms: ' · ' + z.noms.join(', '), bg: z.niveau === 3 ? 'rgba(255,122,107,.12)' : 'rgba(245,166,91,.10)', fg: z.niveau === 3 ? '#FFC2BA' : '#F5C28F' }; }),
+        empty: zones.length === 0,
+        ticks: [0, 3, 6, 9, 12, 15, 18, 21, 24].map(function (h) { return { t: pad2(h % 24) + ':00', l: (h / 24 * 100).toFixed(2), tx: h === 0 ? '0' : h === 24 ? '-100%' : '-50%' }; }),
+        showNow: s.tlDay === 0, now: pos(now).toFixed(2), nowL: 'maintenant ' + F.heureParis(now),
+        aria: 'Journée du ' + DAYS[s.tlDay][0] + '. ' + (zones.length ? 'Zones à éviter : ' + zones.map(function (z) { return F.heureParis(z.debut) + ' à ' + F.heureParis(z.fin) + ' (' + (z.niveau === 3 ? 'news forte' : 'news moyenne') + ' : ' + z.noms.join(', ') + ')'; }).join(' ; ') + '.' : 'Aucune zone à éviter.')
+      };
+    }
+
+    // ---- calendrier
+    var evOk = function (e) { return (s.imp === 'all' || (s.imp === '2' ? e.lvl >= 2 : e.lvl === 3)) && (!s.mine || e.mine); };
+    var days = [];
+    DAYS.forEach(function (D, di) {
+      var items = EV.filter(function (e) { return e.d === di && evOk(e); }).map(function (e) {
+        var op = s.open === e.id, past = e.reelN !== null, b = self.impBars(e.lvl), al = alerteSur(e);
+        var avenir = !past && e.ts > now;
+        var item = {
+          t: e.t, cur: e.cur, title: e.title, mine: e.mine && !s.mine, alert: al, forte: !!e.forte, prev: e.prev, fc: e.fc,
+          act: past ? e.act : (TJ ? (avenir ? F.dansCombien(e.ts, now) : 'en attente') : '—'),
+          actC: past ? (e.good ? GAINT : LOSST) : (avenir && e.ts - now < 3600000 ? '#F5B87A' : GREY), actFs: past ? '13px' : '12px', actFw: past ? '700' : '600',
+          c1: b.c1, c2: b.c2, c3: b.c3, aria: b.aria, op: past ? '0.8' : '1',
+          hasLecture: !!e.lecture, lecture: e.lecture || '', lectC: e.good ? GAINT : LOSST, lectIcon: e.good ? 'M4 17l6-6 4 4 6-7M14 8h6v6' : 'M4 7l6 6 4-4 6 7M14 16h6v-6',
+          open: op, expanded: op ? 'true' : 'false', bg: op ? '#111724' : 'transparent', sum: e.sum, assets: e.assets,
+          alertL: al ? 'Alerte déjà active' : 'Me prévenir avant', canSurp: !past && e.fcN !== null && !!TJ,
+          alertPick: function () { if (!al) openForm('eco', e.title, { when: 'avant', min: '15' }); else self.setState({ tab: 'alerts' }); },
+          surpPick: function () { openForm('surp', e.title, { seuil: defSeuil(e) }); },
+          pick: function () { self.setState({ open: self.state.open === e.id ? null : e.id }); },
+          histT: '', histWait: false, hist: []
+        };
+        if (op) {
+          var mesA = TJ ? TJ.mesActifsConcernes(e.type) : [];
+          if (!TJ) item.histT = 'Réaction historique indisponible (module de calcul non chargé).';
+          else if (!mesA.length) item.histT = 'Aucun de tes actifs (' + MES.join(', ') + ") n'est directement concerné par cette annonce.";
+          else {
+            var H = self.histoPour(e.type);
+            item.histT = 'Comment tes actifs ont réagi aux dernières publications';
+            item.histWait = !H;
+            item.hist = (H || []).map(function (x) {
+              var h = x.h, u = TJ.INSTRUMENTS[x.actif].unite;
+              if (!h.n) return { a: x.actif, t: 'pas assez d’historique.' };
+              var sur10 = function (p) { return Math.round(p / 10) + ' fois sur 10'; };
+              return { a: x.actif, t: 'en moyenne ' + F.nombre(h.mouvementMoyen15.unites, 0) + ' ' + u + ' en 15 min (' + F.nombre(h.mouvementMoyen15.pct, 2) + ' %), au-delà du range de la journée ' + sur10(h.pctCasseRange) +
+                (x.variable || h.pctSensAttendu === null ? ', sens variable selon les fois' : ', dans le sens attendu ' + sur10(h.pctSensAttendu)) + (h.faible ? ' (historique court : ' + h.n + ' publications)' : '') + '.' };
+            });
+          }
+        }
+        return item;
+      });
+      if (items.length) days.push({ label: D[0], today: di === 0, items: items, anchor: 'jour-' + di, bd: s.tlDay === di ? aLine : '#1D2433', count: items.length + ' annonce' + (items.length > 1 ? 's' : '') });
+    });
+    var impChips = [['all', 'Tout'], ['2', 'Moyen et fort'], ['3', 'Fort']].map(function (p) {
+      var on = s.imp === p[0];
+      return { l: p[1], pressed: on ? 'true' : 'false', bg: on ? '#1A2130' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.setState({ imp: p[0] }); } };
+    });
+
+    // ---- résultats d'entreprises, vus depuis le NAS100 (poids approximatifs, données d'exemple)
+    var EARN = [
+      { co: 'NVIDIA', tick: 'NVDA', day: 'Mer. 18 nov.', when: 'après clôture', poids: 9.0, move: 7.8, ndx: 1.4, eps: '0,87 $', epsPrev: '0,81 $', sum: "La publication la plus attendue du trimestre : avec près d'un dixième de l'indice, NVIDIA peut faire bouger tout le NAS100 à elle seule. Réduis tes positions avant si tu n'es pas sûr." },
+      { co: 'Cisco', tick: 'CSCO', day: 'Mer. 11 nov.', when: 'après clôture', poids: 1.3, move: 5.2, ndx: 0.3, eps: '0,98 $', epsPrev: '0,94 $', sum: "Donne une indication sur les dépenses des entreprises en réseau et en IA, mais pèse peu dans l'indice." },
+      { co: 'Applied Materials', tick: 'AMAT', day: 'Jeu. 12 nov.', when: 'après clôture', poids: 0.8, move: 6.4, ndx: 0.4, eps: '2,31 $', epsPrev: '2,18 $', sum: "Fournisseur des fabricants de puces : sa réaction peut entraîner le reste des semi-conducteurs." },
+      { co: 'Palo Alto Networks', tick: 'PANW', day: 'Mar. 17 nov.', when: 'après clôture', poids: 0.7, move: 7.1, ndx: 0.3, eps: '0,89 $', epsPrev: '0,78 $', sum: "Gros mouvements sur l'action, mais effet limité sur l'indice." }
+    ].sort(function (a, b) { return b.poids - a.poids; });
+    var maxP = EARN[0].poids;
+    var fp = function (v, d) { return F ? F.nombre(v, d) : String(v.toFixed(d)).replace('.', ','); };
+    var earnUp = EARN.map(function (x, i) {
+      var subj = x.co + ' (' + x.tick + ')', al = actives.some(function (a) { return a.subj === subj; }), top = i === 0;
+      var imp = TJ ? TJ.impactSurIndice(x.poids, x.move) : x.poids * x.move / 100;
+      return { co: x.co, tick: x.tick, ini: x.tick.slice(0, 2), day: x.day, when: x.when, sum: x.sum, top: top,
+        flex: top ? '1 1 100%' : '1 1 300px', pad: top ? '22px 24px' : '18px 20px', logo: top ? '52px' : '44px', nameFs: top ? '22px' : '17px', wFs: top ? '30px' : '20px',
+        cardBg: top ? '#101626' : '#0E131D', bd: top ? 'rgba(255,122,107,.4)' : '#1D2433', wC: top ? '#FF9A8E' : '#A9BBFF',
+        poids: '≈ ' + fp(x.poids, 1) + ' %', wBar: (x.poids / maxP * 100).toFixed(1), move: '±' + fp(x.move, 1) + ' %',
+        impact: '≈ ±' + fp(imp, 2) + ' %', impC: imp >= 0.3 ? '#FF9A8E' : '#C9D3E6', ndx: '±' + fp(x.ndx, 1) + ' %', eps: x.eps, epsPrev: x.epsPrev,
+        alertL: al ? 'Alerte active' : 'Me prévenir la veille', alertPick: function () { if (!al) openForm('earn', subj); else self.setState({ tab: 'alerts' }); } };
+    });
+    var DONE = [
+      { co: 'AMD', tick: 'AMD', day: 'Mar. 3 nov.', poids: 1.1, eps: '1,16 $', act: '1,19 $', react: '−2,8 %', ndx: '−0,3 %' },
+      { co: 'Qualcomm', tick: 'QCOM', day: 'Mer. 4 nov.', poids: 0.8, eps: '2,85 $', act: '2,97 $', react: '+3,1 %', ndx: '+0,4 %' },
+      { co: 'Booking', tick: 'BKNG', day: 'Mer. 4 nov.', poids: 0.8, eps: '72,10 $', act: '75,40 $', react: '+2,2 %', ndx: '+0,4 %' },
+      { co: 'Airbnb', tick: 'ABNB', day: 'Mar. 3 nov.', poids: 0.3, eps: '2,12 $', act: '2,31 $', react: '+4,6 %', ndx: '−0,3 %' }
+    ].sort(function (a, b) { return b.poids - a.poids; });
+    var earnDone = DONE.map(function (x) {
+      var sp = (self.num(x.act) / self.num(x.eps) - 1) * 100, up = x.react.charAt(0) === '+';
+      return { co: x.co, tick: x.tick, day: x.day, poids: '≈ ' + fp(x.poids, 1) + ' %', eps: x.eps, act: x.act, surp: (sp >= 0 ? '+' : '−') + fp(Math.abs(sp), 1) + ' %', sc: sp >= 0 ? GAINT : LOSST,
+        react: x.react, rc: up ? GAINT : LOSST, rBg: up ? 'rgba(61,220,151,.12)' : 'rgba(255,122,107,.12)', ndx: x.ndx, nc: x.ndx.charAt(0) === '+' ? GAINT : LOSST };
+    });
+
+    // ---- actualités
+    var NEWS = [
+      { k: 'geo', time: '12:10', day: "Aujourd'hui", title: 'OPEP+ : réunion sur les quotas de production', lvl: 3, actifs: ['WTI', 'USD/CAD'], resume: 'Une baisse de production ferait monter le pétrole.', sum: "Une baisse de production réduirait l'offre de pétrole et pourrait faire monter le WTI et le Brent. Les annonces tombent souvent en fin de réunion, sans heure fixe." },
+      { k: 'mkt', time: '11:25', day: "Aujourd'hui", title: "L'or se stabilise près de ses plus hauts avant les chiffres de l'emploi américain", lvl: 2, actifs: ['XAU/USD'], resume: "L'or attend le NFP de 14:30 pour choisir sa direction.", sum: "Les acheteurs attendent le NFP de 14:30 pour se décider. Un chiffre faible pourrait relancer la hausse, un chiffre fort la freiner." },
+      { k: 'geo', time: '09:45', day: "Aujourd'hui", title: 'Commerce mondial : nouveau cycle de négociations', lvl: 2, actifs: ['NAS100'], resume: 'Les droits de douane restent un risque pour les actions industrielles.', sum: "Toute annonce sur les droits de douane peut peser sur les devises exportatrices et les actions industrielles." },
+      { k: 'eco', time: '08:40', day: "Aujourd'hui", title: 'BCE : un membre du conseil évoque une pause dans les baisses de taux', lvl: 2, actifs: ['EUR/USD', 'CAC 40'], resume: "Moins de baisses de taux de la BCE : plutôt un soutien pour l'euro.", sum: "Si la BCE ralentit ses baisses de taux, l'euro garde du soutien face au dollar." },
+      { k: 'geo', time: '08:20', day: "Aujourd'hui", title: 'Énergie : nouvelles discussions sur les sanctions en Europe', lvl: 2, actifs: ['WTI', 'EUR/USD'], resume: "Des sanctions plus dures soutiendraient les prix de l'énergie.", sum: "Un durcissement des sanctions pourrait tendre l'offre de gaz et de pétrole et soutenir les prix de l'énergie." },
+      { k: 'mkt', time: '22:15', day: 'Hier', title: 'Bitcoin : forte hausse des volumes sur les ETF au comptant', lvl: 1, actifs: ['BTC/USD'], resume: 'Les grands investisseurs achètent via les ETF.', sum: "Des achats importants via les ETF montrent l'intérêt des grands investisseurs, ce qui a soutenu le cours en fin de journée." },
+      { k: 'mkt', time: '22:05', day: 'Hier', title: 'Le Nasdaq termine en hausse, porté par les semi-conducteurs', lvl: 1, actifs: ['NAS100'], resume: 'Les puces tirent le Nasdaq, NVIDIA en tête.', sum: "Les bons résultats des fabricants de puces ont profité à tout le secteur, NVIDIA en tête." },
+      { k: 'eco', time: '13:00', day: 'Hier', title: "Banque d'Angleterre : les marchés parient sur un statu quo la semaine prochaine", lvl: 2, actifs: ['GBP/USD'], resume: 'Statu quo attendu le 12 : une surprise ferait bouger la livre.', sum: "Le marché ne s'attend pas à une baisse de taux le 12 novembre ; une surprise ferait fortement bouger la livre." }
+    ];
+    var CAT = { eco: ['ÉCO', 'rgba(110,139,255,.16)', '#A9BBFF'], geo: ['GÉO', 'rgba(183,148,246,.16)', '#CDB5FA'], mkt: ['MARCHÉS', 'rgba(61,220,151,.12)', '#7BEBB9'] };
+    var estMien = function (it) { return it.actifs.some(function (a) { return MES.indexOf(a) >= 0; }); };
+    var tous = [];
+    NEWS.forEach(function (it) { it.actifs.forEach(function (a) { if (tous.indexOf(a) < 0) tous.push(a); }); });
+    tous.sort(function (a, b) { var ma = MES.indexOf(a) >= 0 ? 0 : 1, mb = MES.indexOf(b) >= 0 ? 0 : 1; return ma - mb || a.localeCompare(b); });
+    if (s.mine) tous = tous.filter(function (a) { return MES.indexOf(a) >= 0; });
+    var nAsset = tous.indexOf(s.nAsset) >= 0 ? s.nAsset : 'all';
+    var feed = [];
+    NEWS.forEach(function (it, idx) {
+      if (s.nf !== 'all' && it.k !== s.nf) return;
+      if (s.mine && !estMien(it)) return;
+      if (nAsset !== 'all' && it.actifs.indexOf(nAsset) < 0) return;
+      var op = s.nOpen === idx, b = self.impBars(it.lvl), c = CAT[it.k];
+      feed.push({ time: it.time, day: it.day, title: it.title, resume: it.resume, cat: c[0], catBg: c[1], catFg: c[2], sum: it.sum,
+        tags: it.actifs.map(function (a) { var m = MES.indexOf(a) >= 0; return { l: a, bg: m ? soft : '#1A2130', fg: m ? '#C9D3FF' : '#A3AEC2' }; }),
+        c1: b.c1, c2: b.c2, c3: b.c3, aria: b.aria, open: op, expanded: op ? 'true' : 'false', bd: op ? '#2A3346' : '#1D2433', rot: op ? 'rotate(180deg)' : 'none',
+        pick: function () { self.setState({ nOpen: self.state.nOpen === idx ? -1 : idx }); } });
+    });
+    var nfChips = [['all', 'Tout'], ['eco', 'Économie'], ['geo', 'Géopolitique'], ['mkt', 'Marchés']].map(function (c) {
+      var on = s.nf === c[0];
+      return { l: c[1], pressed: on ? 'true' : 'false', bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2', pick: function () { self.setState({ nf: c[0], nOpen: -1 }); } };
+    });
+    var assetOpts = [{ v: 'all', l: 'Tous les actifs' }].concat(tous.map(function (a) { return { v: a, l: a + (MES.indexOf(a) >= 0 ? ' · mes actifs' : '') }; }));
+
+    // ---- alertes
+    var TYPES = {
+      eco: ['Annonce économique', 'M3 3v18h18M7 15l4-4 3 3 5-6'],
+      surp: ['Surprise sur une annonce', 'M3 12h4l3-8 4 16 3-8h4'],
+      earn: ["Résultats d'entreprise", 'M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6'],
+      kw: ["Mot-clé dans l'actu", 'M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14M21 21l-5-5']
+    };
+    var IC = { eco: ['rgba(110,139,255,.14)', '#A9BBFF'], surp: ['rgba(245,166,91,.14)', '#F5B87A'], earn: ['rgba(61,220,151,.12)', '#7BEBB9'], kw: ['rgba(183,148,246,.14)', '#CDB5FA'] };
+    var evParTitre = function (t) { return EV.filter(function (e) { return e.title === t; })[0] || null; };
+    var whenTxt = function (a) { return a.when === 'avant' ? a.min + ' min avant' : WHEN[a.when]; };
+    var alerts = s.alerts.map(function (a) {
+      var t = a.type === 'kw' ? 'Mot-clé : ' + a.subj : a.type === 'surp' ? 'Surprise : ' + a.subj : a.subj;
+      var ev = evParTitre(a.subj), u = ev ? ev.unitTxt : '';
+      var desc = a.type === 'surp'
+        ? "Si le réel s'écarte de plus de " + String(a.seuil).replace('.', ',') + u + ' de la prévision' + (ev ? ' (' + ev.fc + ')' : '') + ' · ' + a.ch.map(function (c) { return CH[c]; }).join(' + ')
+        : TYPES[a.type][0] + ' · ' + whenTxt(a) + ' · ' + a.ch.map(function (c) { return CH[c]; }).join(' + ');
+      return {
+        title: t, desc: desc, icon: TYPES[a.type][1], icBg: IC[a.type][0], icFg: IC[a.type][1], op: a.on ? '1' : '0.55',
+        checked: a.on ? 'true' : 'false', swBg: a.on ? accent : '#2A3346', knob: a.on ? 'translateX(18px)' : 'none',
+        toggle: function () { self.setState({ alerts: self.state.alerts.map(function (x) { return x.id === a.id ? Object.assign({}, x, { on: !x.on }) : x; }) }); },
+        del: function () { self.setState({ alerts: self.state.alerts.filter(function (x) { return x.id !== a.id; }), flash: self.say('Alerte « ' + t + ' » supprimée.') }); }
+      };
+    });
+    var f = s.form, form = { show: !!f };
+    if (f) {
+      var setF = function (patch) { self.setState({ form: Object.assign({}, self.state.form, patch) }); };
+      var aVenir = EV.filter(function (e) { return e.reelN === null && e.ts > now; });
+      var ecoOpts = ['Toutes les annonces à impact fort sur mes actifs'].concat(aVenir.map(function (e) { return e.title; }));
+      var surpOpts = aVenir.filter(function (e) { return e.fcN !== null; }).map(function (e) { return e.title; });
+      var earnOpts = EARN.map(function (x) { return x.co + ' (' + x.tick + ')'; });
+      var opts = f.type === 'earn' ? earnOpts : f.type === 'surp' ? surpOpts : ecoOpts;
+      var subj = f.type === 'kw' ? f.kw.trim() : (opts.indexOf(f.subj) >= 0 ? f.subj : opts[0]);
+      var evS = f.type === 'surp' ? evParTitre(subj) : null;
+      var seuilN = self.num(f.seuil), minN = /^\s*\d+\s*$/.test(String(f.min)) ? Number(f.min) : NaN;
+      var errKw = f.tried && f.type === 'kw' && !subj ? 'Écris le mot-clé à surveiller.' : '';
+      var errSeuil = f.tried && f.type === 'surp' && !(seuilN > 0) ? "Indique un écart positif, par exemple " + (defSeuil(evS) || '1') + (evS ? evS.unitTxt : '') + '.' : '';
+      var whenKeys = f.type === 'kw' ? ['pub'] : ['pub', 'avant', 'veille'];
+      var when = whenKeys.indexOf(f.when) >= 0 ? f.when : whenKeys[0];
+      var errMin = f.tried && when === 'avant' && !(Number.isInteger(minN) && minN >= 1 && minN <= 1440) ? 'Entre 1 et 1440 minutes.' : '';
+      var errCh = f.tried && !f.ch.length ? 'Choisis au moins un moyen de te prévenir.' : '';
+      var recapWhen = when === 'avant' ? (Number.isInteger(minN) && minN > 0 ? minN + ' min avant' : 'X min avant') : WHEN[when].toLowerCase();
+      form = {
+        show: true, isSel: f.type !== 'kw', isKw: f.type === 'kw', isSurp: f.type === 'surp', hasWhen: f.type !== 'surp', isAvant: f.type !== 'surp' && when === 'avant',
+        subjL: f.type === 'earn' ? 'Entreprise' : 'Annonce', subj: subj, opts: opts.map(function (v) { return { v: v }; }),
+        kw: f.kw, invKw: errKw ? 'true' : 'false', kwBd: errKw ? '#FF7A6B' : '#2A3346', errKw: errKw,
+        seuil: f.seuil, unit: evS ? evS.unit : '', invSeuil: errSeuil ? 'true' : 'false', seuilBd: errSeuil ? '#FF7A6B' : '#2A3346', errSeuil: errSeuil,
+        seuilHint: evS ? 'Prévision ' + evS.fc + (evS.echelle ? ' · écart habituel entre prévu et publié : ±' + defSeuil(evS) + evS.unitTxt : '') : '',
+        min: f.min, invMin: errMin ? 'true' : 'false', minBd: errMin ? '#FF7A6B' : '#2A3346', errMin: errMin, errCh: errCh,
+        onSubj: function (e) { setF({ subj: e.target.value, seuil: f.type === 'surp' ? defSeuil(evParTitre(e.target.value)) : self.state.form.seuil }); },
+        onKw: function (e) { setF({ kw: e.target.value }); },
+        onSeuil: function (e) { setF({ seuil: e.target.value }); },
+        onMin: function (e) { setF({ min: e.target.value }); },
+        types: ['eco', 'surp', 'earn', 'kw'].map(function (k) { var on = f.type === k; return { l: TYPES[k][0], pressed: on ? 'true' : 'false', bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2',
+          pick: function () { var first = k === 'surp' ? evParTitre(surpOpts[0]) : null; setF({ type: k, subj: '', when: k === 'earn' ? 'veille' : k === 'kw' ? 'pub' : 'avant', seuil: k === 'surp' ? defSeuil(first) : '', tried: false }); } }; }),
+        whens: whenKeys.map(function (k) { var on = when === k; return { l: k === 'avant' ? 'Quelques minutes avant' : WHEN[k], pressed: on ? 'true' : 'false', bg: on ? '#1A2130' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { setF({ when: k }); } }; }),
+        chans: [['app', 'Appli', 'M8 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2M11 18h2'], ['mail', 'E-mail', 'M4 6h16v12H4zM4 7l8 6 8-6']].map(function (c) {
+          var on = f.ch.indexOf(c[0]) >= 0;
+          return { l: c[1], icon: c[2], pressed: on ? 'true' : 'false', bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2',
+            pick: function () { var ch = self.state.form.ch; setF({ ch: on ? ch.filter(function (x) { return x !== c[0]; }) : ch.concat([c[0]]) }); } };
+        }),
+        recap: (f.type === 'surp'
+          ? (subj ? subj + " : si le réel s'écarte de plus de " + (seuilN > 0 ? String(f.seuil) : 'N') + (evS ? evS.unitTxt : '') + ' de la prévision' : 'Choisis une annonce')
+          : f.type === 'kw' ? (subj ? 'Dès qu’une actu parle de « ' + subj + ' »' : 'Choisis ce que tu veux surveiller') : (subj + ' · ' + recapWhen)) +
+          (f.ch.length ? ' · sur ' + f.ch.map(function (x) { return CH[x]; }).join(' et ') : ''),
+        close: function () { self.setState({ form: null }); },
+        save: function () {
+          if (!subj || !f.ch.length || errKw || (f.type === 'surp' && !(seuilN > 0)) || (f.type !== 'surp' && when === 'avant' && !(Number.isInteger(minN) && minN >= 1 && minN <= 1440))) { setF({ tried: true }); return; }
+          var id = 'a' + self.state.seq;
+          var nouvelle = { id: id, type: f.type, subj: subj, ch: f.ch.slice(), on: true };
+          if (f.type === 'surp') nouvelle.seuil = seuilN; else { nouvelle.when = when; if (when === 'avant') nouvelle.min = minN; }
+          var msg = f.type === 'kw' ? 'mot-clé « ' + subj + ' »' : f.type === 'surp' ? 'surprise de plus de ' + String(f.seuil) + (evS ? evS.unitTxt : '') + ' sur ' + subj : subj + (when === 'avant' ? ', ' + minN + ' min avant' : '');
+          self.setState({ alerts: [nouvelle].concat(self.state.alerts), form: null, seq: self.state.seq + 1, flash: self.say('Alerte créée : ' + msg + '.') });
+        }
+      };
+    }
+
+    // ---- bandeau NFP, chiffres clés, onglets
+    var nfp = EV.filter(function (e) { return e.id === 'e3'; })[0];
+    var nfpOn = alerteSur(nfp);
+    var nfpAlert = { l: nfpOn ? 'Alerte active' : 'Me prévenir 15 min avant', pressed: nfpOn ? 'true' : 'false', bd: nfpOn ? 'rgba(245,166,91,.5)' : '#2A3346', bg: nfpOn ? 'rgba(245,166,91,.12)' : 'transparent', fg: nfpOn ? '#F5C28F' : '#EEF1F6',
+      pick: function () {
+        if (nfpOn) { self.setState({ tab: 'alerts' }); return; }
+        self.setState({ alerts: [{ id: 'a' + self.state.seq, type: 'eco', subj: nfp.title, when: 'avant', min: 15, ch: ['app'], on: true }].concat(self.state.alerts), seq: self.state.seq + 1, flash: self.say('Tu seras prévenu 15 min avant le NFP, sur l’appli.') });
+      } };
+    var restant = Math.round((nfp.ts - now) / 1000);
+    var cd = restant > 0 ? pad2(Math.floor(restant / 3600)) + ':' + pad2(Math.floor((restant % 3600) / 60)) + ':' + pad2(restant % 60) : 'en cours';
+
+    var hiToday = EV.filter(function (e) { return e.d === 0 && e.lvl === 3; }).length;
+    var mineWeek = EV.filter(function (e) { return e.mine && e.reelN === null && e.ts > now; }).length;
+    var onCount = s.alerts.filter(function (a) { return a.on; }).length;
+    var busyDays = week.filter(function (w) { return w.busy; }).map(function (w) { return w.l.toLowerCase(); });
+    var kpis = [
+      { l: "Impact fort aujourd'hui", v: String(hiToday), s: 'NFP et chômage à 14:30', c: '#FF9A8E' },
+      { l: 'Annonces à venir sur tes actifs', v: String(mineWeek), s: busyDays.length ? 'journées chargées : ' + busyDays.join(', ') : "d'ici vendredi prochain", c: '#EEF1F6' },
+      { l: 'Résultats à suivre (NAS100)', v: String(EARN.length), s: 'NVIDIA le 18 nov. : ≈ 9 % de l’indice', c: '#EEF1F6' },
+      { l: 'Alertes actives', v: String(onCount), s: onCount ? 'sur ' + s.alerts.length + ' créée' + (s.alerts.length > 1 ? 's' : '') : 'aucune pour l’instant', c: onCount ? '#EEF1F6' : '#8A95AA' }
+    ];
+    var tabs = [['cal', 'Calendrier économique', 'M4 5h16v15H4zM4 9h16M9 3v4M15 3v4', ''], ['earn', "Résultats d'entreprises", 'M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6', ''], ['news', 'Actualités', 'M5 4h12v16H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1M17 8h3v10a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3', ''], ['alerts', 'Alertes', 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0', String(onCount)]].map(function (x) {
+      var on = s.tab === x[0];
+      return { label: x[1], icon: x[2], count: x[3], sel: on ? 'true' : 'false', fg: on ? '#EEF1F6' : '#8A95AA', bar: on ? accent : 'transparent', pick: function () { self.setState({ tab: x[0] }); } };
+    });
+    var mineOn = s.mine;
+    var mine = { on: mineOn, pressed: mineOn ? 'true' : 'false', bg: mineOn ? soft : 'transparent', bd: mineOn ? accent : '#2A3346', fg: mineOn ? '#EEF1F6' : '#A3AEC2', box: mineOn ? accent : 'transparent',
+      pick: function () { var v = !self.state.mine; try { window.sessionStorage.setItem('tj.mesActifs', v ? '1' : '0'); } catch (e) {} self.setState({ mine: v }); } };
+
+    var navDef = [
+      { title: '', items: [
+        ['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', 'Dashboard.dc.html']
+      ] },
+      { title: 'OUTILS', items: [
+        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
+        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html'],
+        ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', 'Backtesting.dc.html'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', 'News.dc.html', '2', 'warn'],
+        ['marche', 'État du marché', 'M3.5 16a8.5 8.5 0 1 1 17 0M12 16l4-5', 'Marche.dc.html'],
+        ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', '#top', 'NOUVEAU', 'accent']
+      ] },
+      { title: 'COMPTE', items: [
+        ['set', 'Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4', '#top'],
+        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01', '#top']
+      ] }
+    ];
+    var navGroups = navDef.map(function (g) {
+      return { title: g.title, items: g.items.map(function (n) {
+        var on = n[0] === 'news';
+        return { label: n[1], icon: n[2], href: n[3], badge: n[4] || '', bBg: n[5] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: n[5] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false' };
+      }) };
+    });
+
+    return {
+      accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
+      cd: cd, nfpAlert: nfpAlert, kpis: kpis, flash: s.flash, tabs: tabs, mine: mine, showMine: s.tab !== 'alerts',
+      isCal: s.tab === 'cal', isEarn: s.tab === 'earn', isNews: s.tab === 'news', isAlerts: s.tab === 'alerts',
+      week: week, tl: tl, impChips: impChips, days: days, calEmpty: days.length === 0,
+      forteTxt: TJ ? F.nombre(TJ.SEUILS.FORTE_SURPRISE_Z, 1) : '1,5',
+      earnUp: earnUp, earnDone: earnDone,
+      nfChips: nfChips, feed: feed, newsEmpty: feed.length === 0, nAsset: nAsset, assetOpts: assetOpts,
+      onNAsset: function (ev) { self.setState({ nAsset: ev.target.value, nOpen: -1 }); },
+      alerts: alerts, noAlerts: s.alerts.length === 0 && !f, form: form,
+      newAlert: function () { openForm('eco', 'Toutes les annonces à impact fort sur mes actifs'); }
+    };
+  }
+}
+</script>
+</body>
+</html>

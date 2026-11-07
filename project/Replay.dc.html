@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <title>Replay de backtest</title>
 <script src="./support.js"></script>
+<script src="./news-logic.js"></script>
+<script src="./donnees-exemple.js"></script>
 </head>
 <body>
 <x-dc>
@@ -109,6 +111,7 @@ button:disabled{opacity:.4;cursor:default !important}
 <button class="chip" type="button" onClick="{{tool.toggle}}" aria-pressed="{{tool.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 0 12px; min-height: 38px; border-radius: 10px; border: 1px solid {{tool.bd}}; background: {{tool.bg}}; color: {{tool.fg}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12h18M3 12l3-3M3 12l3 3"></path></svg>Tracer un niveau</button>
 <sc-if value="{{tool.hasLevels}}" hint-placeholder-val="{{false}}"><button class="ghost" type="button" onClick="{{tool.clear}}" style="cursor: pointer; font-size: 12px; font-weight: 600; padding: 0 12px; min-height: 38px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #A3AEC2">Effacer les niveaux ({{tool.n}})</button></sc-if>
 <span style="flex: 1"></span>
+<sc-if value="{{ch.hasNext}}" hint-placeholder-val="{{false}}"><span class="num" title="{{ch.nextTitle}}" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 8px; background: {{ch.nextBg}}; color: {{ch.nextFg}}"><span style="width: 7px; height: 7px; border-radius: 4px; background: {{ch.nextDot}}"></span>{{ch.next}}</span></sc-if>
 <span class="num" style="font-size: 13px; color: #C9D3E6">{{ch.date}}</span>
 </div>
 
@@ -136,6 +139,10 @@ button:disabled{opacity:.4;cursor:default !important}
 <div style="position: absolute; left: {{ch.zx}}%; right: 0; top: {{ch.enY}}%; border-top: 1.5px solid #DCE2EC"></div>
 <div style="position: absolute; left: {{ch.zx}}%; right: 0; top: {{ch.slY}}%; border-top: 1px dashed #FF7A6B"></div>
 </sc-if>
+<sc-for list="{{ch.news}}" as="nm" hint-placeholder-count="0">
+<div title="{{nm.title}}" style="position: absolute; top: 0; bottom: 0; left: {{nm.x}}%; width: 0; border-left: 1.5px dashed {{nm.c}}; opacity: .85; pointer-events: none"></div>
+<sc-if value="{{nm.label}}" hint-placeholder-val="{{false}}"><span class="num" title="{{nm.title}}" style="position: absolute; top: {{nm.top}}px; left: {{nm.x}}%; transform: translateX({{nm.tx}}); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 5px; background: {{nm.bg}}; color: {{nm.fg}}; border: 1px solid {{nm.c}}; white-space: nowrap; z-index: 2">{{nm.l}}</span></sc-if>
+</sc-for>
 <sc-for list="{{ch.marks}}" as="m" hint-placeholder-count="0">
 <span title="{{m.title}}" style="position: absolute; left: {{m.x}}%; top: {{m.y}}%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 5px; background: {{m.c}}; box-shadow: 0 0 0 2px #0B0F17"></span>
 </sc-for>
@@ -152,6 +159,7 @@ button:disabled{opacity:.4;cursor:default !important}
 <sc-if value="{{tool.on}}" hint-placeholder-val="{{false}}"><div style="position: absolute; left: 12px; top: 12px; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 8px; background: rgba(245,194,107,.14); border: 1px solid rgba(245,194,107,.4); color: #F5C26B; pointer-events: none">Clique sur le graphique pour placer ton niveau</div></sc-if>
 <sc-if value="{{flash.show}}" hint-placeholder-val="{{false}}"><div class="flash" role="status" style="position: absolute; left: 50%; top: 14px; transform: translateX(-50%); font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 10px; background: {{flash.bg}}; border: 1px solid {{flash.bd}}; color: #EEF1F6; white-space: nowrap; pointer-events: none">{{flash.txt}}</div></sc-if>
 </div>
+<div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; font-size: 11px; color: #8A95AA"><span>News sur {{ch.sym}} :</span><span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 10px; border-top: 1.5px dashed #FF7A6B"></span>impact fort</span><span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 10px; border-top: 1.5px dashed #F5A65B"></span>moyen</span><span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 10px; border-top: 1.5px dashed #8A95AA"></span>faible</span><span>· heures du graphique</span></div>
 <div class="num" style="display: flex; justify-content: space-between; padding-right: 70px; margin-top: 8px; font-size: 11px; color: #6F7A90"><sc-for list="{{ch.xl}}" as="x" hint-placeholder-count="4"><span>{{x}}</span></sc-for></div>
 
 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px">
@@ -222,6 +230,7 @@ button:disabled{opacity:.4;cursor:default !important}
 <div style="padding: 10px 12px; border-radius: 10px; background: #111622; border: 1px solid #1D2433"><div style="font-size: 11px; color: #8A95AA">{{k.l}}</div><div class="h num" style="font-size: 18px; font-weight: 600; margin-top: 3px; color: {{k.c}}">{{k.v}}</div></div>
 </sc-for>
 </div>
+<sc-if value="{{ss.hasNews}}" hint-placeholder-val="{{false}}"><div class="num" style="margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: rgba(255,122,107,.07); border: 1px solid rgba(255,122,107,.25); font-size: 12px; line-height: 1.5; color: #DCE2EC">{{ss.newsLine}} <a href="Backtesting.dc.html" onClick="{{ss.goStats}}" style="color: #C9D3FF; font-weight: 600">Comparer</a></div></sc-if>
 <div style="font-size: 12px; font-weight: 600; color: #C9D3E6; margin-top: 16px">Derniers trades</div>
 <sc-if value="{{ss.noTrades}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; color: #8A95AA; margin-top: 8px">Aucun trade pour l'instant. Lance la lecture et prends ta première position.</div></sc-if>
 <div style="display: flex; flex-direction: column; margin-top: 6px">
@@ -229,6 +238,7 @@ button:disabled{opacity:.4;cursor:default !important}
 <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #151B27; font-size: 12px">
 <span style="flex: none; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 5px; background: {{t.dBg}}; color: {{t.dFg}}">{{t.dir}}</span>
 <span style="flex: 1; min-width: 0; color: #A3AEC2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{t.sub}}</span>
+<sc-if value="{{t.news}}" hint-placeholder-val="{{false}}"><span role="img" aria-label="Pris près d'une news forte : {{t.newsTxt}}" title="{{t.newsTxt}}" style="flex: none; font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 2px 5px; border-radius: 4px; background: rgba(255,122,107,.16); color: #FF9A8E">NEWS</span></sc-if>
 <span class="num" style="font-weight: 700; color: {{t.c}}">{{t.r}}</span>
 </div>
 </sc-for>
@@ -238,7 +248,7 @@ button:disabled{opacity:.4;cursor:default !important}
 </div>
 </sc-if>
 
-<div style="font-size: 11px; color: #6F7A90">Données de marché simulées pour la maquette · les trades de backtest restent séparés de tes statistiques réelles.</div>
+<div style="font-size: 11px; color: #6F7A90">Données d'exemple · prix simulés et calendrier des news généré pour la maquette · les trades de backtest restent séparés de tes statistiques réelles.</div>
 </main>
 
 <sc-if value="{{sum.show}}" hint-placeholder-val="{{false}}">
@@ -289,14 +299,21 @@ class Component extends DCLogic {
     };
   }
   mkSession(id, name, syms, tf, from, to, cap, risk, prog, n, p, seed, created) {
-    var r = this.rng(seed), r2 = this.rng(seed + 1000), r3 = this.rng(seed + 2000), trades = [], span = (to - from) * prog;
+    var r = this.rng(seed), r2 = this.rng(seed + 1000), r3 = this.rng(seed + 2000), r4 = this.rng(seed + 3000), trades = [], span = (to - from) * prog;
+    // Données d'exemple : environ 1 trade sur 3 est pris autour d'une news forte (calendrier de donnees-exemple.js),
+    // avec un peu moins de réussite, comme c'est souvent le cas en vrai.
+    var TJ = window.TJNews, news = TJ && TJ.exemple ? TJ.exemple.newsFortesPeriode(syms, from, from + span) : [];
     for (var i = 0; i < n; i++) {
-      var win = r() < p, R = win ? Math.round((1.2 + r() * 1.4) * 10) / 10 : -1;
+      var nw = news.length && r4() < 0.32 ? news[Math.floor(r4() * news.length)] : null;
+      var win = r() < (nw ? p - 0.16 : p), R = win ? Math.round((1.2 + r() * 1.4) * 10) / 10 : -1;
       var t = from + span * (i + 0.5) / n, d = new Date(t), wd = d.getUTCDay();
       var day = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) + (wd === 6 ? 2 : wd === 0 ? 1 : 0) * 86400000;
       var tt = day + (7 + (i * 5) % 11) * 3600000 + ((i * 3) % 4) * 900000;
-      trades.push({ dir: r2() < 0.55 ? 'Long' : 'Short', R: R, t: tt, sym: syms[Math.floor(r3() * syms.length)] });
+      var sym = syms[Math.floor(r3() * syms.length)];
+      if (nw) { tt = Math.floor(nw.t / 900000) * 900000 + (Math.floor(r4() * 3) - 1) * 900000; sym = nw.actif; }
+      trades.push({ dir: r2() < 0.55 ? 'Long' : 'Short', R: R, t: tt, sym: sym });
     }
+    trades.sort(function (a, b) { return a.t - b.t; });
     return { id: id, name: name, sym: syms[0], syms: syms, tf: tf, from: from, to: to, cap: cap, risk: risk, prog: prog, trades: trades, done: prog >= 1, created: created, last: created };
   }
   symsOf(x) { return x.syms && x.syms.length ? x.syms : [x.sym]; }
@@ -448,7 +465,8 @@ class Component extends DCLogic {
         ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
         ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html'],
         ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', 'Backtesting.dc.html'],
-        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '#top', '2', 'warn'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', 'News.dc.html', '2', 'warn'],
+        ['marche', 'État du marché', 'M3.5 16a8.5 8.5 0 1 1 17 0M12 16l4-5', 'Marche.dc.html'],
         ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', '#top', 'NOUVEAU', 'accent']
       ] },
       { title: 'COMPTE', items: [
@@ -501,9 +519,43 @@ class Component extends DCLogic {
     var xAt = function (t) { var kk = Math.floor(t / (k * 900000)); for (var q = 0; q < n; q++) if (w[q].key === kk) return (off + q + 0.5) * cw; return null; };
     var xl = []; [0, Math.floor(n / 3), Math.floor(2 * n / 3), n - 1].forEach(function (q) { if (w[q]) xl.push(fT(w[q].t, k < 16)); });
     var marks = s.trades.filter(function (t) { return t.entry !== undefined && (t.sym || s.syms[0]) === s.sym; }).map(function (t) {
-      var x = xAt(t.t0); return x === null ? null : { x: x.toFixed(2), y: Y(t.entry).toFixed(2), c: t.R > 0 ? GAIN : t.R < 0 ? LOSS : '#A3AEC2', title: t.dir + ' · ' + self.fR(t.R) + ' · ' + t.why };
+      var x = xAt(t.t0); return x === null ? null : { x: x.toFixed(2), y: Y(t.entry).toFixed(2), c: t.R > 0 ? GAIN : t.R < 0 ? LOSS : '#A3AEC2', title: t.dir + ' · ' + self.fR(t.R) + ' · ' + t.why + (window.TJNews && window.TJNews.exemple ? (function () { var TJ = window.TJNews, pr = TJ.newsProche({ sym: s.sym, t: t.t, t0: t.t0 }, TJ.newsFortesPour(s.sym, TJ.exemple.publicationsPeriode(X.from - 2 * 86400000, X.to + 2 * 86400000))); return pr ? ' · pris ' + TJ.texteTag(pr) : ''; })() : '') };
     }).filter(function (m) { return m; });
+    /* News : marqueurs sur le graphique et prochaine news forte (calendrier de donnees-exemple.js) */
+    var TJ = window.TJNews, newsMarks = [], nextNews = null;
+    var IMPC = { 3: ['#FF7A6B', 'rgba(255,122,107,.18)', '#FFC2BA'], 2: ['#F5A65B', 'rgba(245,166,91,.16)', '#F5C28F'], 1: ['#8A95AA', 'rgba(138,149,170,.16)', '#C9D3E6'] };
+    if (TJ && TJ.exemple && n) {
+      var tA = w[0].t, tB = w[n - 1].t + k * 900000;
+      var pubsW = TJ.exemple.publicationsPeriode(tA - 86400000, tB + 40 * 86400000).filter(function (p) { var e = TJ.EFFETS[p.type]; return e && (s.sym in e.actifs); });
+      var parX = {};
+      pubsW.forEach(function (p) {
+        if (p.t < tA || p.t >= tB) return;
+        var x = xAt(p.t);
+        if (x === null) return;
+        var key = x.toFixed(2), e = TJ.EFFETS[p.type];
+        var g = parX[key] || (parX[key] = { x: key, imp: 0, noms: [], details: [] });
+        g.imp = Math.max(g.imp, e.impact);
+        if (g.noms.indexOf(e.court) < 0) g.noms.push(e.court);
+        var u = e.unite || '', dd = TJ.formats.decimalesValeur(p.type);
+        g.details.push(e.nom + ' · ' + fT(p.t, true) + ' · prévu ' + TJ.formats.nombre(p.prevision, dd) + u + (p.reel !== null ? ', publié ' + TJ.formats.nombre(p.reel, dd) + u : ''));
+      });
+      // étiquettes des news fortes et moyennes sur 3 hauteurs pour ne pas se chevaucher ; les faibles n'ont que leur trait
+      var rang = 0;
+      newsMarks = Object.keys(parX).sort(function (p1, p2) { return Number(p1) - Number(p2); }).map(function (kx) {
+        var g = parX[kx], c = IMPC[g.imp], xv = Number(g.x), lab = g.imp >= 2;
+        var m = { x: g.x, l: g.noms.join(' / '), c: c[0], bg: c[1], fg: c[2], title: g.details.join('\n'), label: lab, top: 6 + (lab ? (rang % 3) * 22 : 0), tx: xv < 8 ? '0' : xv > 92 ? '-100%' : '-50%' };
+        if (lab) rang++;
+        return m;
+      });
+      nextNews = pubsW.filter(function (p) { return p.t >= tB && TJ.EFFETS[p.type].impact === 3; })[0] || null;
+    }
+    var nbBougies = nextNews ? Math.ceil((nextNews.t - (w[n - 1].t + k * 900000)) / (k * 900000)) + 1 : 0;
     var ch = {
+      news: newsMarks, sym: s.sym,
+      hasNext: !!nextNews,
+      next: nextNews ? 'Prochaine news forte : ' + TJ.EFFETS[nextNews.type].court + ' · ' + fT(nextNews.t, true) + (nbBougies <= 12 ? ' (dans ' + nbBougies + ' bougie' + (nbBougies > 1 ? 's' : '') + ')' : '') : '',
+      nextTitle: nextNews ? TJ.EFFETS[nextNews.type].nom : '',
+      nextBg: nbBougies && nbBougies <= 4 ? 'rgba(255,122,107,.14)' : '#151B28', nextFg: nbBougies && nbBougies <= 4 ? '#FFC2BA' : '#C9D3E6', nextDot: '#FF7A6B',
       candles: candles, ticks: ticks, xl: xl, marks: marks,
       lastY: Y(cur.c).toFixed(2), lastL: px(cur.c), lastC: w.length && w[n - 1].c >= w[n - 1].o ? GAIN : LOSS,
       date: fT(cur.t, true),
@@ -578,6 +630,14 @@ class Component extends DCLogic {
 
     /* Session */
     var st = this.sStats(s.trades, X.cap, X.risk);
+    // Tag « pris près d'une news forte » (fenêtre réglable sur la page Backtesting, 30 min par défaut)
+    var nMin = parseInt(this.sget('tj.newsProche'), 10); if (!(nMin > 0)) nMin = TJ ? TJ.SEUILS.NEWS_PROCHE_MIN : 30;
+    var tagsT = [], CNs = null;
+    if (TJ && TJ.exemple && s.trades.length) {
+      var trS = s.trades.map(function (t) { return { sym: t.sym || s.syms[0], t: t.t, t0: t.t0, R: t.R }; });
+      CNs = TJ.comparerProcheNews(trS, TJ.exemple.publicationsPeriode(X.from - 2 * 86400000, X.to + 2 * 86400000), nMin);
+      tagsT = CNs.tags.map(function (x) { return x.proche; });
+    }
     var bal = X.cap + st.tot * riskEur;
     var ss = {
       tiles: [
@@ -587,8 +647,12 @@ class Component extends DCLogic {
         { l: 'Réussite', v: st.n ? Math.round(st.wr) + ' %' : '—', c: '#EEF1F6' }
       ],
       noTrades: st.n === 0,
+      hasNews: !!(CNs && CNs.avec.n),
+      newsLine: CNs ? CNs.avec.n + ' trade' + (CNs.avec.n > 1 ? 's' : '') + ' pris à moins de ' + nMin + ' min d’une news forte · réussite ' + (CNs.avec.n ? Math.round(CNs.avec.reussite) + ' %' : '—') + ' · ' + (CNs.avec.n ? this.fR1(CNs.avec.esperance) : '—') + ' par trade, contre ' + (CNs.sans.n ? this.fR1(CNs.sans.esperance) : '—') + ' sans news.' : '',
+      goStats: function () { self.persist(self.state, false); self.sset('bt.tab', 'stats'); },
       last: s.trades.slice(-6).reverse().map(function (t) {
-        return { dir: t.dir === 'Long' ? 'ACHAT' : 'VENTE', dBg: t.dir === 'Long' ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)', dFg: t.dir === 'Long' ? GAINT : LOSST, sub: (multi ? (t.sym || s.syms[0]) + ' · ' : '') + fT(t.t, false) + (t.why ? ' · ' + t.why : ''), r: self.fR1(t.R), c: t.R > 0 ? GAINT : t.R < 0 ? LOSST : '#A3AEC2' };
+        var pr = tagsT[s.trades.indexOf(t)] || null;
+        return { news: !!pr, newsTxt: pr ? 'Pris ' + TJ.texteTag(pr) : '', dir: t.dir === 'Long' ? 'ACHAT' : 'VENTE', dBg: t.dir === 'Long' ? 'rgba(61,220,151,.14)' : 'rgba(255,122,107,.14)', dFg: t.dir === 'Long' ? GAINT : LOSST, sub: (multi ? (t.sym || s.syms[0]) + ' · ' : '') + fT(t.t, false) + (t.why ? ' · ' + t.why : ''), r: self.fR1(t.R), c: t.R > 0 ? GAINT : t.R < 0 ? LOSST : '#A3AEC2' };
       })
     };
     var fl = s.flash;

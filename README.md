@@ -2,7 +2,7 @@
 
 Maquette interactive du site : la vitrine publique et l'application que le trader utilise une fois connecté.
 
-Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/LYndqZSNUCmNTQjJTNDWc8
+Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/LYndqZSNUCmNTQjJTNDWc8 — ce lien n'est plus accessible en modification ; la version à jour des écrans est dans ce dépôt (branche `site`).
 
 ## Écrans
 
@@ -19,12 +19,17 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 | `project/Importer.dc.html` | Importer des trades (fichier, connexion broker, historique) |
 | `project/NouveauTrade.dc.html` | Ajouter un trade à la main |
 | `project/Backtesting.dc.html` | Backtesting : mes sessions, nouvelle session, réel vs backtest |
-| `project/Replay.dc.html` | Backtesting : replay bougie par bougie avec prise de positions |
+| `project/Replay.dc.html` | Backtesting : replay bougie par bougie avec prise de positions et marqueurs de news |
+| `project/News.dc.html` | News : calendrier économique, résultats d'entreprises, actualités, alertes |
+| `project/Marche.dc.html` | État du marché : biais par actif d'après les news, et réactions de l'actif |
+| `project/news-logic.js` | Module de calcul commun (surprise, réactions, verdict, score, heures de marché, tags des trades). Aucune donnée ni affichage |
+| `project/donnees-exemple.js` | Données d'exemple (calendrier économique, prix minute). Seul fichier à remplacer pour brancher une vraie API |
+| `tests/news-logic.test.js` | Tests du module de calcul : `node --test tests/news-logic.test.js` |
 | `project/canvas.json` | Disposition des écrans sur le canevas |
 
 ## Ce que fait l'application
 
-**Menu de gauche** : Tableau de bord seul en haut, puis OUTILS (Journal, Statistiques, Backtesting, News, Coach IA), puis COMPTE (Paramètres, Aide).
+**Menu de gauche** : Tableau de bord seul en haut, puis OUTILS (Journal, Statistiques, Backtesting, News, État du marché, Coach IA), puis COMPTE (Paramètres, Aide).
 
 **Comptes**
 - Sélecteur en haut de page : un, plusieurs ou tous les comptes à la fois.
@@ -55,6 +60,24 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 - Réel vs backtest : comparaison d'une session avec les vrais trades sur les mêmes actifs.
 - Les trades de test restent séparés des statistiques réelles. Dans la maquette, les prix sont simulés ; le vrai produit aura besoin de données historiques de marché.
 
+**News**
+- Calendrier économique de la semaine (heures de Paris) : vue de la semaine avec les journées chargées, frise « zones à éviter » (sessions Asie / Londres / New York, ±15 min autour des news fortes et moyennes de mes actifs, réglable), compte à rebours sur chaque annonce à venir.
+- Une fois le chiffre sorti : valeur réelle en vert ou rouge selon l'effet sur la devise, badge « forte surprise » et lecture courte (« Surprise positive : plutôt haussier USD, baissier or »).
+- En dépliant une annonce : « Pourquoi ça compte » et la réaction moyenne de chacun de mes actifs aux 12 dernières publications.
+- Résultats d'entreprises vus depuis le NAS100 : poids dans l'indice, mouvement attendu, effet potentiel sur l'indice, réaction moyenne du NAS100.
+- Actualités filtrables par catégorie et par actif, avec un résumé d'une ligne.
+- Alertes : avant une annonce (X minutes avant, réglable), sur la surprise (« si le réel s'écarte de plus de N de la prévision »), sur des résultats ou un mot-clé.
+
+**État du marché** (EUR/USD, XAU/USD, NAS100, BTC/USD)
+- Biais Haussier / Baissier / Neutre / Mitigé et score de −100 à +100 calculés à partir des dernières news : sens attendu × surprise normalisée × poids d'impact, avec une demi-vie de 24 h de marché ouvert (le week-end ne fait pas vieillir une news), poids divisé par deux si le marché a contredit la news.
+- News dominante, phrase d'explication, prochaine news à fort impact avec compte à rebours.
+- Les 10 dernières news de l'actif en vue compacte (une ligne par news, détail au clic) ou détaillée : surprise, sens attendu, réaction à +5 min / +15 min / +1 h, verdict « A fait bouger » / « Peu d'effet » avec ✓ / ✗, mini-graphique.
+
+**News et trades**
+- Replay : marqueurs des news sur le graphique (couleur selon l'impact) et rappel de la prochaine news forte.
+- Tag automatique « pris près d'une news forte » sur les trades de backtest et réels (30 min par défaut, réglable dans Backtesting).
+- Backtesting, onglet Statistiques : réussite, expectancy et nombre de trades avec ou sans news à proximité, phrase de conclusion, « échantillon trop faible » sous 30 trades dans un groupe.
+
 **Nouvel utilisateur** : un écran d'accueil propose de connecter son broker, d'importer un fichier ou de saisir un trade. Il est visible avec le réglage « nouvelUtilisateur ».
 
 ## Comment s'en servir
@@ -70,4 +93,6 @@ Cette maquette sert de cahier des charges visuel et fonctionnel. Ce n'est pas du
 - Dans la maquette, les pages se transmettent la période, les comptes et les trades ajoutés par le stockage de session du navigateur. Dans le vrai produit, tout cela vient de la base de données.
 - `Statistiques.dc.html` est une copie de `Journal.dc.html`. Dans le vrai produit, ce sera la même page avec un paramètre d'URL.
 - Points à traiter : fuseaux horaires et changement d'heure, trades fermés en plusieurs fois, stop loss manquant pour le calcul en R, devise des comptes, taille de position, coût de la connexion aux brokers.
+- Tous les seuils des calculs de news sont regroupés dans `SEUILS`, en haut de `project/news-logic.js` (forte surprise, verdict, demi-vie, zones à éviter, fenêtre « près d'une news », taille d'échantillon…). La même tête de fichier contient `MES_ACTIFS`, la table des effets attendus `EFFETS`, `INSTRUMENTS` et les horaires d'ouverture `HORAIRES_MARCHE`.
+- La maquette est figée au vendredi 6 novembre 2026, 13:03 à Paris (`MAINTENANT` dans `project/donnees-exemple.js`), juste avant le NFP de 14:30.
 - `[NOM]` et `[BROKER]` sont à remplacer.

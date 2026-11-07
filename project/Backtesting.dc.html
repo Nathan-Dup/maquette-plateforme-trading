@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <title>Backtesting</title>
 <script src="./support.js"></script>
+<script src="./news-logic.js"></script>
+<script src="./donnees-exemple.js"></script>
 </head>
 <body>
 <x-dc>
@@ -193,6 +195,41 @@ button:disabled{opacity:.4;cursor:default !important}
 </sc-for>
 </div>
 
+<section class="fu d2" aria-labelledby="bn-t" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap">
+<div>
+<h2 id="bn-t" class="h" style="font-size: 17px; margin: 0; font-weight: 600">Trades près des news fortes</h2>
+<div style="font-size: 13px; color: #8A95AA; margin-top: 4px">{{bn.sub}}</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<label for="bn-min" style="font-size: 12px; font-weight: 600; color: #C9D3E6">Fenêtre autour de la news</label>
+<select id="bn-min" class="inp" value="{{bn.min}}" onChange="{{bn.onMin}}" style="height: 40px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark">
+<sc-for list="{{bn.opts}}" as="o" hint-placeholder-count="4"><option value="{{o.v}}">{{o.l}}</option></sc-for>
+</select>
+</div>
+</div>
+<sc-if value="{{bn.ok}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{bn.groups}}" as="g" hint-placeholder-count="2">
+<div style="flex: 1 1 280px; min-width: 0; padding: 16px; border-radius: 14px; background: #111622; border: 1px solid {{g.bd}}">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: {{g.fg}}"><span style="width: 8px; height: 8px; border-radius: 4px; background: {{g.dot}}"></span>{{g.l}}</span>
+<sc-if value="{{g.faible}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 2px 6px; border-radius: 5px; background: rgba(245,166,91,.14); color: #F5B87A">ÉCHANTILLON FAIBLE</span></sc-if>
+</div>
+<div style="display: flex; gap: 10px; margin-top: 12px">
+<div style="flex: 1; min-width: 0"><div style="font-size: 11px; color: #8A95AA">Trades</div><div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 3px">{{g.n}}</div></div>
+<div style="flex: 1; min-width: 0"><div style="font-size: 11px; color: #8A95AA">Réussite</div><div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 3px">{{g.wr}}</div></div>
+<div style="flex: 1; min-width: 0"><div style="font-size: 11px; color: #8A95AA">Expectancy</div><div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 3px; color: {{g.ec}}">{{g.exp}}</div></div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: {{bn.boxBg}}; border: 1px solid {{bn.boxBd}}; font-size: 14px; line-height: 1.5; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{bn.icC}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="{{bn.icon}}"></path></svg><span class="num">{{bn.phrase}}</span></div>
+<sc-if value="{{bn.hasTop}}" hint-placeholder-val="{{false}}"><div class="num" style="font-size: 12px; color: #8A95AA">{{bn.top}}</div></sc-if>
+</sc-if>
+<sc-if value="{{bn.off}}" hint-placeholder-val="{{false}}"><div style="font-size: 13px; color: #8A95AA">{{bn.offMsg}}</div></sc-if>
+</section>
+
 <section class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
 <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap"><h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">Courbe des résultats</h2><span class="num" style="font-size: 12px; color: #8A95AA">{{bs.eqSub}}</span></div>
 <div style="position: relative; margin-top: 14px; padding-right: 64px">
@@ -294,7 +331,7 @@ button:disabled{opacity:.4;cursor:default !important}
 </sc-if>
 </sc-if>
 
-<div style="font-size: 11px; color: #6F7A90">Sessions et résultats d'exemple pour la maquette · les trades de test restent séparés de tes statistiques réelles.</div>
+<div style="font-size: 11px; color: #6F7A90">Données d'exemple · sessions, résultats et calendrier des news générés pour la maquette · les trades de test restent séparés de tes statistiques réelles.</div>
 </main>
 
 <sc-if value="{{nw.isOpen}}" hint-placeholder-val="{{false}}">
@@ -378,7 +415,11 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.lastSess = this.sget('bt.sessions') || '';
-    this.state = { tab: 'sess', sessions: this.loadSessions(), flt: 'all', del: null, nw: null, cmpId: null, bsSess: 'all', bsSym: 'all' };
+    var nm = parseInt(this.sget('tj.newsProche'), 10);
+    // depuis le replay (« Comparer ») : ouvrir les statistiques de la session en cours
+    var versStats = this.sget('bt.tab') === 'stats', cur = this.sget('bt.current');
+    if (versStats) this.sset('bt.tab', null);
+    this.state = { tab: versStats ? 'stats' : 'sess', sessions: this.loadSessions(), flt: 'all', del: null, nw: null, cmpId: null, bsSess: versStats && cur ? cur : 'all', bsSym: 'all', newsMin: nm > 0 ? nm : 30 };
   }
   sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
   sset(k, v) { try { if (v === null) window.sessionStorage.removeItem(k); else window.sessionStorage.setItem(k, v); } catch (e) {} }
@@ -395,14 +436,21 @@ class Component extends DCLogic {
     };
   }
   mkSession(id, name, syms, tf, from, to, cap, risk, prog, n, p, seed, created) {
-    var r = this.rng(seed), r2 = this.rng(seed + 1000), r3 = this.rng(seed + 2000), trades = [], span = (to - from) * prog;
+    var r = this.rng(seed), r2 = this.rng(seed + 1000), r3 = this.rng(seed + 2000), r4 = this.rng(seed + 3000), trades = [], span = (to - from) * prog;
+    // Données d'exemple : environ 1 trade sur 3 est pris autour d'une news forte (calendrier de donnees-exemple.js),
+    // avec un peu moins de réussite, comme c'est souvent le cas en vrai.
+    var TJ = window.TJNews, news = TJ && TJ.exemple ? TJ.exemple.newsFortesPeriode(syms, from, from + span) : [];
     for (var i = 0; i < n; i++) {
-      var win = r() < p, R = win ? Math.round((1.2 + r() * 1.4) * 10) / 10 : -1;
+      var nw = news.length && r4() < 0.32 ? news[Math.floor(r4() * news.length)] : null;
+      var win = r() < (nw ? p - 0.16 : p), R = win ? Math.round((1.2 + r() * 1.4) * 10) / 10 : -1;
       var t = from + span * (i + 0.5) / n, d = new Date(t), wd = d.getUTCDay();
       var day = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) + (wd === 6 ? 2 : wd === 0 ? 1 : 0) * 86400000;
       var tt = day + (7 + (i * 5) % 11) * 3600000 + ((i * 3) % 4) * 900000;
-      trades.push({ dir: r2() < 0.55 ? 'Long' : 'Short', R: R, t: tt, sym: syms[Math.floor(r3() * syms.length)] });
+      var sym = syms[Math.floor(r3() * syms.length)];
+      if (nw) { tt = Math.floor(nw.t / 900000) * 900000 + (Math.floor(r4() * 3) - 1) * 900000; sym = nw.actif; }
+      trades.push({ dir: r2() < 0.55 ? 'Long' : 'Short', R: R, t: tt, sym: sym });
     }
+    trades.sort(function (a, b) { return a.t - b.t; });
     return { id: id, name: name, sym: syms[0], syms: syms, tf: tf, from: from, to: to, cap: cap, risk: risk, prog: prog, trades: trades, done: prog >= 1, created: created, last: created };
   }
   symsOf(x) { return x.syms && x.syms.length ? x.syms : [x.sym]; }
@@ -599,7 +647,7 @@ class Component extends DCLogic {
     var bsSess = s.bsSess || 'all', bsSym = s.bsSym || 'all';
     var pool = L.filter(function (x) { return bsSess === 'all' || x.id === bsSess; });
     var TT = [];
-    pool.forEach(function (x) { var sy0 = self.symsOf(x)[0]; x.trades.forEach(function (t) { TT.push({ dir: t.dir, R: t.R, t: t.t, sym: t.sym || sy0, sname: x.name, sid: x.id }); }); });
+    pool.forEach(function (x) { var sy0 = self.symsOf(x)[0]; x.trades.forEach(function (t) { TT.push({ dir: t.dir, R: t.R, t: t.t, t0: t.t0, sym: t.sym || sy0, sname: x.name, sid: x.id }); }); });
     var symsAvail = []; TT.forEach(function (t) { if (symsAvail.indexOf(t.sym) < 0) symsAvail.push(t.sym); });
     if (bsSym !== 'all' && symsAvail.indexOf(bsSym) < 0) bsSym = 'all';
     var FT = TT.filter(function (t) { return bsSym === 'all' || t.sym === bsSym; }).sort(function (a, b) { return a.t - b.t; });
@@ -656,6 +704,29 @@ class Component extends DCLogic {
       hist: BN.map(function (b, i) { return { l: b[0], n: hcB[i], h: Math.max(2, hcB[i] / hmB * 104).toFixed(1), c: b[2] }; })
     };
 
+    // Trades près des news fortes (module news-logic.js + calendrier de donnees-exemple.js)
+    var TJ = window.TJNews, nMin = s.newsMin;
+    var bn = { ok: false, off: true, offMsg: 'Comparaison indisponible : le module de calcul des news n’a pas pu être chargé.', min: String(nMin), sub: '', groups: [], phrase: '', hasTop: false, top: '',
+      opts: [15, 30, 45, 60].map(function (v) { return { v: String(v), l: '± ' + v + ' min' }; }),
+      onMin: function (e) { var v = Number(e.target.value); self.sset('tj.newsProche', String(v)); self.setState({ newsMin: v }); } };
+    if (TJ && TJ.exemple && FT.length) {
+      var pubsBT = TJ.exemple.publicationsPeriode(FT[0].t - 2 * 86400000, FT[FT.length - 1].t + 2 * 86400000);
+      var CN = TJ.comparerProcheNews(FT, pubsBT, nMin), MINI = TJ.SEUILS.ECHANTILLON_MIN;
+      var fR1n = function (v) { return v === null ? '—' : self.fR1(v); };
+      var grp = function (g, l, dot) { return { l: l, dot: dot, n: String(g.n), wr: g.reussite === null ? '—' : Math.round(g.reussite) + ' %', exp: fR1n(g.esperance), ec: g.esperance === null ? '#8A95AA' : g.esperance >= 0 ? GAINT : LOSST, faible: g.n < MINI, bd: g.n < MINI ? 'rgba(245,166,91,.3)' : '#1D2433', fg: '#EEF1F6' }; };
+      var compte = {};
+      CN.tags.forEach(function (x) { if (x.proche) compte[x.proche.nom] = (compte[x.proche.nom] || 0) + 1; });
+      var topK = Object.keys(compte).sort(function (a, b) { return compte[b] - compte[a]; });
+      bn.ok = true; bn.off = false;
+      bn.sub = 'Entrée à moins de ' + nMin + ' min d’une news à fort impact sur l’actif du trade · ' + (s.bsSess === 'all' ? 'toutes les sessions' : 'session sélectionnée');
+      bn.groups = [grp(CN.avec, 'Près d’une news forte', '#FF7A6B'), grp(CN.sans, 'Sans news forte à proximité', accent)];
+      bn.phrase = CN.phrase;
+      bn.boxBg = CN.suffisant ? soft : 'rgba(245,166,91,.08)'; bn.boxBd = CN.suffisant ? aLine : 'rgba(245,166,91,.3)';
+      bn.icC = CN.suffisant ? accent : '#F5B87A';
+      bn.icon = CN.suffisant ? 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z' : 'M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0';
+      bn.hasTop = topK.length > 0;
+      bn.top = topK.length ? 'News les plus présentes près de tes trades : ' + topK.slice(0, 3).map(function (k) { return k + ' (' + compte[k] + ')'; }).join(', ') + '. Les heures viennent du calendrier d’exemple.' : '';
+    } else if (TJ && TJ.exemple) { bn.offMsg = 'Pas encore de trade de test dans cette sélection.'; }
     var tabs = [['sess', 'Mes sessions', 'M4 6h16M4 12h16M4 18h10', String(L.length)], ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', '']].map(function (x) {
       var on = s.tab === x[0];
       return { label: x[1], icon: x[2], count: x[3], sel: on ? 'true' : 'false', fg: on ? '#EEF1F6' : '#8A95AA', bar: on ? accent : 'transparent', pick: function () { self.setState({ tab: x[0] }); } };
@@ -668,7 +739,8 @@ class Component extends DCLogic {
         ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
         ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html'],
         ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', 'Backtesting.dc.html'],
-        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '#top', '2', 'warn'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', 'News.dc.html', '2', 'warn'],
+        ['marche', 'État du marché', 'M3.5 16a8.5 8.5 0 1 1 17 0M12 16l4-5', 'Marche.dc.html'],
         ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', '#top', 'NOUVEAU', 'accent']
       ] },
       { title: 'COMPTE', items: [
@@ -686,7 +758,7 @@ class Component extends DCLogic {
     return {
       accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
       kpis: kpis, flt: flt, sess: sess, noSess: sess.length === 0, emptyT: L.length ? 'Aucune session dans cette catégorie' : 'Aucune session pour l’instant',
-      cmp: cmp, nw: nw, bs: bs, tabs: tabs, isSess: s.tab === 'sess', isStats: s.tab === 'stats'
+      cmp: cmp, nw: nw, bs: bs, bn: bn, tabs: tabs, isSess: s.tab === 'sess', isStats: s.tab === 'stats'
     };
   }
 }

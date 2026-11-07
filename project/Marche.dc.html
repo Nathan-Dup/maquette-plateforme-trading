@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>État du marché</title>
+<script src="./support.js"></script>
+<script src="./news-logic.js"></script>
+<script src="./donnees-exemple.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#A3AEC2;text-decoration:none}a:hover{color:#FFFFFF}
+button,input,select{font-family:inherit}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{animation:fu .7s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}
+@keyframes sl{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.open{animation:sl .3s ease both}
+@keyframes growx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.growx{transform-origin:center;animation:growx .8s cubic-bezier(.2,.7,.2,1) .2s both}
+@keyframes puo{0%{box-shadow:0 0 0 0 rgba(245,166,91,.6)}100%{box-shadow:0 0 0 9px rgba(245,166,91,0)}}
+.puo{animation:puo 1.8s ease-out infinite}
+.nav{transition:background .2s,color .2s}.nav:hover{background:#131927;color:#EEF1F6}
+.chip{transition:background .2s,color .2s,border-color .2s}
+.row{transition:background .2s}.row:hover{background:#121826 !important}
+.noanim *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; min-height: 100vh">
+<aside style="flex: 1 1 248px; background: #0B0F17; border-right: 1px solid #171D2A; padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px">
+<span style="width: 32px; height: 32px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 19px; font-weight: 700">[NOM]</span>
+</div>
+<nav aria-label="Menu de l'application" style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
+<div>
+<sc-if value="{{g.title}}" hint-placeholder-val="{{true}}"><div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div></sc-if>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="3">
+<a class="nav" href="{{n.href}}" aria-current="{{n.current}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; background: {{n.bg}}; color: {{n.fg}}; font-weight: {{n.fw}}">
+<span style="position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: {{n.bar}}"></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+<span style="flex: 1">{{n.label}}</span>
+<sc-if value="{{n.badge}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 999px; background: {{n.bBg}}; color: {{n.bFg}}">{{n.badge}}</span></sc-if>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid #1A2130">
+<span style="width: 34px; height: 34px; border-radius: 17px; background: #1D2433; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #DCE2EC">AM</span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 600">Alex Martin</div><div style="font-size: 11px; color: #8A95AA">Premium · renouvellement le 6 déc.</div></div>
+</div>
+</aside>
+<main id="top" style="flex: 999 1 560px; min-width: 0; padding: 26px 36px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+
+<div class="fu" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div>
+<div style="font-size: 13px; color: #8A95AA">Outils · État du marché</div>
+<h1 class="h" style="font-size: 30px; margin: 6px 0 0; font-weight: 700">État du marché</h1>
+<p style="font-size: 14px; color: #A3AEC2; margin: 6px 0 0">Le biais donné par les dernières news, et comment ton actif y a vraiment réagi.</p>
+</div>
+<a href="News.dc.html" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; font-weight: 600; padding: 0 16px; height: 44px; border-radius: 11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v15H4zM4 9h16M9 3v4M15 3v4"></path></svg>Calendrier des news</a>
+</div>
+
+<div class="fu d1" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div role="group" aria-label="Actif" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{assetChips}}" as="c" hint-placeholder-count="4">
+<button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; padding: 0 16px; min-height: 42px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}"><span style="width: 8px; height: 8px; border-radius: 4px; background: {{c.dot}}"></span>{{c.l}}</button>
+</sc-for>
+</div>
+<button class="chip" type="button" onClick="{{mine.pick}}" aria-pressed="{{mine.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 0 12px; min-height: 36px; border-radius: 999px; border: 1px solid {{mine.bd}}; background: {{mine.bg}}; color: {{mine.fg}}"><span style="width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid {{mine.bd}}; background: {{mine.box}}; display: flex; align-items: center; justify-content: center"><sc-if value="{{mine.on}}" hint-placeholder-val="{{false}}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span>Mes actifs seulement</button>
+</div>
+
+<sc-if value="{{noLogic}}" hint-placeholder-val="{{false}}">
+<div role="alert" style="padding: 32px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center; font-size: 14px; color: #A3AEC2">{{noLogicMsg}}</div>
+</sc-if>
+
+<sc-if value="{{ok}}" hint-placeholder-val="{{true}}">
+<section aria-labelledby="etat-t" class="fu d1" style="background: #0E131D; border: 1px solid {{st.bd}}; border-radius: 22px; padding: 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-wrap: wrap; gap: 28px">
+<div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+<h2 id="etat-t" class="h" style="font-size: 17px; margin: 0; font-weight: 600">État actuel · {{asset}}</h2>
+<span class="num" style="font-size: 12px; color: #8A95AA">{{st.asOf}}</span>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
+<span class="h" style="display: inline-flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 700; padding: 8px 16px; border-radius: 14px; background: {{st.soft}}; color: {{st.fg}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{st.icon}}"></path></svg>{{st.biais}}</span>
+<div><div style="font-size: 12px; color: #94A0B4">Score</div><div class="h num" style="font-size: 34px; font-weight: 700; line-height: 1.1; color: {{st.fg}}">{{st.score}}</div></div>
+</div>
+<div role="img" aria-label="{{st.gaugeAria}}">
+<div style="position: relative; height: 12px; border-radius: 6px; background: #151B28">
+<span style="position: absolute; left: 0; width: 42.5%; top: 0; bottom: 0; border-radius: 6px 0 0 6px; background: rgba(255,122,107,.10)"></span>
+<span style="position: absolute; right: 0; width: 42.5%; top: 0; bottom: 0; border-radius: 0 6px 6px 0; background: rgba(61,220,151,.10)"></span>
+<span class="growx" style="position: absolute; top: 0; bottom: 0; left: {{st.fillL}}%; width: {{st.fillW}}%; background: {{st.fill}}; border-radius: 6px"></span>
+<span style="position: absolute; left: 50%; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: #3A4458"></span>
+<span style="position: absolute; left: {{st.mark}}%; top: -5px; width: 22px; height: 22px; margin-left: -11px; border-radius: 11px; background: #0E131D; border: 3px solid {{st.fill}}; box-sizing: border-box"></span>
+</div>
+<div class="num" style="display: flex; justify-content: space-between; font-size: 11px; color: #8A95AA; margin-top: 8px"><span>−100 · baissier</span><span>neutre</span><span>haussier · +100</span></div>
+</div>
+<div style="font-size: 11px; color: #6F7A90">Indication basée sur les news, pas un signal de trade.</div>
+</div>
+
+<div style="flex: 2 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<sc-if value="{{st.hasDom}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 14px; background: #111622; border: 1px solid #1D2433">
+<div style="flex: 1; min-width: 0">
+<div style="font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #8A95AA">NEWS DOMINANTE</div>
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px"><span style="font-size: 11px; font-weight: 800; padding: 3px 7px; border-radius: 6px; background: #1A2130; color: #C9D3E6">{{st.dom.cur}}</span><span style="font-size: 15px; font-weight: 600">{{st.dom.name}}</span><sc-if value="{{st.dom.forte}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 2px 6px; border-radius: 5px; background: rgba(245,166,91,.16); color: #F5B87A">FORTE SURPRISE</span></sc-if></div>
+<div class="num" style="font-size: 12px; color: #A3AEC2; margin-top: 4px">{{st.dom.when}}</div>
+</div>
+<div style="text-align: right"><div style="font-size: 11px; color: #8A95AA">poids actuel</div><div class="h num" style="font-size: 18px; font-weight: 600; color: {{st.dom.c}}">{{st.dom.weight}}</div></div>
+</div>
+</sc-if>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #DCE2EC">{{st.phrase}}</p>
+<sc-if value="{{st.contredite}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: rgba(245,166,91,.08); border: 1px solid rgba(245,166,91,.3); font-size: 13px; color: #F5C28F"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0"></path></svg>Le marché a contredit cette news : son poids dans le score est divisé par deux.</div>
+</sc-if>
+<sc-if value="{{st.hasNext}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 14px; background: rgba(245,166,91,.08); border: 1px solid rgba(245,166,91,.32); flex-wrap: wrap; margin-top: auto">
+<div style="flex: 1 1 220px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #F5B87A"><span class="puo" style="width: 7px; height: 7px; border-radius: 4px; background: #F5A65B"></span>PROCHAINE NEWS À FORT IMPACT</div>
+<div style="font-size: 15px; font-weight: 600; margin-top: 6px">{{st.next.name}}</div>
+<div class="num" style="font-size: 12px; color: #A3AEC2; margin-top: 3px">{{st.next.when}} · {{st.next.exp}}</div>
+</div>
+<div style="text-align: right"><div style="font-size: 11px; color: #F5B87A">dans</div><div class="h num" style="font-size: 24px; font-weight: 600; color: #F5C28F">{{st.next.cd}}</div></div>
+</div>
+</sc-if>
+</div>
+</section>
+
+<section aria-labelledby="list-t" class="fu d2" style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div><h2 id="list-t" class="h" style="font-size: 20px; margin: 0; font-weight: 600">Les 10 dernières news sur {{asset}}</h2>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 4px">Heures de Paris · réaction mesurée depuis la clôture de la bougie juste avant l'annonce</div></div>
+<div role="group" aria-label="Affichage de la liste" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{vues}}" as="v" hint-placeholder-count="2"><button class="chip" type="button" onClick="{{v.pick}}" aria-pressed="{{v.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 8px; min-height: 34px; padding: 0 12px; font-size: 13px; font-weight: 600; background: {{v.bg}}; color: {{v.fg}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{v.icon}}"></path></svg>{{v.l}}</button></sc-for>
+</div>
+</div>
+<sc-if value="{{isCompact}}" hint-placeholder-val="{{true}}">
+<div style="background: #0E131D; border: 1px solid #1D2433; border-radius: 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); overflow-x: auto">
+<div style="min-width: 1120px">
+<div style="display: grid; grid-template-columns: 128px 48px minmax(0, 1fr) 44px 142px 100px 132px 156px 84px 16px; gap: 12px; align-items: center; padding: 10px 16px; font-size: 11px; font-weight: 600; color: #6F7A90; border-bottom: 1px solid #1A2130">
+<span>Date</span><span>Devise</span><span>Annonce</span><span>Impact</span><span>Surprise</span><span>Attendu</span><span>Réaction 15 min</span><span>Verdict</span><span>−30 min → +1 h</span><span></span>
+</div>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="10">
+<div style="border-top: 1px solid #151B27; background: {{r.rowBg}}">
+<button class="row" type="button" onClick="{{r.pick}}" aria-expanded="{{r.expanded}}" aria-label="{{r.aria}}" style="width: 100%; text-align: left; cursor: pointer; border: 0; background: transparent; color: #EEF1F6; display: grid; grid-template-columns: 128px 48px minmax(0, 1fr) 44px 142px 100px 132px 156px 84px 16px; gap: 12px; align-items: center; padding: 8px 16px; min-height: 44px; box-sizing: border-box">
+<span class="num" style="font-size: 12px; color: #8A95AA; white-space: nowrap"><b style="color: #EEF1F6; font-size: 13px">{{r.time}}</b> · {{r.date}}</span>
+<span style="justify-self: start; font-size: 11px; font-weight: 800; padding: 2px 6px; border-radius: 6px; background: #1A2130; color: #C9D3E6">{{r.cur}}</span>
+<span style="min-width: 0; display: flex; align-items: center; gap: 8px"><span style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.name}}</span><sc-if value="{{r.forte}}" hint-placeholder-val="{{false}}"><span style="flex: none; font-size: 9px; font-weight: 800; letter-spacing: .04em; padding: 2px 5px; border-radius: 4px; background: rgba(245,166,91,.16); color: #F5B87A">FORTE SURPRISE</span></sc-if></span>
+<span role="img" aria-label="{{r.impAria}}" style="display: flex; gap: 2px; align-items: flex-end"><span style="width: 4px; height: 7px; border-radius: 1px; background: {{r.c1}}"></span><span style="width: 4px; height: 10px; border-radius: 1px; background: {{r.c2}}"></span><span style="width: 4px; height: 13px; border-radius: 1px; background: {{r.c3}}"></span></span>
+<span class="num" style="white-space: nowrap; font-size: 13px; font-weight: 700; color: {{r.surpC}}">{{r.surp}} <span style="font-size: 11px; font-weight: 500; color: #8A95AA">{{r.surpX}}</span></span>
+<span style="justify-self: start; display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: {{r.eBg}}; color: {{r.eFg}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.eIcon}}"></path></svg>{{r.eff}}</span>
+<span class="num" style="white-space: nowrap; font-size: 13px; font-weight: 700; color: {{r.m15c}}">{{r.m15u}} <span style="font-size: 11px; font-weight: 500; color: #8A95AA">{{r.m15p}}</span></span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 7px; white-space: nowrap; background: {{r.vBg}}; color: {{r.vFg}}">{{r.verdict}}</span><span role="img" aria-label="{{r.sensAria}}" style="flex: none; width: 22px; height: 22px; border-radius: 11px; display: flex; align-items: center; justify-content: center; background: {{r.sBg}}; color: {{r.sFg}}; font-size: 12px; font-weight: 800">{{r.sym}}</span></span>
+<svg viewBox="0 0 120 40" preserveAspectRatio="none" style="width: 84px; height: 24px" role="img" aria-label="{{r.sparkAria}}"><line x1="40" y1="0" x2="40" y2="40" stroke="#5A6680" stroke-width="1" stroke-dasharray="3 2" vector-effect="non-scaling-stroke"></line><path d="{{r.spark}}" fill="none" stroke="{{r.sparkC}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: {{r.rot}}"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{r.open}}" hint-placeholder-val="{{false}}">
+<div class="open" style="margin: 0 16px 16px; padding-top: 14px; border-top: 1px solid #1D2433; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: center">
+<span style="display: flex; gap: 14px">
+<span><span style="display: block; font-size: 11px; color: #8A95AA">Précédent</span><span class="num" style="display: block; font-size: 13px; color: #A3AEC2; margin-top: 3px">{{r.prev}}</span></span>
+<span><span style="display: block; font-size: 11px; color: #8A95AA">Prévision</span><span class="num" style="display: block; font-size: 13px; color: #DCE2EC; margin-top: 3px">{{r.fc}}</span></span>
+<span><span style="display: block; font-size: 11px; color: #8A95AA">Réel</span><span class="num" style="display: block; font-size: 13px; font-weight: 700; margin-top: 3px">{{r.act}}</span></span>
+</span>
+<span style="display: flex; gap: 18px">
+<sc-for list="{{r.moves}}" as="m" hint-placeholder-count="3">
+<span><span style="display: block; font-size: 11px; color: #8A95AA">{{m.l}}</span><span class="num" style="display: block; font-size: 13px; font-weight: 700; margin-top: 3px; color: {{m.c}}">{{m.u}}</span><span class="num" style="display: block; font-size: 11px; color: #8A95AA">{{m.p}}</span></span>
+</sc-for>
+</span>
+<svg viewBox="0 0 120 40" preserveAspectRatio="none" style="flex: 1 1 160px; min-width: 140px; max-width: 260px; height: 44px" role="img" aria-label="{{r.sparkAria}}"><line x1="40" y1="0" x2="40" y2="40" stroke="#5A6680" stroke-width="1" stroke-dasharray="3 2" vector-effect="non-scaling-stroke"></line><path d="{{r.spark}}" fill="none" stroke="{{r.sparkC}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 18px">
+<div style="flex: 2 1 340px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .06em; color: {{accent}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>POURQUOI ÇA COMPTE</div>
+<div style="font-size: 14px; line-height: 1.55; color: #C9D3E6; margin-top: 6px">{{r.why}}</div>
+<div class="num" style="font-size: 13px; line-height: 1.55; color: #A3AEC2; margin-top: 8px">{{r.detail}}</div>
+</div>
+<div style="flex: 1 1 240px; padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433">
+<div style="font-size: 12px; color: #94A0B4">{{r.histT}}</div>
+<div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px">
+<sc-for list="{{r.hist}}" as="hh" hint-placeholder-count="3">
+<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px"><span style="color: #A3AEC2">{{hh.l}}</span><span class="num" style="font-weight: 700">{{hh.v}}</span></div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{isDetail}}" hint-placeholder-val="{{false}}">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+<div style="background: #0E131D; border: 1px solid {{r.bd}}; border-radius: 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<button class="row" type="button" onClick="{{r.pick}}" aria-expanded="{{r.expanded}}" style="width: 100%; text-align: left; cursor: pointer; border: 0; background: transparent; border-radius: 18px; color: #EEF1F6; padding: 16px 18px; display: flex; flex-direction: column; gap: 14px">
+<span style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; width: 100%">
+<span class="num" style="flex: none; width: 92px; font-size: 11px; color: #8A95AA; line-height: 1.35"><span style="display: block; color: #EEF1F6; font-weight: 600; font-size: 14px">{{r.time}}</span>{{r.date}}</span>
+<span style="flex: none; font-size: 11px; font-weight: 800; padding: 3px 7px; border-radius: 6px; background: #1A2130; color: #C9D3E6">{{r.cur}}</span>
+<span style="flex: 1 1 220px; min-width: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap"><span style="font-size: 15px; font-weight: 600">{{r.name}}</span><sc-if value="{{r.forte}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 2px 6px; border-radius: 5px; background: rgba(245,166,91,.16); color: #F5B87A">FORTE SURPRISE</span></sc-if></span>
+<span role="img" aria-label="{{r.impAria}}" style="flex: none; display: flex; gap: 2px; align-items: flex-end"><span style="width: 4px; height: 7px; border-radius: 1px; background: {{r.c1}}"></span><span style="width: 4px; height: 10px; border-radius: 1px; background: {{r.c2}}"></span><span style="width: 4px; height: 13px; border-radius: 1px; background: {{r.c3}}"></span></span>
+<span style="flex: none; display: inline-flex; align-items: center; gap: 8px">
+<span style="font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 8px; background: {{r.vBg}}; color: {{r.vFg}}">{{r.verdict}}</span>
+<span role="img" aria-label="{{r.sensAria}}" style="width: 26px; height: 26px; border-radius: 13px; display: flex; align-items: center; justify-content: center; background: {{r.sBg}}; color: {{r.sFg}}; font-size: 14px; font-weight: 800">{{r.sym}}</span>
+</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{r.rot}}"><path d="M6 9l6 6 6-6"></path></svg>
+</span>
+<span style="display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; width: 100%">
+<span style="flex: 1 1 210px; display: flex; gap: 14px">
+<span><span style="display: block; font-size: 11px; color: #8A95AA">Précédent</span><span class="num" style="display: block; font-size: 13px; color: #A3AEC2; margin-top: 3px">{{r.prev}}</span></span>
+<span><span style="display: block; font-size: 11px; color: #8A95AA">Prévision</span><span class="num" style="display: block; font-size: 13px; color: #DCE2EC; margin-top: 3px">{{r.fc}}</span></span>
+<span><span style="display: block; font-size: 11px; color: #8A95AA">Réel</span><span class="num" style="display: block; font-size: 13px; font-weight: 700; margin-top: 3px">{{r.act}}</span></span>
+</span>
+<span style="flex: 1 1 120px"><span style="display: block; font-size: 11px; color: #8A95AA">Surprise</span><span class="num" style="display: block; font-size: 13px; font-weight: 700; margin-top: 3px; color: {{r.surpC}}">{{r.surp}}</span><span class="num" style="display: block; font-size: 11px; color: #8A95AA">{{r.surpZ}}</span></span>
+<span style="flex: 1 1 120px"><span style="display: block; font-size: 11px; color: #8A95AA">Attendu sur {{asset}}</span><span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; margin-top: 4px; padding: 3px 8px; border-radius: 6px; background: {{r.eBg}}; color: {{r.eFg}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.eIcon}}"></path></svg>{{r.eff}}</span></span>
+<span style="flex: 2 1 260px; display: flex; gap: 14px">
+<sc-for list="{{r.moves}}" as="m" hint-placeholder-count="3">
+<span style="flex: 1; min-width: 0"><span style="display: block; font-size: 11px; color: #8A95AA">{{m.l}}</span><span class="num" style="display: block; font-size: 13px; font-weight: 700; margin-top: 3px; color: {{m.c}}">{{m.u}}</span><span class="num" style="display: block; font-size: 11px; color: #8A95AA">{{m.p}}</span></span>
+</sc-for>
+</span>
+<svg viewBox="0 0 120 40" preserveAspectRatio="none" style="flex: 1 1 130px; min-width: 110px; max-width: 220px; height: 40px" role="img" aria-label="{{r.sparkAria}}"><line x1="40" y1="0" x2="40" y2="40" stroke="#5A6680" stroke-width="1" stroke-dasharray="3 2" vector-effect="non-scaling-stroke"></line><path d="{{r.spark}}" fill="none" stroke="{{r.sparkC}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg>
+</span>
+</button>
+<sc-if value="{{r.open}}" hint-placeholder-val="{{false}}">
+<div class="open" style="margin: 0 18px 18px; padding-top: 14px; border-top: 1px solid #1D2433; display: flex; flex-wrap: wrap; gap: 18px">
+<div style="flex: 2 1 340px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .06em; color: {{accent}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>POURQUOI ÇA COMPTE</div>
+<div style="font-size: 14px; line-height: 1.55; color: #C9D3E6; margin-top: 6px">{{r.why}}</div>
+<div class="num" style="font-size: 13px; line-height: 1.55; color: #A3AEC2; margin-top: 8px">{{r.detail}}</div>
+</div>
+<div style="flex: 1 1 240px; padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433">
+<div style="font-size: 12px; color: #94A0B4">{{r.histT}}</div>
+<div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px">
+<sc-for list="{{r.hist}}" as="hh" hint-placeholder-count="3">
+<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px"><span style="color: #A3AEC2">{{hh.l}}</span><span class="num" style="font-weight: 700">{{hh.v}}</span></div>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</sc-if>
+
+<div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #8A95AA">
+<span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #7BEBB9"></span>Surprise favorable à la devise</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #FF9A8E"></span>Surprise défavorable</span>
+<span>« A fait bouger » : plus de {{seuilTxt}} l'agitation habituelle à cette heure, en 15 min</span>
+</div>
+</section>
+
+<section aria-label="Résumé" class="fu d3" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 20px 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-wrap: wrap; gap: 18px; align-items: center">
+<div style="flex: 2 1 340px; min-width: 0">
+<div class="h" style="font-size: 17px; font-weight: 600">{{sum.title}}</div>
+<div style="font-size: 14px; color: #A3AEC2; margin-top: 6px; line-height: 1.5">{{sum.line}}</div>
+</div>
+<div style="flex: 1 1 280px; min-width: 0; padding: 14px 16px; border-radius: 14px; background: #111622; border: 1px solid {{accentLine}}">
+<div style="font-size: 12px; color: #94A0B4">La news qui fait le plus bouger {{asset}}</div>
+<div class="h" style="font-size: 18px; font-weight: 600; margin-top: 4px">{{sum.topName}}</div>
+<div class="num" style="font-size: 13px; color: #C9D3E6; margin-top: 4px">{{sum.topLine}}</div>
+</div>
+</section>
+</sc-if>
+
+<div style="font-size: 11px; color: #6F7A90">Données d'exemple · news, prix et réactions générés pour la maquette · indication basée sur les news, pas un signal de trade.</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var a = this.sget('tj.marche.actif');
+    this.cache = {};
+    // Affichage de la liste : « compact » (une ligne par news) par défaut, choix mémorisé
+    var VUE_PAR_DEFAUT = 'compact';
+    var vue = this.sget('tj.marche.vue');
+    if (vue !== 'compact' && vue !== 'detail') vue = VUE_PAR_DEFAUT;
+    this.state = { asset: ['EUR/USD', 'XAU/USD', 'NAS100', 'BTC/USD'].indexOf(a) >= 0 ? a : 'EUR/USD', mine: this.sget('tj.mesActifs') === '1', vue: vue, open: vue === 'compact' ? -1 : 0, elapsed: 0, ready: !!window.TJNews, failed: false };
+  }
+  sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
+  sset(k, v) { try { window.sessionStorage.setItem(k, v); } catch (e) {} }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  componentDidMount() {
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var self = this, t0 = Date.now();
+    this.iv = setInterval(function () { self.setState({ elapsed: Math.floor((Date.now() - t0) / 1000) }); }, 1000);
+    if (!window.TJNews) {
+      var essais = 0;
+      this.lw = setInterval(function () {
+        essais++;
+        if (window.TJNews) { clearInterval(self.lw); self.setState({ ready: true }); }
+        else if (essais > 25) { clearInterval(self.lw); self.setState({ failed: true }); }
+      }, 200);
+    }
+  }
+  componentWillUnmount() { clearInterval(this.iv); clearInterval(this.lw); }
+  data(asset) {
+    if (!this.cache[asset]) this.cache[asset] = window.TJNews.exemple.etat(asset);
+    return this.cache[asset];
+  }
+  renderVals() {
+    var self = this, s = this.state;
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var soft = this.soft(accent, 0.13), aLine = this.soft(accent, 0.38);
+    var GAIN = '#3DDC97', LOSS = '#FF7A6B', GAINT = '#7BEBB9', LOSST = '#FF9A8E', GREY = '#8A95AA';
+    var BIAIS = {
+      hausse: { fg: GAINT, fill: GAIN, soft: 'rgba(61,220,151,.13)', bd: 'rgba(61,220,151,.35)', icon: 'M4 17l6-6 4 4 6-7M14 8h6v6' },
+      baisse: { fg: LOSST, fill: LOSS, soft: 'rgba(255,122,107,.13)', bd: 'rgba(255,122,107,.35)', icon: 'M4 7l6 6 4-4 6 7M14 16h6v-6' },
+      neutre: { fg: '#C9D3E6', fill: GREY, soft: 'rgba(138,149,170,.14)', bd: '#1D2433', icon: 'M4 12h16' },
+      mitige: { fg: '#F5B87A', fill: '#F5A65B', soft: 'rgba(245,166,91,.14)', bd: 'rgba(245,166,91,.35)', icon: 'M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3' }
+    };
+
+    // navigation (même menu que les autres écrans, « État du marché » à côté de News)
+    var navDef = [
+      { title: '', items: [['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', 'Dashboard.dc.html']] },
+      { title: 'OUTILS', items: [
+        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
+        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html'],
+        ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', 'Backtesting.dc.html'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', 'News.dc.html', '2', 'warn'],
+        ['marche', 'État du marché', 'M3.5 16a8.5 8.5 0 1 1 17 0M12 16l4-5', 'Marche.dc.html'],
+        ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', '#top', 'NOUVEAU', 'accent']
+      ] },
+      { title: 'COMPTE', items: [
+        ['set', 'Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4', '#top'],
+        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01', '#top']
+      ] }
+    ];
+    var navGroups = navDef.map(function (g) {
+      return { title: g.title, items: g.items.map(function (n) {
+        var on = n[0] === 'marche';
+        return { label: n[1], icon: n[2], href: n[3], badge: n[4] || '', bBg: n[5] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: n[5] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false' };
+      }) };
+    });
+    var base = { accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups };
+
+    var TJ = window.TJNews;
+    var MES = TJ ? TJ.MES_ACTIFS : ['EUR/USD', 'XAU/USD', 'NAS100'];
+    var ALL = ['EUR/USD', 'XAU/USD', 'NAS100', 'BTC/USD'];
+    var list = s.mine ? ALL.filter(function (a) { return MES.indexOf(a) >= 0; }) : ALL;
+    var asset = list.indexOf(s.asset) >= 0 ? s.asset : list[0];
+    var pickAsset = function (a) { self.sset('tj.marche.actif', a); self.setState({ asset: a, open: self.state.vue === 'compact' ? -1 : 0 }); };
+    var mineOn = s.mine;
+    base.mine = { on: mineOn, pressed: mineOn ? 'true' : 'false', bg: mineOn ? soft : 'transparent', bd: mineOn ? accent : '#2A3346', fg: mineOn ? '#EEF1F6' : '#A3AEC2', box: mineOn ? accent : 'transparent',
+      pick: function () { var v = !self.state.mine; self.sset('tj.mesActifs', v ? '1' : '0'); self.setState({ mine: v }); } };
+    base.asset = asset;
+
+    if (!TJ) {
+      base.assetChips = list.map(function (a) { return { l: a, pressed: a === asset ? 'true' : 'false', bg: 'transparent', bd: '#2A3346', fg: '#A3AEC2', dot: '#2A3346', pick: function () { pickAsset(a); } }; });
+      base.ok = false; base.noLogic = true;
+      base.noLogicMsg = s.failed ? "Le module de calcul (news-logic.js) n'a pas pu être chargé : l'état du marché ne peut pas être affiché." : 'Calcul en cours…';
+      return base;
+    }
+
+    var F = TJ.formats, D = this.data(asset), E = D.etat, NOW = D.jeu.maintenant + s.elapsed * 1000;
+    var ins = TJ.INSTRUMENTS[asset], unite = ins.unite;
+
+    base.assetChips = list.map(function (a) {
+      var on = a === asset, code = self.cache[a] ? self.cache[a].etat.code : null;
+      return { l: a, pressed: on ? 'true' : 'false', bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2', dot: code ? BIAIS[code].fill : '#2A3346', pick: function () { pickAsset(a); } };
+    });
+
+    // ---- carte « État actuel »
+    var B = BIAIS[E.code], sc = E.score;
+    var dom = E.dominante, domA = dom && dom.analyse;
+    var cdTxt = function (sec) { sec = Math.max(0, sec); var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), x = sec % 60; return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (x < 10 ? '0' : '') + x; };
+    var nx = E.prochaineForte;
+    var nxEff = nx ? TJ.EFFETS[nx.type] : null, nxDec = nx ? F.decimalesValeur(nx.type) : 0;
+    var st = {
+      biais: E.biais, score: (sc > 0 ? '+' : sc < 0 ? '−' : '') + Math.abs(sc), fg: B.fg, fill: B.fill, soft: B.soft, bd: B.bd, icon: B.icon,
+      fillL: (sc >= 0 ? 50 : 50 + sc / 2).toFixed(1), fillW: Math.max(Math.abs(sc) / 2, 0.6).toFixed(1), mark: (50 + sc / 2).toFixed(1),
+      gaugeAria: 'Score ' + sc + ' sur une échelle de −100 (baissier) à +100 (haussier)',
+      asOf: 'Calculé ' + F.quand(D.jeu.maintenant, NOW),
+      phrase: E.phrase,
+      hasDom: !!dom, contredite: !!(dom && dom.contredite),
+      dom: dom ? {
+        name: domA.info.nom, cur: domA.info.devise || '—', forte: !!(domA.surprise && domA.surprise.forte),
+        when: F.quand(domA.pub.t, NOW) + ' · ' + F.ilYa(domA.pub.t, NOW) + (F.ageMarcheSiDifferent && F.ageMarcheSiDifferent(dom.ageH, dom.ageMarcheH) ? ' · ' + F.ageMarcheSiDifferent(dom.ageH, dom.ageMarcheH) : ''),
+        weight: F.nombre(dom.valeur, 1, true), c: dom.valeur > 0 ? GAINT : LOSST
+      } : { name: '', cur: '', forte: false, when: '', weight: '', c: GREY },
+      hasNext: !!nx,
+      next: nx ? {
+        name: nxEff.nom, when: F.quand(nx.t, NOW),
+        exp: 'prévision ' + F.nombre(nx.prevision, nxDec) + nxEff.unite + ', précédent ' + F.nombre(nx.precedent, nxDec) + nxEff.unite,
+        cd: cdTxt(Math.round((nx.t - NOW) / 1000))
+      } : { name: '', when: '', exp: '', cd: '' }
+    };
+
+    // ---- liste des 10 dernières news
+    var bars = function (lvl) {
+      if (lvl === 3) return ['#FF9A8E', '#FF9A8E', '#FF9A8E', 'Impact fort'];
+      if (lvl === 2) return ['#F5B87A', '#F5B87A', '#2A3346', 'Impact moyen'];
+      return [GREY, '#2A3346', '#2A3346', 'Impact faible'];
+    };
+    var soft2 = this.soft(accent, 0.07);
+    var rows = D.analyses.map(function (a, idx) {
+      var p = a.pub, info = a.info, sp = a.surprise, v = a.verdict, r = v.reaction, dec = F.decimalesValeur(a.type), u = info.unite;
+      var dev = TJ.effetDevise(a.type, sp);
+      var bon = dev.sens !== 0 ? dev.sens > 0 : (a.effet.sens !== 0 ? a.effet.sens > 0 : null);
+      var b = bars(info.impact), op = s.open === idx;
+      var eff = a.effet;
+      var eCol = eff.sens > 0 ? [GAINT, 'rgba(61,220,151,.12)', 'M12 19V5M5 12l7-7 7 7'] : eff.sens < 0 ? [LOSST, 'rgba(255,122,107,.12)', 'M12 5v14M5 12l7 7 7-7'] : ['#C9D3E6', '#1A2130', 'M5 9l3-3 3 3M8 6v12M19 15l-3 3-3-3M16 18V6'];
+      var moves = [[5, '+5 min'], [15, '+15 min'], [60, '+1 h']].map(function (w) {
+        var m = r && r.fenetres[w[0]];
+        return { l: w[1], u: m ? F.nombre(m.unites, 0, true) + ' ' + unite : '—', p: m ? F.nombre(m.pct, 2, true) + ' %' : '', c: !m ? GREY : m.ecart > 0 ? GAINT : m.ecart < 0 ? LOSST : '#C9D3E6' };
+      });
+      // sparkline −30 min → +1 h ; l'annonce est à x = 40 (30 min sur 90)
+      var serie = TJ.serieAutour(D.jeu.bougies, p.t, 30, 60), spark = '', sparkC = GREY;
+      if (serie.length > 1) {
+        var mn = Infinity, mx = -Infinity;
+        serie.forEach(function (q) { if (q.c < mn) mn = q.c; if (q.c > mx) mx = q.c; });
+        if (mx === mn) mx = mn + 1;
+        spark = 'M' + serie.map(function (q) { return ((q.t - (p.t - 30 * 60000)) / (90 * 60000) * 120).toFixed(1) + ',' + (3 + (mx - q.c) / (mx - mn) * 34).toFixed(1); }).join(' L');
+        var fin = serie[serie.length - 1].c, avant = r ? r.ref : serie[0].c;
+        sparkC = fin > avant ? GAIN : fin < avant ? LOSS : GREY;
+      }
+      var sensTxt = { attendu: 'Réaction dans le sens attendu', contraire: 'Réaction contraire à ce qui était attendu', variable: 'Pas de sens attendu pour cet actif', neutre: 'Pas de mouvement', 'non suivi': 'Actif non suivi pour cette news' }[v.sens] || '';
+      var row = {
+        time: F.heureParis(p.t), date: F.dateParis(p.t), cur: info.devise || '—', name: info.nom, forte: !!(sp && sp.forte),
+        c1: b[0], c2: b[1], c3: b[2], impAria: b[3],
+        prev: F.nombre(p.precedent, dec) + u, fc: F.nombre(p.prevision, dec) + u, act: F.nombre(p.reel, dec) + u,
+        surp: !sp ? '—' : sp.sens === 'conforme' ? 'conforme' : F.nombre(sp.brute, dec, true) + u, surpC: bon === null || !sp || sp.sens === 'conforme' ? '#C9D3E6' : bon ? GAINT : LOSST,
+        surpZ: sp && sp.sens !== 'conforme' && sp.normalisee !== null ? F.nombre(Math.abs(sp.normalisee), 1) + ' × l’écart habituel' : '',
+        eff: eff.libelle, eFg: eCol[0], eBg: eCol[1], eIcon: eCol[2],
+        moves: moves, spark: spark, sparkC: sparkC, sparkAria: 'Prix de ' + asset + ' de 30 min avant à 1 h après l’annonce',
+        verdict: v.libelle, vBg: v.bouge ? soft : '#1A2130', vFg: v.bouge ? '#C9D3FF' : '#A3AEC2',
+        sym: v.symbole || '–', sBg: v.symbole === '✓' ? 'rgba(61,220,151,.14)' : v.symbole === '✗' ? 'rgba(255,122,107,.14)' : '#1A2130', sFg: v.symbole === '✓' ? GAINT : v.symbole === '✗' ? LOSST : GREY, sensAria: sensTxt,
+        open: op, expanded: op ? 'true' : 'false', bd: op ? '#2A3346' : '#1D2433', rot: op ? 'rotate(180deg)' : 'none',
+        // vue compacte : les news qui ont fait bouger l'actif ressortent par un fond légèrement plus clair
+        bouge: !!v.bouge, rowBg: op ? '#111724' : v.bouge ? soft2 : 'transparent',
+        surpX: sp && sp.sens !== 'conforme' && sp.normalisee !== null ? F.nombre(Math.abs(sp.normalisee), 1) + ' × écart hab.' : '',
+        m15u: moves[1].u, m15p: moves[1].p, m15c: moves[1].c,
+        aria: F.dateParis(p.t) + ' ' + F.heureParis(p.t) + ', ' + info.nom + ', surprise ' + (sp ? F.nombre(sp.brute, dec, true) + u : 'inconnue') + ', ' + v.libelle + (sensTxt ? ', ' + sensTxt.toLowerCase() : '') + (op ? ', détails affichés' : ', cliquer pour les détails'),
+        why: info.pourquoi,
+        pick: function () { self.setState({ open: self.state.open === idx ? -1 : idx }); }
+      };
+      if (op) {
+        var m15 = r && r.fenetres[15];
+        row.detail = 'Ici : ' + F.nombre(p.reel, dec) + u + ' publié pour ' + F.nombre(p.prevision, dec) + u + ' prévu. ' +
+          (m15 && v.atrUnites ? asset + ' a bougé de ' + F.nombre(Math.abs(m15.unites), 0) + ' ' + unite + ' en 15 min, soit ' + F.nombre(v.ratio, 1) + ' fois son agitation habituelle à cette heure (' + F.nombre(v.atrUnites, 0) + ' ' + unite + ' en moyenne les jours sans news). ' : '') +
+          (v.sens === 'contraire' ? 'Le marché a contredit cette news.' : v.sens === 'attendu' ? 'Le sens est celui attendu.' : '');
+        var hk = asset + '|' + p.type + '|' + p.t;
+        self.histCache = self.histCache || {};
+        var h = self.histCache[hk] || (self.histCache[hk] = TJ.reactionHistorique(asset, a.type, D.jeu.publications.filter(function (q) { return q.type === a.type && q.t <= p.t; }), D.jeu.bougies));
+        row.histT = 'Sur les ' + h.n + ' dernières publications' + (h.faible ? ' (historique court)' : '');
+        row.hist = [
+          { l: 'Mouvement moyen à 15 min', v: h.mouvementMoyen15 ? F.nombre(h.mouvementMoyen15.unites, 0) + ' ' + unite + ' · ' + F.nombre(h.mouvementMoyen15.pct, 2) + ' %' : '—' },
+          { l: 'Range du jour cassé', v: h.pctCasseRange === null ? '—' : Math.round(h.pctCasseRange) + ' % des fois' },
+          { l: 'Dans le sens attendu', v: h.pctSensAttendu === null ? 'pas de sens attendu' : Math.round(h.pctSensAttendu) + ' % des fois' }
+        ];
+      } else { row.detail = ''; row.histT = ''; row.hist = []; }
+      return row;
+    });
+
+    // ---- résumé
+    var R = D.resume, top = D.plusForte.premiere;
+    var sum = {
+      title: 'Sur les ' + R.n + ' dernières news : ' + R.ontBouge + ' ont fait bouger ' + asset + ', ' + R.dansLeSens + ' dans le sens attendu',
+      line: (R.avecSens < R.mesurees
+        ? 'Le sens attendu est compté sur les ' + R.avecSens + ' news qui en avaient un pour ' + asset + ' ; pour les ' + (R.mesurees - R.avecSens) + ' autres, l’effet est variable. '
+        : 'Le sens attendu compte même quand le mouvement est faible. '),
+      topName: top ? TJ.EFFETS[top.type].nom : '—',
+      topLine: top ? F.nombre(top.mouvementMoyen15.unites, 0) + ' ' + unite + ' en moyenne à 15 min (' + F.nombre(top.mouvementMoyen15.pct, 2) + ' %) sur ' + top.n + ' publications' + (top.pctSensAttendu !== null ? ' · dans le sens attendu ' + Math.round(top.pctSensAttendu) + ' % du temps' : '') : 'Pas assez d’historique'
+    };
+    sum.line += 'Une news « fait bouger » si le prix a bougé de plus de ' + F.nombre(TJ.SEUILS.VERDICT_ATR_MULT, 1) + ' fois son agitation habituelle à cette heure.';
+
+    base.ok = true; base.noLogic = false; base.noLogicMsg = '';
+    base.st = st; base.rows = rows; base.sum = sum;
+    base.isCompact = s.vue === 'compact'; base.isDetail = s.vue !== 'compact';
+    base.vues = [['compact', 'Compact', 'M4 6h16M4 10h16M4 14h16M4 18h16'], ['detail', 'Détaillé', 'M4 5h16v6H4zM4 14h16v6H4z']].map(function (x) {
+      var on = s.vue === x[0];
+      return { l: x[1], icon: x[2], pressed: on ? 'true' : 'false', bg: on ? '#1A2130' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA',
+        pick: function () { self.sset('tj.marche.vue', x[0]); self.setState({ vue: x[0] }); } };
+    });
+    base.seuilTxt = F.nombre(TJ.SEUILS.VERDICT_ATR_MULT, 1) + ' fois';
+    return base;
+  }
+}
+</script>
+</body>
+</html>

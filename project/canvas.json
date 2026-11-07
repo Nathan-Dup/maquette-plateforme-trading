@@ -107,6 +107,24 @@
       "w": 1440,
       "x": 15320,
       "y": 0
+    },
+    "News.dc.html": {
+      "expand": "fill",
+      "h": 1500,
+      "is_interactive": true,
+      "title": "News : calendrier, résultats, actualités, alertes",
+      "w": 1440,
+      "x": 16840,
+      "y": 0
+    },
+    "Marche.dc.html": {
+      "expand": "fill",
+      "h": 2400,
+      "is_interactive": true,
+      "title": "État du marché : biais par actif et réactions aux news",
+      "w": 1440,
+      "x": 18360,
+      "y": 0
     }
   },
   "createdOnFiles": {
@@ -139,7 +157,9 @@
     "Importer.dc.html",
     "NouveauTrade.dc.html",
     "Backtesting.dc.html",
-    "Replay.dc.html"
+    "Replay.dc.html",
+    "News.dc.html",
+    "Marche.dc.html"
   ],
   "pages": [],
   "title": "Maquette plateforme trading"
