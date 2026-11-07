@@ -108,10 +108,54 @@ button,input,select{font-family:inherit}
 <button type="button" role="tab" aria-selected="{{tb.sel}}" onClick="{{tb.pick}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 16px; margin-bottom: -1px; border: 0; background: transparent; cursor: pointer; font-size: 14px; font-weight: 600; color: {{tb.fg}}; box-shadow: inset 0 -2px 0 {{tb.bar}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{tb.icon}}"></path></svg><span>{{tb.label}}</span><sc-if value="{{tb.count}}" hint-placeholder-val="{{false}}"><span class="num" style="font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: #1A2130; color: #C9D3E6">{{tb.count}}</span></sc-if></button>
 </sc-for>
 </div>
-<sc-if value="{{showMine}}" hint-placeholder-val="{{true}}">
-<button class="chip" type="button" onClick="{{mine.pick}}" aria-pressed="{{mine.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; font-weight: 600; padding: 0 12px; min-height: 36px; border-radius: 999px; border: 1px solid {{mine.bd}}; background: {{mine.bg}}; color: {{mine.fg}}"><span style="width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid {{mine.bd}}; background: {{mine.box}}; display: flex; align-items: center; justify-content: center"><sc-if value="{{mine.on}}" hint-placeholder-val="{{false}}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span>Mes actifs seulement</button>
+<div style="position: relative; z-index: 20; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px">
+<sc-if value="{{nfp.show}}" hint-placeholder-val="{{true}}">
+<div style="position: relative">
+<button class="chip" type="button" onClick="{{nfp.toggle}}" aria-haspopup="true" aria-expanded="{{nfp.expanded}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 0 12px; min-height: 36px; border-radius: 999px; border: 1px solid {{nfp.bd}}; background: {{nfp.bg}}; color: #EEF1F6">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>Filtres
+<sc-if value="{{nfp.count}}" hint-placeholder-val="{{false}}"><span class="num" style="min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; background: {{accent}}; color: #0A0D14; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center">{{nfp.count}}</span></sc-if>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: rotate({{nfp.rot}}deg); transition: transform .2s ease"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{nfp.open}}" hint-placeholder-val="{{false}}">
+<div onClick="{{nfp.close}}" style="position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 34"></div>
+<div role="group" aria-label="Filtres des news" style="position: absolute; right: 0; top: 46px; z-index: 35; width: 400px; max-width: calc(100vw - 32px); box-sizing: border-box; background: #0E131D; border: 1px solid #2A3346; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.55); padding: 18px; display: flex; flex-direction: column; gap: 18px">
+<div><div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; margin-bottom: 8px">IMPORTANCE</div><div role="group" aria-label="Importance" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{nfp.imps}}" as="c" hint-placeholder-count="3">
+<button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; padding: 0 12px; min-height: 34px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}"><span aria-hidden="true" style="display: flex; gap: 2px; align-items: flex-end"><span style="width: 4px; height: 7px; border-radius: 1px; background: {{c.c1}}"></span><span style="width: 4px; height: 10px; border-radius: 1px; background: {{c.c2}}"></span><span style="width: 4px; height: 13px; border-radius: 1px; background: {{c.c3}}"></span></span>{{c.l}}</button>
+</sc-for>
+</div></div>
+<div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px"><span style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA">PAYS</span><span style="display: flex; gap: 4px"><button type="button" onClick="{{nfp.allOn}}" style="cursor: pointer; border: 0; background: transparent; color: #A9BBFF; font-size: 12px; font-weight: 600; padding: 4px 6px">Tout cocher</button><button type="button" onClick="{{nfp.allOff}}" style="cursor: pointer; border: 0; background: transparent; color: #A9BBFF; font-size: 12px; font-weight: 600; padding: 4px 6px">Tout décocher</button></span></div>
+<div role="group" aria-label="Pays" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 6px">
+<sc-for list="{{nfp.pays}}" as="p" hint-placeholder-count="9">
+<button type="button" role="checkbox" aria-checked="{{p.checked}}" onClick="{{p.pick}}" style="cursor: pointer; display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 10px; border-radius: 10px; border: 1px solid {{p.bd}}; background: {{p.bg}}; color: {{p.fg}}; font-size: 13px; font-weight: 600; text-align: left"><span style="flex: none; width: 16px; height: 16px; box-sizing: border-box; border-radius: 4px; border: 1.5px solid {{p.boxBd}}; background: {{p.box}}; display: flex; align-items: center; justify-content: center"><sc-if value="{{p.on}}" hint-placeholder-val="{{true}}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span><span style="flex: 1; min-width: 0">{{p.l}}</span><span class="num" style="font-size: 11px; font-weight: 700; color: #8A95AA">{{p.cur}}</span></button>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #8A95AA; margin-top: 8px">Coché = affiché. Décoche les pays dont tu ne veux pas voir les news.</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; border-top: 1px solid #1A2130; padding-top: 14px">
+<button class="ghost" type="button" onClick="{{nfp.reset}}" style="cursor: pointer; border: 1px solid transparent; background: transparent; color: #A3AEC2; font-size: 13px; font-weight: 600; padding: 0 12px; height: 38px; border-radius: 10px">Réinitialiser</button>
+<button class="btn" type="button" onClick="{{nfp.close}}" style="cursor: pointer; border: 0; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700; padding: 0 18px; height: 38px; border-radius: 10px">{{nfp.voir}}</button>
+</div>
+</div>
 </sc-if>
 </div>
+</sc-if>
+<sc-if value="{{showMine}}" hint-placeholder-val="{{true}}">
+<button class="chip" type="button" onClick="{{mine.pick}}" aria-pressed="{{mine.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 0 12px; min-height: 36px; border-radius: 999px; border: 1px solid {{mine.bd}}; background: {{mine.bg}}; color: {{mine.fg}}"><span style="width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid {{mine.bd}}; background: {{mine.box}}; display: flex; align-items: center; justify-content: center"><sc-if value="{{mine.on}}" hint-placeholder-val="{{false}}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span>Mes actifs seulement</button>
+</sc-if>
+</div>
+</div>
+
+<sc-if value="{{nfp.hasChips}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: -6px">
+<span style="font-size: 12px; color: #8A95AA">Filtres :</span>
+<sc-for list="{{nfp.chips}}" as="c" hint-placeholder-count="2">
+<button class="chip" type="button" onClick="{{c.clear}}" aria-label="Retirer le filtre {{c.l}}" style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px 0 12px; border-radius: 999px; border: 1px solid {{accentLine}}; background: {{accentSoft}}; color: #EEF1F6; font-size: 12px; font-weight: 600; cursor: pointer">{{c.l}}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</sc-for>
+<button type="button" onClick="{{nfp.reset}}" style="cursor: pointer; border: 0; background: transparent; color: #A3AEC2; font-size: 12px; font-weight: 600; padding: 0 6px; height: 32px; text-decoration: underline">Tout effacer</button>
+</div>
+</sc-if>
 
 <sc-if value="{{isCal}}" hint-placeholder-val="{{true}}">
 <section aria-label="Calendrier économique" class="fu d2" style="display: flex; flex-direction: column; gap: 14px">
@@ -130,11 +174,6 @@ button,input,select{font-family:inherit}
 
 <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
 <div style="font-size: 13px; color: #8A95AA">Heures de Paris · semaine du 6 au 13 novembre</div>
-<div role="group" aria-label="Impact" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
-<sc-for list="{{impChips}}" as="p" hint-placeholder-count="3">
-<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 34px; background: {{p.bg}}; color: {{p.fg}}">{{p.l}}</button>
-</sc-for>
-</div>
 </div>
 
 <sc-if value="{{calEmpty}}" hint-placeholder-val="{{false}}">
@@ -406,8 +445,10 @@ class Component extends DCLogic {
     super(props);
     var mesActifs = null;
     try { mesActifs = window.sessionStorage.getItem('tj.mesActifs'); } catch (e) {}
+    var nfS = null;
+    try { nfS = JSON.parse(window.sessionStorage.getItem('tj.newsFiltres') || 'null'); } catch (e) {}
     this.histo = {};
-    this.state = { tab: 'cal', imp: 'all', mine: mesActifs === '1', open: 'e3', nf: 'all', nAsset: 'all', nOpen: 0, el: 0, form: null, flash: '', alerts: this.defAlerts(), seq: 5, tlDay: 0, zAv: 15, zAp: 15, histoV: 0 };
+    this.state = { tab: 'cal', lv: nfS && nfS.lv ? nfS.lv : [3, 2, 1], paysOff: nfS && nfS.paysOff ? nfS.paysOff : [], fOpen: false, mine: mesActifs === '1', open: 'e3', nf: 'all', nAsset: 'all', nOpen: 0, el: 0, form: null, flash: '', alerts: this.defAlerts(), seq: 5, tlDay: 0, zAv: 15, zAp: 15, histoV: 0 };
   }
   defAlerts() {
     return [
@@ -461,17 +502,20 @@ class Component extends DCLogic {
   events() {
     // d : jour (0 = ven. 6 nov.) ; t : heure de Paris ; type : clé du module de calcul
     return [
-      { id: 'e1', type: 'PROD_INDUS_DE', d: 0, t: '08:00', cur: 'EUR', title: 'Production industrielle Allemagne (m/m)', lvl: 1, prev: '−0,4 %', fc: '0,2 %', act: '0,5 %', good: true, mine: true, assets: 'EUR/USD · DAX', sum: "Une industrie allemande qui repart rassure sur la croissance européenne : léger soutien pour l'euro." },
+      { id: 'e1', type: 'PROD_INDUS_DE', d: 0, t: '08:00', cur: 'EUR', pays: 'Allemagne', title: 'Production industrielle Allemagne (m/m)', lvl: 1, prev: '−0,4 %', fc: '0,2 %', act: '0,5 %', good: true, mine: true, assets: 'EUR/USD · DAX', sum: "Une industrie allemande qui repart rassure sur la croissance européenne : léger soutien pour l'euro." },
       { id: 'e2', type: 'HALIFAX', d: 0, t: '10:30', cur: 'GBP', title: 'Prix des logements Halifax (m/m)', lvl: 1, prev: '0,3 %', fc: '0,2 %', act: '−0,1 %', good: false, mine: false, assets: 'GBP/USD', sum: "Un immobilier britannique qui ralentit peut inciter la Banque d'Angleterre à baisser ses taux plus tôt, ce qui pèse sur la livre." },
       { id: 'e3', type: 'NFP', d: 0, t: '14:30', cur: 'USD', title: 'NFP — Emplois non agricoles', lvl: 3, prev: '142 k', fc: '165 k', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Le chiffre le plus suivi du mois. Plus d'emplois que prévu = dollar plus fort et or souvent en baisse ; un chiffre faible fait l'inverse. Les premières minutes sont très agitées : évite d'entrer juste avant." },
       { id: 'e4', type: 'CHOMAGE_US', d: 0, t: '14:30', cur: 'USD', title: 'Taux de chômage', lvl: 3, prev: '4,2 %', fc: '4,2 %', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Publié en même temps que le NFP. Un chômage qui monte renforce l'idée de baisses de taux de la Fed." },
       { id: 'e5', type: 'EMPLOI_CA', d: 0, t: '14:30', cur: 'CAD', title: 'Emploi Canada', lvl: 2, prev: '22,1 k', fc: '15,0 k', act: '', mine: false, assets: 'USD/CAD', sum: "Tombe à la même minute que le NFP : le dollar canadien peut partir dans les deux sens." },
       { id: 'e6', type: 'MICHIGAN', d: 0, t: '16:00', cur: 'USD', title: 'Confiance des consommateurs (Michigan)', lvl: 2, prev: '70,5', fc: '71,2', act: '', mine: true, assets: 'USD · Indices US', sum: "Un moral des ménages en hausse soutient l'idée d'une consommation solide aux États-Unis, plutôt favorable au dollar." },
+      { id: 'e16', type: 'PIB_JP', d: 1, t: '00:50', cur: 'JPY', title: 'PIB Japon (t/t, estimation)', lvl: 2, prev: '0,5 %', fc: '0,1 %', act: '', mine: false, assets: 'USD/JPY · Nikkei 225', sum: "Une croissance japonaise en panne relancerait l'idée que la Banque du Japon ne montera pas ses taux de sitôt, ce qui pèse sur le yen." },
       { id: 'e7', type: 'PIB_EZ', d: 1, t: '11:00', cur: 'EUR', title: 'PIB zone euro (estimation)', lvl: 2, prev: '0,3 %', fc: '0,2 %', act: '', mine: true, assets: 'EUR/USD · DAX · CAC 40', sum: "Une croissance plus faible que prévu pèserait sur l'euro et renforcerait les attentes de baisse de taux de la BCE." },
+      { id: 'e17', type: 'CPI_CN', d: 2, t: '02:30', cur: 'CNY', title: 'Inflation Chine (a/a)', lvl: 2, prev: '0,4 %', fc: '0,3 %', act: '', mine: false, assets: 'AUD/USD · Cuivre', sum: "Des prix qui stagnent en Chine signalent une demande faible : mauvais signe pour les matières premières et le dollar australien." },
       { id: 'e8', type: 'CHOMAGE_UK', d: 2, t: '08:00', cur: 'GBP', title: 'Taux de chômage Royaume-Uni', lvl: 2, prev: '4,1 %', fc: '4,2 %', act: '', mine: false, assets: 'GBP/USD · FTSE 100', sum: "Deux jours avant la Banque d'Angleterre : un marché du travail plus faible rendrait une baisse de taux plus probable." },
-      { id: 'e9', type: 'ZEW_DE', d: 2, t: '11:00', cur: 'EUR', title: 'Indice ZEW Allemagne', lvl: 2, prev: '13,1', fc: '14,0', act: '', mine: true, assets: 'EUR/USD · DAX', sum: "Le moral des investisseurs allemands donne le ton pour l'euro et le DAX sur la journée." },
+      { id: 'e9', type: 'ZEW_DE', d: 2, t: '11:00', cur: 'EUR', pays: 'Allemagne', title: 'Indice ZEW Allemagne', lvl: 2, prev: '13,1', fc: '14,0', act: '', mine: true, assets: 'EUR/USD · DAX', sum: "Le moral des investisseurs allemands donne le ton pour l'euro et le DAX sur la journée." },
       { id: 'e10', type: 'CPI_US', d: 3, t: '14:30', cur: 'USD', title: 'Inflation CPI (a/a)', lvl: 3, prev: '2,6 %', fc: '2,5 %', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100 · BTC/USD', sum: "Une inflation plus haute que prévu éloigne les baisses de taux : dollar en hausse, indices et or sous pression." },
       { id: 'e11', type: 'EIA_PETROLE', d: 3, t: '16:30', cur: 'USD', title: 'Stocks de pétrole (EIA)', lvl: 2, prev: '+2,1 M', fc: '−0,8 M', act: '', mine: false, assets: 'WTI · Brent', sum: "Des stocks qui baissent signalent une demande solide et soutiennent le prix du pétrole." },
+      { id: 'e18', type: 'EMPLOI_AU', d: 4, t: '01:30', cur: 'AUD', title: 'Emploi Australie', lvl: 2, prev: '64,1 k', fc: '25,0 k', act: '', mine: false, assets: 'AUD/USD', sum: "Un marché du travail australien solide éloigne une baisse de taux de la banque centrale et soutient le dollar australien." },
       { id: 'e12', type: 'BOE_TAUX', d: 4, t: '13:00', cur: 'GBP', title: "Décision de taux de la Banque d'Angleterre", lvl: 3, prev: '4,75 %', fc: '4,75 %', act: '', mine: false, assets: 'GBP/USD · FTSE 100', sum: "Le marché attend un statu quo ; le ton du communiqué guidera la livre sterling." },
       { id: 'e13', type: 'INSCRIPTIONS_US', d: 4, t: '14:30', cur: 'USD', title: 'Inscriptions hebdomadaires au chômage', lvl: 2, prev: '221 k', fc: '224 k', act: '', mine: true, assets: 'EUR/USD · NAS100', sum: "Un indicateur rapide du marché de l'emploi américain, surveillé de près après le NFP." },
       { id: 'e14', type: 'PIB_UK', d: 5, t: '08:00', cur: 'GBP', title: 'PIB Royaume-Uni (t/t)', lvl: 2, prev: '0,2 %', fc: '0,1 %', act: '', mine: false, assets: 'GBP/USD', sum: "Une croissance proche de zéro mettrait la livre sous pression." },
@@ -533,9 +577,18 @@ class Component extends DCLogic {
     };
     var defSeuil = function (e) { if (!e || !e.echelle) return ''; var d = e.fc.indexOf(',') >= 0 ? e.fc.split(',')[1].replace(/\D/g, '').length : 0; return String(Number(e.echelle.toFixed(d))).replace('.', ','); };
 
+    // ---- filtres pays et importance (bouton « Filtres »)
+    var PAYS = [['États-Unis', 'USD'], ['Zone euro', 'EUR'], ['Allemagne', 'EUR'], ['Royaume-Uni', 'GBP'], ['Japon', 'JPY'], ['Chine', 'CNY'], ['Canada', 'CAD'], ['Australie', 'AUD'], ['International', '']];
+    var CUR_PAYS = { USD: 'États-Unis', EUR: 'Zone euro', GBP: 'Royaume-Uni', JPY: 'Japon', CNY: 'Chine', CAD: 'Canada', AUD: 'Australie' };
+    EV.forEach(function (e) { if (!e.pays) e.pays = CUR_PAYS[e.cur] || 'International'; });
+    var paysOk = function (p) { return s.paysOff.indexOf(p) < 0; };
+    var lvOk = function (l) { return s.lv.indexOf(l) >= 0; };
+    var saveNf = function (lv, off) { try { window.sessionStorage.setItem('tj.newsFiltres', JSON.stringify({ lv: lv, paysOff: off })); } catch (e) {} };
+    var setNf = function (lv, off) { saveNf(lv, off); self.setState({ lv: lv, paysOff: off, nOpen: -1 }); };
+
     // ---- semaine : une case par jour, news fortes et moyennes sur mes actifs
     var week = DAYS.map(function (D, di) {
-      var mineDay = EV.filter(function (e) { return e.d === di && e.mine; });
+      var mineDay = EV.filter(function (e) { return e.d === di && e.mine && paysOk(e.pays); });
       var f = mineDay.filter(function (e) { return e.lvl === 3; }).length, m = mineDay.filter(function (e) { return e.lvl === 2; }).length;
       var busy = TJ ? (f >= TJ.SEUILS.JOURNEE_CHARGEE_FORTES || f + m >= TJ.SEUILS.JOURNEE_CHARGEE_TOTAL) : f >= 2;
       var on = s.tlDay === di;
@@ -543,7 +596,7 @@ class Component extends DCLogic {
         aria: D[0] + ' : ' + f + ' news fortes et ' + m + ' moyennes sur tes actifs' + (busy ? ', journée chargée' : ''),
         fC: f ? '#FF7A6B' : '#2A3346', mC: m ? '#F5A65B' : '#2A3346',
         bg: on ? '#111724' : '#0E131D', bd: on ? accent : (busy ? 'rgba(255,122,107,.35)' : '#1D2433'),
-        pick: function () { self.setState({ tlDay: di, imp: 'all' }); } };
+        pick: function () { self.setState({ tlDay: di }); } };
     });
 
     // ---- timeline « zones à éviter » du jour choisi
@@ -571,7 +624,7 @@ class Component extends DCLogic {
     }
 
     // ---- calendrier
-    var evOk = function (e) { return (s.imp === 'all' || (s.imp === '2' ? e.lvl >= 2 : e.lvl === 3)) && (!s.mine || e.mine); };
+    var evOk = function (e) { return lvOk(e.lvl) && paysOk(e.pays) && (!s.mine || e.mine); };
     var days = [];
     DAYS.forEach(function (D, di) {
       var items = EV.filter(function (e) { return e.d === di && evOk(e); }).map(function (e) {
@@ -611,10 +664,6 @@ class Component extends DCLogic {
       });
       if (items.length) days.push({ label: D[0], today: di === 0, items: items, anchor: 'jour-' + di, bd: s.tlDay === di ? aLine : '#1D2433', count: items.length + ' annonce' + (items.length > 1 ? 's' : '') });
     });
-    var impChips = [['all', 'Tout'], ['2', 'Moyen et fort'], ['3', 'Fort']].map(function (p) {
-      var on = s.imp === p[0];
-      return { l: p[1], pressed: on ? 'true' : 'false', bg: on ? '#1A2130' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.setState({ imp: p[0] }); } };
-    });
 
     // ---- résultats d'entreprises, vus depuis le NAS100 (poids approximatifs, données d'exemple)
     var EARN = [
@@ -649,14 +698,14 @@ class Component extends DCLogic {
 
     // ---- actualités
     var NEWS = [
-      { k: 'geo', time: '12:10', day: "Aujourd'hui", title: 'OPEP+ : réunion sur les quotas de production', lvl: 3, actifs: ['WTI', 'USD/CAD'], resume: 'Une baisse de production ferait monter le pétrole.', sum: "Une baisse de production réduirait l'offre de pétrole et pourrait faire monter le WTI et le Brent. Les annonces tombent souvent en fin de réunion, sans heure fixe." },
-      { k: 'mkt', time: '11:25', day: "Aujourd'hui", title: "L'or se stabilise près de ses plus hauts avant les chiffres de l'emploi américain", lvl: 2, actifs: ['XAU/USD'], resume: "L'or attend le NFP de 14:30 pour choisir sa direction.", sum: "Les acheteurs attendent le NFP de 14:30 pour se décider. Un chiffre faible pourrait relancer la hausse, un chiffre fort la freiner." },
-      { k: 'geo', time: '09:45', day: "Aujourd'hui", title: 'Commerce mondial : nouveau cycle de négociations', lvl: 2, actifs: ['NAS100'], resume: 'Les droits de douane restent un risque pour les actions industrielles.', sum: "Toute annonce sur les droits de douane peut peser sur les devises exportatrices et les actions industrielles." },
-      { k: 'eco', time: '08:40', day: "Aujourd'hui", title: 'BCE : un membre du conseil évoque une pause dans les baisses de taux', lvl: 2, actifs: ['EUR/USD', 'CAC 40'], resume: "Moins de baisses de taux de la BCE : plutôt un soutien pour l'euro.", sum: "Si la BCE ralentit ses baisses de taux, l'euro garde du soutien face au dollar." },
-      { k: 'geo', time: '08:20', day: "Aujourd'hui", title: 'Énergie : nouvelles discussions sur les sanctions en Europe', lvl: 2, actifs: ['WTI', 'EUR/USD'], resume: "Des sanctions plus dures soutiendraient les prix de l'énergie.", sum: "Un durcissement des sanctions pourrait tendre l'offre de gaz et de pétrole et soutenir les prix de l'énergie." },
-      { k: 'mkt', time: '22:15', day: 'Hier', title: 'Bitcoin : forte hausse des volumes sur les ETF au comptant', lvl: 1, actifs: ['BTC/USD'], resume: 'Les grands investisseurs achètent via les ETF.', sum: "Des achats importants via les ETF montrent l'intérêt des grands investisseurs, ce qui a soutenu le cours en fin de journée." },
-      { k: 'mkt', time: '22:05', day: 'Hier', title: 'Le Nasdaq termine en hausse, porté par les semi-conducteurs', lvl: 1, actifs: ['NAS100'], resume: 'Les puces tirent le Nasdaq, NVIDIA en tête.', sum: "Les bons résultats des fabricants de puces ont profité à tout le secteur, NVIDIA en tête." },
-      { k: 'eco', time: '13:00', day: 'Hier', title: "Banque d'Angleterre : les marchés parient sur un statu quo la semaine prochaine", lvl: 2, actifs: ['GBP/USD'], resume: 'Statu quo attendu le 12 : une surprise ferait bouger la livre.', sum: "Le marché ne s'attend pas à une baisse de taux le 12 novembre ; une surprise ferait fortement bouger la livre." }
+      { k: 'geo', time: '12:10', day: "Aujourd'hui", title: 'OPEP+ : réunion sur les quotas de production', lvl: 3, pays: ['International'], actifs: ['WTI', 'USD/CAD'], resume: 'Une baisse de production ferait monter le pétrole.', sum: "Une baisse de production réduirait l'offre de pétrole et pourrait faire monter le WTI et le Brent. Les annonces tombent souvent en fin de réunion, sans heure fixe." },
+      { k: 'mkt', time: '11:25', day: "Aujourd'hui", title: "L'or se stabilise près de ses plus hauts avant les chiffres de l'emploi américain", lvl: 2, pays: ['États-Unis'], actifs: ['XAU/USD'], resume: "L'or attend le NFP de 14:30 pour choisir sa direction.", sum: "Les acheteurs attendent le NFP de 14:30 pour se décider. Un chiffre faible pourrait relancer la hausse, un chiffre fort la freiner." },
+      { k: 'geo', time: '09:45', day: "Aujourd'hui", title: 'Commerce mondial : nouveau cycle de négociations', lvl: 2, pays: ['International'], actifs: ['NAS100'], resume: 'Les droits de douane restent un risque pour les actions industrielles.', sum: "Toute annonce sur les droits de douane peut peser sur les devises exportatrices et les actions industrielles." },
+      { k: 'eco', time: '08:40', day: "Aujourd'hui", title: 'BCE : un membre du conseil évoque une pause dans les baisses de taux', lvl: 2, pays: ['Zone euro'], actifs: ['EUR/USD', 'CAC 40'], resume: "Moins de baisses de taux de la BCE : plutôt un soutien pour l'euro.", sum: "Si la BCE ralentit ses baisses de taux, l'euro garde du soutien face au dollar." },
+      { k: 'geo', time: '08:20', day: "Aujourd'hui", title: 'Énergie : nouvelles discussions sur les sanctions en Europe', lvl: 2, pays: ['Zone euro'], actifs: ['WTI', 'EUR/USD'], resume: "Des sanctions plus dures soutiendraient les prix de l'énergie.", sum: "Un durcissement des sanctions pourrait tendre l'offre de gaz et de pétrole et soutenir les prix de l'énergie." },
+      { k: 'mkt', time: '22:15', day: 'Hier', title: 'Bitcoin : forte hausse des volumes sur les ETF au comptant', lvl: 1, pays: ['États-Unis'], actifs: ['BTC/USD'], resume: 'Les grands investisseurs achètent via les ETF.', sum: "Des achats importants via les ETF montrent l'intérêt des grands investisseurs, ce qui a soutenu le cours en fin de journée." },
+      { k: 'mkt', time: '22:05', day: 'Hier', title: 'Le Nasdaq termine en hausse, porté par les semi-conducteurs', lvl: 1, pays: ['États-Unis'], actifs: ['NAS100'], resume: 'Les puces tirent le Nasdaq, NVIDIA en tête.', sum: "Les bons résultats des fabricants de puces ont profité à tout le secteur, NVIDIA en tête." },
+      { k: 'eco', time: '13:00', day: 'Hier', title: "Banque d'Angleterre : les marchés parient sur un statu quo la semaine prochaine", lvl: 2, pays: ['Royaume-Uni'], actifs: ['GBP/USD'], resume: 'Statu quo attendu le 12 : une surprise ferait bouger la livre.', sum: "Le marché ne s'attend pas à une baisse de taux le 12 novembre ; une surprise ferait fortement bouger la livre." }
     ];
     var CAT = { eco: ['ÉCO', 'rgba(110,139,255,.16)', '#A9BBFF'], geo: ['GÉO', 'rgba(183,148,246,.16)', '#CDB5FA'], mkt: ['MARCHÉS', 'rgba(61,220,151,.12)', '#7BEBB9'] };
     var estMien = function (it) { return it.actifs.some(function (a) { return MES.indexOf(a) >= 0; }); };
@@ -669,6 +718,7 @@ class Component extends DCLogic {
     NEWS.forEach(function (it, idx) {
       if (s.nf !== 'all' && it.k !== s.nf) return;
       if (s.mine && !estMien(it)) return;
+      if (!lvOk(it.lvl) || !it.pays.some(paysOk)) return;
       if (nAsset !== 'all' && it.actifs.indexOf(nAsset) < 0) return;
       var op = s.nOpen === idx, b = self.impBars(it.lvl), c = CAT[it.k];
       feed.push({ time: it.time, day: it.day, title: it.title, resume: it.resume, cat: c[0], catBg: c[1], catFg: c[2], sum: it.sum,
@@ -783,6 +833,35 @@ class Component extends DCLogic {
       var on = s.tab === x[0];
       return { label: x[1], icon: x[2], count: x[3], sel: on ? 'true' : 'false', fg: on ? '#EEF1F6' : '#8A95AA', bar: on ? accent : 'transparent', pick: function () { self.setState({ tab: x[0] }); } };
     });
+    var LVN = { 3: 'Forte', 2: 'Moyenne', 1: 'Faible' };
+    var nfChipsAct = [];
+    if (s.lv.length < 3) nfChipsAct.push({ l: 'Importance : ' + (s.lv.length ? [3, 2, 1].filter(lvOk).map(function (l) { return LVN[l].toLowerCase(); }).join(', ') : 'aucune'), clear: function () { setNf([3, 2, 1], s.paysOff); } });
+    var paysOn = PAYS.filter(function (p) { return paysOk(p[0]); });
+    if (s.paysOff.length && s.paysOff.length <= 3) s.paysOff.forEach(function (p) { nfChipsAct.push({ l: 'Sans ' + p, clear: function () { setNf(s.lv, s.paysOff.filter(function (x) { return x !== p; })); } }); });
+    else if (s.paysOff.length) nfChipsAct.push({ l: paysOn.length ? 'Seulement : ' + paysOn.map(function (p) { return p[0]; }).join(', ') : 'Aucun pays', clear: function () { setNf(s.lv, []); } });
+    var nRes = s.tab === 'news' ? feed.length : days.reduce(function (n, d) { return n + d.items.length; }, 0);
+    var nfp = {
+      show: s.tab === 'cal' || s.tab === 'news', open: s.fOpen, expanded: s.fOpen ? 'true' : 'false', rot: s.fOpen ? 180 : 0,
+      count: nfChipsAct.length ? String(nfChipsAct.length) : '', hasChips: nfChipsAct.length > 0 && (s.tab === 'cal' || s.tab === 'news'), chips: nfChipsAct,
+      bd: nfChipsAct.length || s.fOpen ? accent : '#2A3346', bg: nfChipsAct.length ? soft : 'transparent',
+      voir: nRes ? 'Voir ' + nRes + (s.tab === 'news' ? ' actualité' : ' annonce') + (nRes > 1 ? 's' : '') : 'Aucun résultat',
+      toggle: function () { self.setState({ fOpen: !self.state.fOpen }); },
+      close: function () { self.setState({ fOpen: false }); },
+      reset: function () { setNf([3, 2, 1], []); },
+      allOn: function () { setNf(s.lv, []); },
+      allOff: function () { setNf(s.lv, PAYS.map(function (p) { return p[0]; })); },
+      imps: [3, 2, 1].map(function (l) {
+        var on = lvOk(l), b = self.impBars(l);
+        return { l: LVN[l], c1: b.c1, c2: b.c2, c3: b.c3, pressed: on ? 'true' : 'false', bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#8A95AA',
+          pick: function () { setNf(on ? s.lv.filter(function (x) { return x !== l; }) : s.lv.concat([l]).sort().reverse(), s.paysOff); } };
+      }),
+      pays: PAYS.map(function (p) {
+        var on = paysOk(p[0]);
+        return { l: p[0], cur: p[1], on: on, checked: on ? 'true' : 'false', bg: on ? '#111724' : 'transparent', bd: on ? '#2A3346' : '#1A2130', fg: on ? '#EEF1F6' : '#8A95AA', box: on ? accent : 'transparent', boxBd: on ? accent : '#3A4458',
+          pick: function () { setNf(s.lv, on ? s.paysOff.concat([p[0]]) : s.paysOff.filter(function (x) { return x !== p[0]; })); } };
+      })
+    };
+
     var mineOn = s.mine;
     var mine = { on: mineOn, pressed: mineOn ? 'true' : 'false', bg: mineOn ? soft : 'transparent', bd: mineOn ? accent : '#2A3346', fg: mineOn ? '#EEF1F6' : '#A3AEC2', box: mineOn ? accent : 'transparent',
       pick: function () { var v = !self.state.mine; try { window.sessionStorage.setItem('tj.mesActifs', v ? '1' : '0'); } catch (e) {} self.setState({ mine: v }); } };
@@ -814,7 +893,7 @@ class Component extends DCLogic {
       accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
       cd: cd, nfpAlert: nfpAlert, kpis: kpis, flash: s.flash, tabs: tabs, mine: mine, showMine: s.tab !== 'alerts',
       isCal: s.tab === 'cal', isEarn: s.tab === 'earn', isNews: s.tab === 'news', isAlerts: s.tab === 'alerts',
-      week: week, tl: tl, impChips: impChips, days: days, calEmpty: days.length === 0,
+      week: week, tl: tl, nfp: nfp, days: days, calEmpty: days.length === 0,
       forteTxt: TJ ? F.nombre(TJ.SEUILS.FORTE_SURPRISE_Z, 1) : '1,5',
       earnUp: earnUp, earnDone: earnDone,
       nfChips: nfChips, feed: feed, newsEmpty: feed.length === 0, nAsset: nAsset, assetOpts: assetOpts,
