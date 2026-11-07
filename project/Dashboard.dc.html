@@ -238,7 +238,7 @@ button{font-family:inherit}
 <div style="padding: 12px 14px; border-radius: 12px; background: rgba(255,122,107,.07); border: 1px solid rgba(255,122,107,.22)"><div style="font-size: 11px; color: #FF9A8E">À surveiller</div><div style="font-size: 14px; font-weight: 600; margin-top: 4px">{{coach.worstL}}</div><div class="num" style="font-size: 12px; color: #FF9A8E; margin-top: 2px">{{coach.worstV}}</div></div>
 <div style="padding: 12px 14px; border-radius: 12px; background: rgba(61,220,151,.07); border: 1px solid rgba(61,220,151,.22)"><div style="font-size: 11px; color: #7BEBB9">Point fort</div><div style="font-size: 14px; font-weight: 600; margin-top: 4px">{{coach.bestL}}</div><div class="num" style="font-size: 12px; color: #7BEBB9; margin-top: 2px">{{coach.bestV}}</div></div>
 </div>
-<div style="padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433; font-size: 14px; line-height: 1.55; color: #C9D3E6"><span style="color: #EEF1F6; font-weight: 600">Conseil : </span>{{coach.advice}}</div>
+<div style="padding: 12px 14px; border-radius: 12px; background: #111622; border: 1px solid #1D2433; font-size: 14px; line-height: 1.55; color: #C9D3E6"><span style="color: #EEF1F6; font-weight: 600">{{coach.adviceL}} </span>{{coach.advice}}</div>
 <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto">
 <a class="chip ghost" href="Statistiques.dc.html" onClick="{{goWeek}}" style="display: inline-flex; align-items: center; min-height: 36px; box-sizing: border-box; font-size: 12px; padding: 0 12px; border-radius: 999px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6">Bilan de la semaine</a>
 <a class="chip ghost" href="Journal.dc.html" onClick="{{goLosses}}" style="display: inline-flex; align-items: center; min-height: 36px; box-sizing: border-box; font-size: 12px; padding: 0 12px; border-radius: 999px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6">Analyse mes pertes</a>
@@ -758,7 +758,8 @@ class Component extends DCLogic {
       text: 'Sur les ' + periodLabel.replace('tout l’historique', 'derniers mois') + ', tes trades pris en état « ' + worst.l + ' » ont une espérance de ' + this.fR(worst.avg) + ', contre ' + this.fR(best.avg) + ' quand tu es « ' + best.l + ' ». Ta meilleure fenêtre est ' + sesName(bestSes.nm) + '.',
       worstL: 'État « ' + worst.l + ' »', worstV: this.fR(worst.avg) + ' par trade',
       bestL: 'Session ' + bestSes.nm, bestV: this.fR(bestSes.exp) + ' par trade',
-      advice: worst.avg < 0 ? 'quand tu te sens « ' + worst.l + ' », réduis ta taille de moitié ou attends 10 minutes avant d’entrer.' : 'ta gestion émotionnelle est solide sur cette période, garde la même routine.'
+      adviceL: worst.avg < 0 ? 'Piste à tester :' : 'Bon point :',
+      advice: worst.avg < 0 ? 'quand tu te sens « ' + worst.l + ' », une pause de 10 minutes avant d’entrer, ou une taille réduite. Tu verras l’effet dans tes statistiques.' : 'ta gestion émotionnelle est solide sur cette période.'
     };
 
     var noCoach = sel.length < 15;

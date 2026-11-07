@@ -274,7 +274,7 @@ class Component extends DCLogic {
         R('Statistiques avancées (heures et sessions, actifs, comportement, évolution)', false, true), R('Conseils automatiques à partir de 15 trades', false, true), R('Captures de graphique', '[X] / mois', 'Illimité'), R('Suivi des émotions', false, true), R('Plusieurs comptes', '1 compte', 'Illimité')
       ] },
       { t: 'BACKTESTING', c: O.c, soft: O.soft, i: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', rows: [
-        R('Replay bougie par bougie', false, true), R('Jusqu’à 4 actifs par session', false, true), R('Forex, actions, crypto, matières premières', false, true), R('Sessions sauvegardées', false, 'Illimité'), R('Statistiques du backtest, séparées du réel', false, true), R('Comparaison réel vs backtest', false, true)
+        R('Replay bougie par bougie', true, true), R('Sessions de backtest', '1 session', 'Illimité'), R('Période testée par session', '3 mois', 'Illimitée'), R('Actifs par session', '1 actif', 'Jusqu’à 4'), R('Forex, actions, crypto, matières premières', true, true), R('Vitesse de lecture', 'x1 et x2', 'Jusqu’à x4'), R('Statistiques du backtest', 'Vue d’ensemble', 'Complètes'), R('Comparaison réel vs backtest', false, true)
       ] },
       { t: 'NEWS', c: V.c, soft: V.soft, i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', rows: [
         R('Calendrier économique', true, true), R('Filtres par pays, importance et actifs', true, true), R('Résultats d’entreprises et actualités', false, true), R('Réaction passée de tes actifs aux annonces', false, true), R('Résumés IA en français', false, true), R('Alertes personnalisées', false, true), R('Annonces affichées dans ton journal et le replay', false, true)
@@ -288,6 +288,7 @@ class Component extends DCLogic {
     ];
     var FAQ = [
       ['Puis-je essayer gratuitement ?', 'Oui. L’offre Gratuite est sans limite de durée et ne demande aucune carte bancaire. Tu peux passer Premium à tout moment depuis ton compte.'],
+      ['Que puis-je faire en backtest avec l’offre gratuite ?', 'Une session complète : 1 actif au choix sur 3 mois d’historique, en replay bougie par bougie (vitesse x1 et x2), avec la vue d’ensemble de tes statistiques. Avec Premium, les sessions sont illimitées, jusqu’à 4 actifs à la fois, sur toute la période, avec toutes les statistiques et la comparaison avec tes trades réels.'],
       ['Comment annuler mon abonnement ?', 'En un clic depuis tes paramètres. Ton accès Premium reste actif jusqu’à la fin de la période payée, et tes données restent accessibles en version gratuite.'],
       ['Quels moyens de paiement acceptez-vous ?', 'Carte bancaire (Visa, Mastercard, CB) via un prestataire de paiement sécurisé. Nous ne stockons jamais tes informations bancaires.'],
       ['Quelles plateformes sont compatibles ?', 'MetaTrader 4 et 5, cTrader, TradingView et tout broker qui permet d’exporter un fichier CSV. D’autres connexions arriveront au fil des mises à jour.'],
@@ -302,11 +303,11 @@ class Component extends DCLogic {
     return {
       rootRef: this.rootRef, accent: accent, accentGlow: this.soft(accent, 0.18), rootClass: anim ? '' : 'noanim',
       periods: periods, monthly: !s.annual, annual: s.annual,
-      freeList: ['Journal limité à [X] trades par mois', 'Import depuis MT4, MT5, cTrader ou CSV', 'Statistiques essentielles', 'Calendrier économique', '1 compte de trading', 'Export CSV de tes trades'],
+      freeList: ['Journal limité à [X] trades par mois', 'Import depuis MT4, MT5, cTrader ou CSV', 'Statistiques essentielles', 'Calendrier économique', '1 compte de trading', '1 session de backtest (3 mois, 1 actif)', 'Export CSV de tes trades'],
       premList: [
         { t: 'Journal illimité et statistiques avancées', c: B.c, soft: B.soft },
         { t: 'Captures de graphique et suivi des émotions', c: B.c, soft: B.soft },
-        { t: 'Backtesting en replay sur les 4 marchés', c: O.c, soft: O.soft },
+        { t: 'Backtesting illimité, jusqu’à 4 actifs par session', c: O.c, soft: O.soft },
         { t: 'News, résultats d’entreprises et alertes', c: V.c, soft: V.soft },
         { t: 'Coach IA et bilan chaque semaine', c: G.c, soft: G.soft },
         { t: 'Comptes illimités, rapport PDF et Excel', c: '#C9D3E6', soft: '#1A2130' }

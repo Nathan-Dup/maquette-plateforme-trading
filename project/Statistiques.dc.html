@@ -1753,14 +1753,14 @@ class Component extends DCLogic {
     var first = dayCards[0].x, many = this.stats(F.filter(function (t) { return ctxT[t.id].nd >= 3; }));
     var dayTxt = '', afterTxt = '';
     if (ADV && first.n >= 3 && many.n >= 3) {
-      if (many.exp < first.exp - 0.15) dayTxt = 'À partir du 3e trade de la journée, ton résultat moyen tombe à ' + this.fR(many.exp) + ', contre ' + this.fR(first.exp) + ' sur ton 1er trade. Fixe-toi un nombre maximum de trades par jour.';
+      if (many.exp < first.exp - 0.15) dayTxt = 'À partir du 3e trade de la journée, ton résultat moyen tombe à ' + this.fR(many.exp) + ', contre ' + this.fR(first.exp) + ' sur ton 1er trade. Piste à tester : un nombre maximum de trades par jour.';
       else if (many.exp > first.exp + 0.15) dayTxt = 'Tu fais mieux quand tu enchaînes : ' + this.fR(many.exp) + ' à partir du 3e trade, contre ' + this.fR(first.exp) + ' sur le 1er.';
       else dayTxt = 'Ton résultat reste stable même quand tu enchaînes les trades : bonne régularité.';
     }
     var aL = afterCards[1].x, a2 = afterCards[2].x, aQ = afterCards[3].x;
     if (ADV) {
-      if (a2.n >= 3 && a2.exp < G.exp - 0.15) afterTxt = 'Après 2 pertes d’affilée, ton résultat moyen passe à ' + this.fR(a2.exp) + ', contre ' + this.fR(G.exp) + ' en général. C’est le bon moment pour faire une pause.';
-      else if (aQ.n >= 3 && aQ.exp < G.exp - 0.15) afterTxt = 'Les trades pris moins de 30 min après une perte font ' + this.fR(aQ.exp) + ' en moyenne, contre ' + this.fR(G.exp) + ' en général. Attends un peu avant de reprendre une position.';
+      if (a2.n >= 3 && a2.exp < G.exp - 0.15) afterTxt = 'Après 2 pertes d’affilée, ton résultat moyen passe à ' + this.fR(a2.exp) + ', contre ' + this.fR(G.exp) + ' en général. Piste à tester : une pause après 2 pertes d’affilée.';
+      else if (aQ.n >= 3 && aQ.exp < G.exp - 0.15) afterTxt = 'Les trades pris moins de 30 min après une perte font ' + this.fR(aQ.exp) + ' en moyenne, contre ' + this.fR(G.exp) + ' en général. Piste à tester : un délai avant de reprendre une position.';
       else if (aL.n >= 3 && aL.exp < G.exp - 0.15) afterTxt = 'Après une perte, ton résultat moyen passe à ' + this.fR(aL.exp) + ', contre ' + this.fR(G.exp) + ' en général.';
       else if (aL.n >= 3) afterTxt = 'Tes pertes ne semblent pas perturber tes trades suivants : bon point.';
     }

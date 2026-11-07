@@ -785,7 +785,7 @@ class Component extends DCLogic {
       ];
       var gap = Math.round(rs2.wr) - Math.round(bs.wr);
       cmp.txt = !rs2.n ? 'Tu n’as pas encore de trade réel sur ' + csLbl + ' : la comparaison apparaîtra dès ton premier trade.'
-        : rs2.n < 15 ? 'Seulement ' + rs2.n + ' trades réels sur ' + csLbl + ' : attends d’en avoir au moins 15 pour comparer sérieusement.'
+        : rs2.n < 15 ? 'Seulement ' + rs2.n + ' trades réels sur ' + csLbl + '  : la comparaison devient fiable à partir de 15.'
         : gap <= -8 ? 'En réel sur ' + csLbl + ', tu réussis ' + Math.abs(gap) + ' points de moins qu’en backtest. L’écart vient souvent de l’exécution : entrées trop tôt, sorties trop rapides ou trades hors de ton idée de départ.'
         : gap >= 8 ? 'En réel sur ' + csLbl + ', tu fais mieux qu’en backtest (+' + gap + ' points de réussite). Bon signe : ton idée tient en conditions réelles.'
         : 'En réel sur ' + csLbl + ', tes résultats sont proches de ton backtest (' + (gap >= 0 ? '+' : '−') + Math.abs(gap) + ' points). Ton exécution suit ton test.';
@@ -1000,9 +1000,9 @@ class Component extends DCLogic {
     ].map(function (a) { return cardOf(a[0], FT.filter(function (t) { return a[1](cx(t), t); }), true); });
     var f1 = dayCards[0].x, many = S2(FT.filter(function (t) { return cx(t).nd >= 3; }));
     var dayTxt = '', afterTxt = '';
-    if (ADV && f1.n >= 3 && many.n >= 3) dayTxt = many.exp < f1.exp - 0.15 ? 'À partir du 3e trade de la journée, ton résultat moyen tombe à ' + fR(many.exp) + ', contre ' + fR(f1.exp) + ' sur ton 1er trade. En réel, fixe-toi un nombre maximum de trades par jour.' : many.exp > f1.exp + 0.15 ? 'Tu fais mieux quand tu enchaînes : ' + fR(many.exp) + ' à partir du 3e trade, contre ' + fR(f1.exp) + ' sur le 1er.' : 'Ton résultat reste stable même quand tu enchaînes les trades.';
+    if (ADV && f1.n >= 3 && many.n >= 3) dayTxt = many.exp < f1.exp - 0.15 ? 'À partir du 3e trade de la journée, ton résultat moyen tombe à ' + fR(many.exp) + ', contre ' + fR(f1.exp) + ' sur ton 1er trade. Piste à tester : un nombre maximum de trades par jour.' : many.exp > f1.exp + 0.15 ? 'Tu fais mieux quand tu enchaînes : ' + fR(many.exp) + ' à partir du 3e trade, contre ' + fR(f1.exp) + ' sur le 1er.' : 'Ton résultat reste stable même quand tu enchaînes les trades.';
     var a2 = afterCards[2].x, aL = afterCards[1].x;
-    if (ADV) afterTxt = a2.n >= 3 && a2.exp < G.exp - 0.15 ? 'Après 2 pertes d’affilée, ton résultat moyen passe à ' + fR(a2.exp) + ', contre ' + fR(G.exp) + ' en général. Prévois une pause dans ces cas-là.' : aL.n >= 3 && aL.exp < G.exp - 0.15 ? 'Après une perte, ton résultat moyen passe à ' + fR(aL.exp) + ', contre ' + fR(G.exp) + ' en général.' : aL.n >= 3 ? 'Tes pertes ne semblent pas perturber tes trades suivants : bon point.' : '';
+    if (ADV) afterTxt = a2.n >= 3 && a2.exp < G.exp - 0.15 ? 'Après 2 pertes d’affilée, ton résultat moyen passe à ' + fR(a2.exp) + ', contre ' + fR(G.exp) + ' en général. Piste à tester : une pause dans ces cas-là.' : aL.n >= 3 && aL.exp < G.exp - 0.15 ? 'Après une perte, ton résultat moyen passe à ' + fR(aL.exp) + ', contre ' + fR(G.exp) + ' en général.' : aL.n >= 3 ? 'Tes pertes ne semblent pas perturber tes trades suivants : bon point.' : '';
     var be = { day: dayCards, after: afterCards, dayTxt: dayTxt, afterTxt: afterTxt };
 
     /* Évolution */
@@ -1030,7 +1030,7 @@ class Component extends DCLogic {
       var kW = chip(Math.round(w1) - Math.round(w0), ((Math.round(w1) - Math.round(w0)) >= 0 ? '+' : '−') + Math.abs(Math.round(w1) - Math.round(w0)) + ' pts'), kE = chip(e1 - e0, (e1 - e0 >= 0 ? '+' : '−') + Math.abs(e1 - e0).toFixed(2).replace('.', ',') + ' R');
       roll.charts = [{ t: 'Taux de réussite', v: Math.round(w1) + ' %', d: kW.d, dBg: kW.dBg, dFg: kW.dFg, line: cW.line, area: cW.area, refY: cW.refY, refL: '50 %' }, { t: 'Espérance par trade', v: fR(e1), d: kE.d, dBg: kE.dBg, dFg: kE.dFg, line: cE.line, area: cE.area, refY: cE.refY, refL: '0 R' }];
       roll.x0 = fDayS(FT[RW - 1].t); roll.x1 = fDayS(FT[FT.length - 1].t);
-      if (ADV) roll.txt = w1 - w0 > 2 || e1 - e0 > 0.1 ? 'Tu progresses : sur tes 20 derniers trades de test, ' + Math.round(w1) + ' % de réussite et ' + fR(e1) + ' par trade, contre ' + Math.round(w0) + ' % et ' + fR(e0) + ' au début.' : w1 - w0 < -2 || e1 - e0 < -0.1 ? 'Tes 20 derniers trades de test sont moins bons qu’au début (' + Math.round(w1) + ' % de réussite contre ' + Math.round(w0) + ' %). Regarde l’onglet Comportement pour comprendre pourquoi.' : 'Tes résultats de test sont globalement stables.';
+      if (ADV) roll.txt = w1 - w0 > 2 || e1 - e0 > 0.1 ? 'Tu progresses : sur tes 20 derniers trades de test, ' + Math.round(w1) + ' % de réussite et ' + fR(e1) + ' par trade, contre ' + Math.round(w0) + ' % et ' + fR(e0) + ' au début.' : w1 - w0 < -2 || e1 - e0 < -0.1 ? 'Tes 20 derniers trades de test sont moins bons qu’au début (' + Math.round(w1) + ' % de réussite contre ' + Math.round(w0) + ' %). Compare les heures et les actifs de ces derniers trades à ceux du début.' : 'Tes résultats de test sont globalement stables.';
     }
     var mList = [];
     if (FT.length) {

@@ -668,7 +668,7 @@ class Component extends DCLogic {
       txt: st.n < 15 ? 'Seulement ' + st.n + ' trade' + (st.n > 1 ? 's' : '') + ' : continue jusqu’à au moins 30 trades avant de juger cette idée.'
         : st.exp > 0.2 ? 'Idée prometteuse : ' + this.fR(st.exp) + ' par trade sur ' + st.n + ' trades. Compare-la ensuite avec tes résultats réels dans Backtesting.'
         : st.exp > 0 ? 'Idée légèrement positive (' + this.fR(st.exp) + ' par trade). Teste-la sur une autre période avant de la trader en réel.'
-        : 'Sur ' + st.n + ' trades, cette idée perd ' + this.fR(Math.abs(st.exp)) + ' par trade en moyenne. Mieux vaut la retravailler avant de risquer de l’argent.',
+        : 'Sur ' + st.n + ' trades, cette idée perd ' + this.fR(Math.abs(st.exp)) + ' par trade en moyenne. Piste à tester : l’ajuster et la retester avant de l’utiliser en réel.',
       saveTxt: X.done ? 'Retour à mes sessions' : 'Terminer et revenir à mes sessions',
       close: function () { self.setState({ sum: false }); }, stop: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
       key: function (e) { if (e && e.key === 'Escape') self.setState({ sum: false }); },

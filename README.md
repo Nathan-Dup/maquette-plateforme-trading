@@ -58,6 +58,10 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 - Réel vs backtest : comparaison d'une session avec les vrais trades sur les mêmes actifs.
 - Les trades de test restent séparés des statistiques réelles. Dans la maquette, les prix sont simulés ; le vrai produit aura besoin de données historiques de marché.
 
+**Offre gratuite et Premium (backtest)** : en gratuit, 1 session de backtest, 1 actif, 3 mois d'historique, vitesse x1 et x2, et seulement la vue d'ensemble des statistiques. Premium : sessions illimitées, jusqu'à 4 actifs, toute la période, vitesse x4, toutes les statistiques et la comparaison réel vs backtest. Le détail est sur la page Tarifs.
+
+**Ton du Coach IA et des textes automatiques** : toujours un constat chiffré tiré des trades du trader, puis, s'il y a lieu, une « Piste à tester » qui porte sur son comportement (pause, nombre de trades, taille). Jamais d'avis sur le marché ni d'indication d'achat ou de vente. Les textes des news décrivent des faits et des effets habituels, sans dire quoi faire.
+
 **Nouvel utilisateur** : un écran d'accueil propose de connecter son broker, d'importer un fichier ou de saisir un trade. Il est visible avec le réglage « nouvelUtilisateur ».
 
 ## Comment s'en servir
