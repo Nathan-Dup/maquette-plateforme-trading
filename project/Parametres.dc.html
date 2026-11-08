@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Paramètres</title>
+<script src="./support.js"></script>
+<script src="./news-logic.js"></script>
+<script src="./donnees-exemple.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#A3AEC2;text-decoration:none}a:hover{color:#FFFFFF}
+button,input,select{font-family:inherit}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{animation:fu .7s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}
+@keyframes sl{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.open{animation:sl .3s ease both}
+@keyframes puo{0%{box-shadow:0 0 0 0 rgba(245,166,91,.6)}100%{box-shadow:0 0 0 9px rgba(245,166,91,0)}}
+.puo{animation:puo 1.8s ease-out infinite}
+.nav{transition:background .2s,color .2s}.nav:hover{background:#131927;color:#EEF1F6}
+.chip{transition:background .2s,color .2s,border-color .2s}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28;border-color:#36415B}
+.row{transition:background .2s}.row:hover{background:#121826 !important}
+.scard{transition:border-color .25s,transform .25s}.scard:hover{border-color:#36415B !important;transform:translateY(-2px)}
+.cd{transition:border-color .15s,background .15s}.cd:hover{border-color:#36415B !important}
+.inp:focus{outline:none;border-color:#6E8BFF !important;box-shadow:0 0 0 3px rgba(110,139,255,.2)}
+.sw{transition:background .2s}.sw span{transition:transform .2s}
+.noanim *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+.mcard{transition:transform .25s,box-shadow .25s,border-color .25s}.mcard:hover{transform:translateY(-2px)}
+@keyframes td{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.tdot{width:6px;height:6px;border-radius:3px;background:#A3AEC2;animation:td 1.2s infinite ease-in-out}.tdot:nth-child(2){animation-delay:.15s}.tdot:nth-child(3){animation-delay:.3s}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(110,139,255,.6)}100%{box-shadow:0 0 0 8px rgba(110,139,255,0)}}.pu{animation:pu 1.8s ease-out infinite}
+.sw{transition:background .2s}.sw span{transition:transform .2s}
+.danger{transition:background .2s,border-color .2s}.danger:hover{background:rgba(255,122,107,.12)}
+.acc{transition:background .2s,border-color .2s}.acc:hover{border-color:#36415B !important}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; min-height: 100vh">
+<aside style="flex: 1 1 248px; background: #0B0F17; border-right: 1px solid #171D2A; padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px">
+<span style="width: 32px; height: 32px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 19px; font-weight: 700">[NOM]</span>
+</div>
+<nav aria-label="Menu de l'application" style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
+<div>
+<sc-if value="{{g.title}}" hint-placeholder-val="{{true}}"><div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div></sc-if>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="3">
+<a class="nav" href="{{n.href}}" aria-current="{{n.current}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; background: {{n.bg}}; color: {{n.fg}}; font-weight: {{n.fw}}">
+<span style="position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: {{n.bar}}"></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+<span style="flex: 1">{{n.label}}</span>
+<sc-if value="{{n.badge}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 999px; background: {{n.bBg}}; color: {{n.bFg}}">{{n.badge}}</span></sc-if>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid #1A2130">
+<span style="width: 34px; height: 34px; border-radius: 17px; background: #1D2433; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #DCE2EC">AM</span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 600">Alex Martin</div><div style="font-size: 11px; color: #8A95AA">Premium · renouvellement le 6 déc.</div></div>
+</div>
+</aside>
+<main id="top" style="flex: 999 1 560px; min-width: 0; padding: 26px 36px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+
+<div class="fu">
+<div style="font-size: 13px; color: #8A95AA">Compte · Paramètres</div>
+<h1 class="h" style="font-size: 30px; margin: 6px 0 0; font-weight: 700">Paramètres</h1>
+<p style="font-size: 14px; color: #A3AEC2; margin: 6px 0 0">Ton profil, tes comptes, tes préférences, ton abonnement et tes données.</p>
+</div>
+
+<sc-if value="{{flash}}" hint-placeholder-val="{{false}}">
+<div role="status" class="open" style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(61,220,151,.08); border: 1px solid rgba(61,220,151,.3); font-size: 13px; color: #BDF5DC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><span style="flex: 1">{{flash}}</span></div>
+</sc-if>
+
+<div class="fu d1" style="display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap">
+<nav aria-label="Sections des paramètres" style="flex: 1 1 210px; max-width: 240px; display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{secs}}" as="x" hint-placeholder-count="7">
+<button type="button" onClick="{{x.pick}}" aria-current="{{x.cur}}" class="nav" style="cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; border: 0; background: {{x.bg}}; color: {{x.fg}}; font-size: 14px; font-weight: {{x.fw}}; text-align: left"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{x.icon}}"></path></svg>{{x.l}}</button>
+</sc-for>
+</nav>
+
+<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+
+<!-- PROFIL -->
+<sc-if value="{{isProfil}}" hint-placeholder-val="{{true}}">
+<section aria-label="Profil" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 18px">
+<div><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Profil</h2><div style="font-size: 13px; color: #8A95AA; margin-top: 4px">Ces informations servent à ton compte et à tes factures.</div></div>
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
+<span style="width: 64px; height: 64px; border-radius: 32px; background: {{avatarBg}}; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #0A0D14">{{pf.ini}}</span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 16px; font-weight: 600">{{pf.full}}</div><div style="font-size: 13px; color: #8A95AA; margin-top: 2px">{{pf.email}} · <span style="color: #7BEBB9">adresse vérifiée</span></div></div>
+<button class="ghost" type="button" onClick="{{pf.photo}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Changer la photo</button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px 16px">
+<sc-for list="{{pf.fields}}" as="f" hint-placeholder-count="7">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="{{f.id}}" style="font-size: 12px; font-weight: 600; color: #A3AEC2">{{f.l}}</label>
+<sc-if value="{{f.inp}}" hint-placeholder-val="{{true}}"><input id="{{f.id}}" class="inp" type="{{f.type}}" value="{{f.v}}" onChange="{{f.on}}" autocomplete="{{f.ac}}" style="height: 42px; padding: 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{f.bd}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; width: 100%"></sc-if>
+<sc-if value="{{f.sel}}" hint-placeholder-val="{{false}}"><select id="{{f.id}}" class="inp" value="{{f.v}}" onChange="{{f.on}}" style="height: 42px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; color-scheme: dark; width: 100%"><sc-for list="{{f.opts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></sc-if>
+<sc-if value="{{f.err}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #FF9A8E">{{f.err}}</span></sc-if>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid #1A2130; padding-top: 16px">
+<span style="font-size: 12px; color: #8A95AA">Si tu changes d'e-mail, un lien de confirmation est envoyé à la nouvelle adresse.</span>
+<button class="btn" type="button" onClick="{{pf.save}}" style="cursor: pointer; height: 42px; padding: 0 18px; border-radius: 11px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700">Enregistrer</button>
+</div>
+</section>
+</sc-if>
+
+<!-- COMPTES ET BROKERS -->
+<sc-if value="{{isComptes}}" hint-placeholder-val="{{false}}">
+<section aria-label="Comptes de trading" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap">
+<div><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Comptes de trading</h2><div style="font-size: 13px; color: #8A95AA; margin-top: 4px">Les rendements en % sont calculés sur le capital de chaque compte.</div></div>
+<sc-if value="{{ac.canAdd}}" hint-placeholder-val="{{true}}"><button class="btn" type="button" onClick="{{ac.openAdd}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 10px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Ajouter un compte</button></sc-if>
+</div>
+<sc-if value="{{ac.adding}}" hint-placeholder-val="{{false}}">
+<div class="open" style="padding: 16px; border-radius: 14px; background: #0B0F17; border: 1px solid {{accentLine}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px">
+<sc-for list="{{ac.fields}}" as="f" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="{{f.id}}" style="font-size: 12px; font-weight: 600; color: #A3AEC2">{{f.l}}</label>
+<sc-if value="{{f.inp}}" hint-placeholder-val="{{true}}"><input id="{{f.id}}" class="inp" type="{{f.type}}" value="{{f.v}}" onChange="{{f.on}}" placeholder="{{f.ph}}" style="height: 40px; padding: 0 12px; border-radius: 10px; background: #0E131D; border: 1px solid {{f.bd}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; width: 100%"></sc-if>
+<sc-if value="{{f.sel}}" hint-placeholder-val="{{false}}"><select id="{{f.id}}" class="inp" value="{{f.v}}" onChange="{{f.on}}" style="height: 40px; padding: 0 10px; border-radius: 10px; background: #0E131D; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; color-scheme: dark; width: 100%"><sc-for list="{{f.opts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></sc-if>
+<sc-if value="{{f.err}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #FF9A8E">{{f.err}}</span></sc-if>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: flex-end; gap: 8px">
+<button class="ghost" type="button" onClick="{{ac.cancelAdd}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Annuler</button>
+<button class="btn" type="button" onClick="{{ac.add}}" style="cursor: pointer; height: 38px; padding: 0 16px; border-radius: 10px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700">Ajouter le compte</button>
+</div>
+</div>
+</sc-if>
+<div style="display: flex; flex-direction: column; border: 1px solid #1D2433; border-radius: 14px; overflow: hidden">
+<sc-for list="{{ac.items}}" as="a" hint-placeholder-count="3">
+<div style="border-top: 1px solid #151B27">
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; flex-wrap: wrap">
+<span style="flex: none; width: 10px; height: 10px; border-radius: 5px; background: {{a.c}}"></span>
+<div style="flex: 1 1 200px; min-width: 0"><div style="font-size: 14px; font-weight: 600">{{a.name}}</div><div style="font-size: 12px; color: #8A95AA; margin-top: 2px">{{a.sub}}</div></div>
+<span class="num" style="font-size: 14px; font-weight: 600">{{a.cap}}</span>
+<button class="danger" type="button" onClick="{{a.askDel}}" aria-label="Supprimer le compte {{a.name}}" style="cursor: pointer; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #FF9A8E; opacity: {{a.delOp}}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg></button>
+</div>
+<sc-if value="{{a.confirm}}" hint-placeholder-val="{{false}}">
+<div class="open" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 0 16px 14px; padding: 12px 14px; border-radius: 12px; background: rgba(255,122,107,.08); border: 1px solid rgba(255,122,107,.3); font-size: 13px; color: #FFC2BA">
+<span>Supprimer « {{a.name}} » ? Ses trades n'apparaîtront plus dans tes statistiques.</span>
+<span style="display: flex; gap: 8px"><button class="ghost" type="button" onClick="{{a.noDel}}" style="cursor: pointer; height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 12px; font-weight: 600">Annuler</button><button type="button" onClick="{{a.del}}" style="cursor: pointer; height: 34px; padding: 0 12px; border-radius: 9px; border: 0; background: #FF7A6B; color: #0A0D14; font-size: 12px; font-weight: 700">Supprimer</button></span>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ac.onlyOne}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; color: #8A95AA">Il faut garder au moins un compte.</div></sc-if>
+</section>
+
+<section aria-label="Connexions brokers" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
+<div><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Connexions brokers</h2><div style="font-size: 13px; color: #8A95AA; margin-top: 4px">Tes trades arrivent automatiquement. L'accès se fait en lecture seule : [NOM] ne peut jamais passer d'ordre.</div></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px">
+<sc-for list="{{brk}}" as="b" hint-placeholder-count="4">
+<div style="padding: 16px; border-radius: 14px; background: #0B0F17; border: 1px solid #1D2433; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><span style="font-size: 14px; font-weight: 600">{{b.n}}</span><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 8px; border-radius: 6px; background: {{b.bBg}}; color: {{b.bFg}}">{{b.badge}}</span></div>
+<div style="font-size: 12px; color: #8A95AA; min-height: 18px">{{b.sub}}</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<sc-if value="{{b.on}}" hint-placeholder-val="{{true}}"><button class="ghost" type="button" onClick="{{b.sync}}" style="cursor: pointer; height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 12px; font-weight: 600">Synchroniser</button><button class="danger" type="button" onClick="{{b.off}}" style="cursor: pointer; height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid #2A3346; background: transparent; color: #FF9A8E; font-size: 12px; font-weight: 600">Déconnecter</button></sc-if>
+<sc-if value="{{b.canConnect}}" hint-placeholder-val="{{false}}"><a class="btn" href="Importer.dc.html" style="display: inline-flex; align-items: center; height: 34px; padding: 0 12px; border-radius: 9px; background: {{accent}}; color: #0A0D14; font-size: 12px; font-weight: 700">Connecter</a></sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<!-- PRÉFÉRENCES -->
+<sc-if value="{{isPrefs}}" hint-placeholder-val="{{false}}">
+<section aria-label="Trading" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 4px">
+<h2 class="h" style="font-size: 18px; margin: 0 0 8px; font-weight: 600">Trading</h2>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 12px 0; border-top: 1px solid #151B27">
+<div style="min-width: 0; flex: 1 1 260px"><label for="pr-risk" style="font-size: 14px; font-weight: 600">Risque par trade par défaut</label><div style="font-size: 12px; color: #8A95AA; margin-top: 2px">Proposé dans la saisie d'un trade et dans le backtest.</div></div>
+<span style="display: inline-flex; align-items: center; gap: 8px"><input id="pr-risk" class="inp num" type="text" inputmode="decimal" value="{{pr.risk}}" onChange="{{pr.onRisk}}" style="width: 80px; height: 40px; padding: 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{pr.riskBd}}; color: #EEF1F6; font-size: 14px; text-align: right; box-sizing: border-box"><span style="font-size: 14px; color: #A3AEC2">% du capital</span></span>
+</div>
+<sc-for list="{{pr.segs}}" as="g" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 12px 0; border-top: 1px solid #151B27">
+<div style="min-width: 0; flex: 1 1 260px"><div style="font-size: 14px; font-weight: 600">{{g.l}}</div><div style="font-size: 12px; color: #8A95AA; margin-top: 2px">{{g.d}}</div></div>
+<div role="group" aria-label="{{g.l}}" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{g.opts}}" as="o" hint-placeholder-count="3"><button class="chip" type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 14px; border-radius: 8px; min-height: 32px; background: {{o.bg}}; color: {{o.fg}}">{{o.l}}</button></sc-for>
+</div>
+</div>
+</sc-for>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 12px 0; border-top: 1px solid #151B27">
+<div style="min-width: 0; flex: 1 1 260px"><div style="font-size: 14px; font-weight: 600">Fuseau horaire</div><div style="font-size: 12px; color: #8A95AA; margin-top: 2px">Heures des trades, des sessions et des annonces. Passage à l'heure d'été et d'hiver automatique.</div></div>
+<span style="font-size: 14px; color: #DCE2EC">{{pr.tz}}</span>
+</div>
+</section>
+
+<section aria-label="Mes actifs" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
+<div><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Mes actifs</h2><div style="font-size: 13px; color: #8A95AA; margin-top: 4px">Utilisés par les News (étiquette « tes actifs », filtre « Mes actifs ») et par les analyses du coach.</div></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{pr.mes}}" as="m" hint-placeholder-count="3">
+<span style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 6px 0 12px; border-radius: 999px; border: 1px solid {{accentLine}}; background: {{accentSoft}}; font-size: 13px; font-weight: 600">{{m.l}}<button type="button" onClick="{{m.rm}}" aria-label="Retirer {{m.l}}" style="cursor: pointer; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; border: 0; background: transparent; color: #C9D3FF"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></span>
+</sc-for>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+<label for="pr-add" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Actif à ajouter</label>
+<select id="pr-add" class="inp" value="{{pr.addV}}" onChange="{{pr.onAdd}}" style="height: 38px; padding: 0 10px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark; min-width: 180px"><sc-for list="{{pr.addOpts}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.l}}</option></sc-for></select>
+<button class="ghost" type="button" onClick="{{pr.add}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Ajouter</button>
+</div>
+</section>
+
+<section aria-label="Coach IA" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 4px">
+<h2 class="h" style="font-size: 18px; margin: 0 0 8px; font-weight: 600">Coach IA</h2>
+<sc-for list="{{pr.coach}}" as="t" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border-top: 1px solid #151B27">
+<div style="min-width: 0"><div style="font-size: 14px; font-weight: 600">{{t.l}}</div><div style="font-size: 12px; color: #8A95AA; margin-top: 2px; line-height: 1.45">{{t.d}}</div></div>
+<button class="sw" type="button" role="switch" aria-checked="{{t.checked}}" aria-label="{{t.aria}}" onClick="{{t.pick}}" style="flex: none; cursor: pointer; width: 42px; height: 24px; padding: 3px; border-radius: 12px; border: 0; background: {{t.bg}}; display: flex; align-items: center"><span style="width: 18px; height: 18px; border-radius: 9px; background: #FFFFFF; transform: translateX({{t.x}}px)"></span></button>
+</div>
+</sc-for>
+</section>
+</sc-if>
+
+<!-- NOTIFICATIONS -->
+<sc-if value="{{isNotif}}" hint-placeholder-val="{{false}}">
+<section aria-label="Notifications" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column">
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 8px">
+<div><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Notifications</h2><div style="font-size: 13px; color: #8A95AA; margin-top: 4px">Choisis ce que tu reçois, et où.</div></div>
+<div style="display: flex; gap: 22px; font-size: 12px; font-weight: 700; color: #8A95AA; padding-right: 2px"><span style="width: 42px; text-align: center">Appli</span><span style="width: 42px; text-align: center">E-mail</span></div>
+</div>
+<sc-for list="{{nt}}" as="r" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-top: 1px solid #151B27">
+<div style="min-width: 0"><div style="font-size: 14px; font-weight: 600">{{r.l}}</div><div style="font-size: 12px; color: #8A95AA; margin-top: 2px; line-height: 1.45">{{r.d}}</div></div>
+<div style="display: flex; gap: 22px"><button class="sw" type="button" role="switch" aria-checked="{{r.app.checked}}" aria-label="{{r.app.aria}}" onClick="{{r.app.pick}}" style="flex: none; cursor: pointer; width: 42px; height: 24px; padding: 3px; border-radius: 12px; border: 0; background: {{r.app.bg}}; display: flex; align-items: center"><span style="width: 18px; height: 18px; border-radius: 9px; background: #FFFFFF; transform: translateX({{r.app.x}}px)"></span></button><button class="sw" type="button" role="switch" aria-checked="{{r.mail.checked}}" aria-label="{{r.mail.aria}}" onClick="{{r.mail.pick}}" style="flex: none; cursor: pointer; width: 42px; height: 24px; padding: 3px; border-radius: 12px; border: 0; background: {{r.mail.bg}}; display: flex; align-items: center"><span style="width: 18px; height: 18px; border-radius: 9px; background: #FFFFFF; transform: translateX({{r.mail.x}}px)"></span></button></div>
+</div>
+</sc-for>
+<div style="font-size: 12px; color: #6F7A90; border-top: 1px solid #151B27; padding-top: 12px">Les e-mails sur les nouveautés ne sont envoyés qu'avec ton accord. Les e-mails liés à ton compte (sécurité, factures) sont toujours envoyés.</div>
+</section>
+</sc-if>
+
+<!-- ABONNEMENT -->
+<sc-if value="{{isSub}}" hint-placeholder-val="{{false}}">
+<section aria-label="Abonnement" style="background: {{heroBg}}; border: 1px solid {{accentLine}}; border-radius: 20px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap">
+<div>
+<span style="font-size: 10px; font-weight: 800; letter-spacing: .08em; padding: 4px 8px; border-radius: 6px; background: {{accent}}; color: #0A0D14">PREMIUM</span>
+<h2 class="h" style="font-size: 22px; margin: 10px 0 0; font-weight: 600">{{sb.title}}</h2>
+<div style="font-size: 14px; color: #A3AEC2; margin-top: 6px; line-height: 1.5">{{sb.status}}</div>
+</div>
+<div style="text-align: right"><div class="h num" style="font-size: 30px; font-weight: 700">{{sb.price}}</div><div style="font-size: 12px; color: #8A95AA">{{sb.per}}</div></div>
+</div>
+<sc-if value="{{sb.active}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<sc-if value="{{sb.canUp}}" hint-placeholder-val="{{true}}"><button class="btn" type="button" onClick="{{sb.askUp}}" style="cursor: pointer; height: 40px; padding: 0 16px; border-radius: 10px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700">Passer à l'annuel · 2 mois offerts</button></sc-if>
+<button class="ghost" type="button" onClick="{{sb.askCancel}}" style="cursor: pointer; height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Résilier l'abonnement</button>
+</div>
+</sc-if>
+<sc-if value="{{sb.upConfirm}}" hint-placeholder-val="{{false}}">
+<div class="open" style="padding: 14px 16px; border-radius: 12px; background: #0B0F17; border: 1px solid #1D2433; display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 14px; line-height: 1.55; color: #DCE2EC">Tu passes à <b>250 € par an</b> au lieu de 300 €. Le montant déjà payé pour la période en cours est déduit au prorata, et la prochaine échéance devient annuelle.</div>
+<div style="display: flex; gap: 8px; justify-content: flex-end"><button class="ghost" type="button" onClick="{{sb.noUp}}" style="cursor: pointer; height: 36px; padding: 0 12px; border-radius: 9px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Annuler</button><button class="btn" type="button" onClick="{{sb.up}}" style="cursor: pointer; height: 36px; padding: 0 14px; border-radius: 9px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700">Confirmer le passage à l'annuel</button></div>
+</div>
+</sc-if>
+<sc-if value="{{sb.cancelStep}}" hint-placeholder-val="{{false}}">
+<div class="open" style="padding: 16px; border-radius: 12px; background: #0B0F17; border: 1px solid rgba(255,122,107,.3); display: flex; flex-direction: column; gap: 12px">
+<div style="font-size: 15px; font-weight: 600">Résilier ton abonnement Premium ?</div>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; line-height: 1.5; color: #C9D3E6"><li>Tu gardes Premium jusqu'au {{sb.end}}, sans nouveau prélèvement.</li><li>Ensuite, ton compte passe à l'offre gratuite : tes trades et tes statistiques restent accessibles.</li><li>Tu peux te réabonner à tout moment.</li></ul>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="sb-reason" style="font-size: 12px; font-weight: 600; color: #A3AEC2">Pourquoi pars-tu ? (facultatif)</label><select id="sb-reason" class="inp" value="{{sb.reason}}" onChange="{{sb.onReason}}" style="height: 40px; padding: 0 10px; border-radius: 10px; background: #0E131D; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; color-scheme: dark; max-width: 360px"><sc-for list="{{sb.reasons}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.l}}</option></sc-for></select></div>
+<div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap"><button class="btn" type="button" onClick="{{sb.keep}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700">Garder Premium</button><button class="danger" type="button" onClick="{{sb.cancel}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(255,122,107,.4); background: transparent; color: #FF9A8E; font-size: 13px; font-weight: 700">Confirmer la résiliation</button></div>
+</div>
+</sc-if>
+<sc-if value="{{sb.cancelled}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><button class="btn" type="button" onClick="{{sb.reactivate}}" style="cursor: pointer; height: 40px; padding: 0 16px; border-radius: 10px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700">Réactiver l'abonnement</button></div>
+</sc-if>
+<div style="font-size: 12px; color: #8A95AA">Droit de rétractation de 14 jours, renouvellement et résiliation : voir les <a href="Legal.dc.html" onClick="{{lg.cgv}}" style="color: #C9D3FF; text-decoration: underline">conditions générales de vente</a>.</div>
+</section>
+
+<section aria-label="Moyen de paiement" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 18px 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+<span style="flex: none; width: 46px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, #1A2B6D, #2F4BB8); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; letter-spacing: .06em; color: #FFFFFF">VISA</span>
+<div style="flex: 1; min-width: 0"><div class="num" style="font-size: 14px; font-weight: 600">Visa •••• 4242</div><div style="font-size: 12px; color: #8A95AA; margin-top: 2px">Expire le 08/2028 · paiement sécurisé par [PRESTATAIRE DE PAIEMENT]</div></div>
+<button class="ghost" type="button" onClick="{{sb.card}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Modifier la carte</button>
+</section>
+
+<section aria-label="Factures" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 20px 22px 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 18px; margin: 0 0 10px; font-weight: 600">Factures</h2>
+<sc-for list="{{sb.invoices}}" as="i" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: 120px minmax(0, 1fr) 90px 80px auto; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid #151B27; font-size: 13px">
+<span style="color: #DCE2EC">{{i.d}}</span><span class="num" style="color: #8A95AA; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{i.n}}</span><span class="num" style="font-weight: 600; text-align: right">{{i.amt}}</span><span style="justify-self: start; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: rgba(61,220,151,.12); color: #7BEBB9">Payée</span>
+<button class="ghost" type="button" onClick="{{i.dl}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 12px; font-weight: 600"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"></path></svg>PDF</button>
+</div>
+</sc-for>
+</section>
+</sc-if>
+
+<!-- SÉCURITÉ -->
+<sc-if value="{{isSecu}}" hint-placeholder-val="{{false}}">
+<section aria-label="Mot de passe" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 20px 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Mot de passe</h2><div style="font-size: 13px; color: #8A95AA; margin-top: 4px">{{se.pwSub}}</div></div>
+<sc-if value="{{se.pwClosed}}" hint-placeholder-val="{{true}}"><button class="ghost" type="button" onClick="{{se.openPw}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Modifier</button></sc-if>
+</div>
+<sc-if value="{{se.pwOpen}}" hint-placeholder-val="{{false}}">
+<div class="open" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+<sc-for list="{{se.pw}}" as="f" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="{{f.id}}" style="font-size: 12px; font-weight: 600; color: #A3AEC2">{{f.l}}</label><input id="{{f.id}}" class="inp" type="password" autocomplete="{{f.ac}}" value="{{f.v}}" onChange="{{f.on}}" style="height: 40px; padding: 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid {{f.bd}}; color: #EEF1F6; font-size: 14px; box-sizing: border-box; width: 100%"><sc-if value="{{f.err}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #FF9A8E">{{f.err}}</span></sc-if></div>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap"><span style="font-size: 12px; color: #8A95AA">8 caractères minimum, dont au moins un chiffre.</span><span style="display: flex; gap: 8px"><button class="ghost" type="button" onClick="{{se.closePw}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Annuler</button><button class="btn" type="button" onClick="{{se.savePw}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700">Changer le mot de passe</button></span></div>
+</sc-if>
+</section>
+
+<section aria-label="Double authentification" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 20px 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; align-items: center; justify-content: space-between; gap: 16px">
+<div style="min-width: 0"><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Double authentification</h2><div style="font-size: 13px; color: #8A95AA; margin-top: 4px; line-height: 1.5">{{se.tfaSub}}</div></div>
+<button class="sw" type="button" role="switch" aria-checked="{{se.tfa.checked}}" aria-label="{{se.tfa.aria}}" onClick="{{se.tfa.pick}}" style="flex: none; cursor: pointer; width: 42px; height: 24px; padding: 3px; border-radius: 12px; border: 0; background: {{se.tfa.bg}}; display: flex; align-items: center"><span style="width: 18px; height: 18px; border-radius: 9px; background: #FFFFFF; transform: translateX({{se.tfa.x}}px)"></span></button>
+</section>
+
+<section aria-label="Appareils connectés" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 20px 22px 12px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px"><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Appareils connectés</h2><sc-if value="{{se.hasOthers}}" hint-placeholder-val="{{true}}"><button class="danger" type="button" onClick="{{se.outAll}}" style="cursor: pointer; height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid #2A3346; background: transparent; color: #FF9A8E; font-size: 12px; font-weight: 600">Déconnecter les autres appareils</button></sc-if></div>
+<sc-for list="{{se.devices}}" as="d" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #151B27">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #1A2130; color: #C9D3E6; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{d.icon}}"></path></svg></span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 14px; font-weight: 600">{{d.n}}</div><div style="font-size: 12px; color: #8A95AA; margin-top: 2px">{{d.sub}}</div></div>
+<sc-if value="{{d.cur}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: rgba(61,220,151,.12); color: #7BEBB9">Cet appareil</span></sc-if>
+<sc-if value="{{d.other}}" hint-placeholder-val="{{true}}"><button class="ghost" type="button" onClick="{{d.out}}" style="cursor: pointer; height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 12px; font-weight: 600">Déconnecter</button></sc-if>
+</div>
+</sc-for>
+</section>
+</sc-if>
+
+<!-- DONNÉES -->
+<sc-if value="{{isData}}" hint-placeholder-val="{{false}}">
+<section aria-label="Exporter mes données" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 20px 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap">
+<div style="min-width: 0; flex: 1 1 300px"><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600">Exporter mes données</h2><div style="font-size: 13px; color: #8A95AA; margin-top: 4px; line-height: 1.5">Un fichier ZIP avec tes trades (CSV), tes notes, tes captures, tes sessions de backtest et tes paramètres.</div></div>
+<button class="ghost" type="button" onClick="{{dt.export}}" style="cursor: pointer; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">{{dt.exportL}}</button>
+</div>
+<sc-if value="{{dt.exportMsg}}" hint-placeholder-val="{{false}}"><div class="open" style="font-size: 13px; color: #BDF5DC; padding: 10px 12px; border-radius: 10px; background: rgba(61,220,151,.08); border: 1px solid rgba(61,220,151,.3)">{{dt.exportMsg}}</div></sc-if>
+</section>
+
+<section aria-label="Confidentialité" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 20px 22px 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<h2 class="h" style="font-size: 18px; margin: 0 0 10px; font-weight: 600">Confidentialité et documents</h2>
+<sc-for list="{{dt.docs}}" as="d" hint-placeholder-count="5">
+<a class="row" href="Legal.dc.html" onClick="{{d.go}}" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 6px; border-top: 1px solid #151B27; border-radius: 6px; color: #DCE2EC; font-size: 14px"><span>{{d.l}}</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5B6577" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</sc-for>
+</section>
+
+<section aria-label="Supprimer mon compte" style="background: #0E131D; border: 1px solid rgba(255,122,107,.3); border-radius: 20px; padding: 20px 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap">
+<div style="min-width: 0; flex: 1 1 300px"><h2 class="h" style="font-size: 18px; margin: 0; font-weight: 600; color: #FFC2BA">Supprimer mon compte</h2><div style="font-size: 13px; color: #8A95AA; margin-top: 4px; line-height: 1.5">Ton compte, tes trades et toutes tes données seront effacés sous 30 jours. Ton abonnement sera résilié. Pense à exporter tes données avant.</div></div>
+<sc-if value="{{dt.delClosed}}" hint-placeholder-val="{{true}}"><button class="danger" type="button" onClick="{{dt.askDel}}" style="cursor: pointer; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(255,122,107,.4); background: transparent; color: #FF9A8E; font-size: 13px; font-weight: 700">Supprimer mon compte</button></sc-if>
+</div>
+<sc-if value="{{dt.delOpen}}" hint-placeholder-val="{{false}}">
+<div class="open" style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 12px; background: rgba(255,122,107,.06); border: 1px solid rgba(255,122,107,.3)">
+<label for="dt-del" style="font-size: 13px; color: #FFC2BA">Pour confirmer, écris <b>SUPPRIMER</b> ci-dessous.</label>
+<input id="dt-del" class="inp" type="text" autocomplete="off" value="{{dt.delTxt}}" onChange="{{dt.onDel}}" style="height: 40px; padding: 0 12px; border-radius: 10px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; box-sizing: border-box; max-width: 320px">
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><button class="ghost" type="button" onClick="{{dt.noDel}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Annuler</button><button type="button" onClick="{{dt.del}}" aria-disabled="{{dt.delDis}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 0; background: #FF7A6B; color: #0A0D14; font-size: 13px; font-weight: 700; opacity: {{dt.delOp}}">Supprimer définitivement</button></div>
+</div>
+</sc-if>
+<sc-if value="{{dt.deleted}}" hint-placeholder-val="{{false}}">
+<div class="open" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 14px; border-radius: 12px; background: rgba(255,122,107,.06); border: 1px solid rgba(255,122,107,.3); font-size: 13px; line-height: 1.5; color: #FFC2BA"><span style="flex: 1 1 300px">Demande enregistrée : ton compte sera supprimé le 6 décembre 2026. Une confirmation a été envoyée à {{pf.email}}. D'ici là, tu peux annuler.</span><button class="ghost" type="button" onClick="{{dt.undo}}" style="cursor: pointer; height: 36px; padding: 0 12px; border-radius: 9px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 12px; font-weight: 600">Annuler la suppression</button></div>
+</sc-if>
+</section>
+</sc-if>
+
+</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var sec = 'profil';
+    try { var o = JSON.parse(this.sget('tj.go') || 'null'); if (o && o.to === 'set' && Date.now() - o.t < 15000) { this.sset('tj.go', null); if (o.sec) sec = o.sec; } } catch (e) {}
+    var mes = null; try { mes = JSON.parse(this.sget('tj.mesActifsListe') || 'null'); } catch (e) {}
+    this.state = {
+      sec: sec, flash: '',
+      pf: { prenom: 'Alex', nom: 'Martin', email: 'alex.martin@email.fr', pays: 'FR', langue: 'fr', devise: 'EUR' }, pfTried: false,
+      accs: this.loadAccs(), adding: false, addF: { name: '', type: 'Réel', plat: 'MetaTrader 5', cap: '' }, addTried: false, delId: null,
+      brk: { mt5: true, ct: true, mt4: false },
+      risk: '1', unit: 'R', week: 'lundi', mes: mes && mes.length ? mes : ['EUR/USD', 'XAU/USD', 'NAS100'], addV: 'GBP/USD', coachOn: true, coachMail: true,
+      nt: { news: [true, false], coach: [true, true], rappel: [true, false], resume: [false, true], produit: [false, false] },
+      plan: 'mensuel', subSt: this.sget('tj.sub') === 'cancelled' ? 'cancelled' : 'active', upAsk: false, reason: '',
+      pwOpen: false, pw: ['', '', ''], pwTried: false, pwDate: 'Modifié il y a 3 mois', tfa: false, devices: ['iphone', 'ipad'],
+      exportSt: '', delOpen: false, delTxt: '', deleted: false
+    };
+  }
+  componentDidMount() { try { window.scrollTo(0, 0); } catch (e) {} }
+  componentWillUnmount() { clearTimeout(this.ft); clearTimeout(this.et); }
+  sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
+  sset(k, v) { try { if (v === null) window.sessionStorage.removeItem(k); else window.sessionStorage.setItem(k, v); } catch (e) {} }
+  defAccounts() {
+    return [
+      { id: 'live', name: 'Compte réel', type: 'Réel', plat: 'MetaTrader 5', cap: 20000, c: '#3DDC97' },
+      { id: 'prop', name: 'Challenge prop firm', type: 'Prop firm', plat: 'MetaTrader 5', cap: 50000, c: '#F5C26B' },
+      { id: 'demo', name: 'Compte démo', type: 'Démo', plat: 'cTrader', cap: 10000, c: '#8FA6FF' }
+    ];
+  }
+  loadAccs() { try { var l = JSON.parse(this.sget('tj.accounts') || 'null'); if (l && l.length) return l; } catch (e) {} return this.defAccounts(); }
+  setAccs(l) {
+    this.sset('tj.accounts', JSON.stringify(l));
+    try { var sel = JSON.parse(this.sget('tj.accSel') || 'null'); if (sel && sel.length && sel.indexOf('all') < 0) { var ids = l.map(function (a) { return a.id; }); var ns = sel.filter(function (x) { return ids.indexOf(x) >= 0; }); this.sset('tj.accSel', JSON.stringify(ns.length ? ns : ['all'])); } } catch (e) {}
+    this.setState({ accs: l });
+  }
+  say(msg) { var self = this; clearTimeout(this.ft); this.setState({ flash: msg }); this.ft = setTimeout(function () { self.setState({ flash: '' }); }, 3500); }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  renderVals() {
+    var self = this, s = this.state;
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var soft = this.soft(accent, 0.13), aLine = this.soft(accent, 0.38);
+    var fmtEur = function (v) { return Math.round(v).toLocaleString('fr-FR') + ' €'; };
+    var opt = function (l) { return l.map(function (x) { return typeof x === 'string' ? { v: x, l: x } : { v: x[0], l: x[1] }; }); };
+    var sw = function (on, aria, pick) { return { checked: on ? 'true' : 'false', aria: aria, pick: pick, bg: on ? accent : '#2A3346', x: on ? 18 : 0 }; };
+    var legal = function (tab) { return function () { self.sset('tj.legal', tab); }; };
+
+    var SECS = [
+      ['profil', 'Profil', 'M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8M4 21a8 8 0 0 1 16 0'],
+      ['comptes', 'Comptes et brokers', 'M3 7h18v13H3zM8 7V4h8v3M3 12h18'],
+      ['prefs', 'Préférences', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4'],
+      ['notif', 'Notifications', 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0'],
+      ['sub', 'Abonnement', 'M3 6h18v12H3zM3 10h18M7 15h4'],
+      ['secu', 'Sécurité', 'M6 10V7a6 6 0 0 1 12 0v3M5 10h14v11H5zM12 14v3'],
+      ['data', 'Données et confidentialité', 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z']
+    ];
+    var secs = SECS.map(function (x) { var on = s.sec === x[0]; return { l: x[1], icon: x[2], cur: on ? 'page' : 'false', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', pick: function () { self.setState({ sec: x[0], flash: '' }); try { window.scrollTo(0, 0); } catch (e) {} } }; });
+
+    // ---------- profil
+    var P = s.pf, setP = function (k) { return function (ev) { var o = Object.assign({}, self.state.pf); o[k] = ev.target.value; self.setState({ pf: o }); }; };
+    var mailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(P.email), pTried = s.pfTried;
+    var pf = {
+      ini: ((P.prenom || ' ')[0] + (P.nom || ' ')[0]).toUpperCase(), full: (P.prenom + ' ' + P.nom).trim(), email: P.email,
+      fields: [
+        { id: 'pf-prenom', l: 'Prénom', k: 'prenom', type: 'text', ac: 'given-name', err: pTried && !P.prenom.trim() ? 'Indique ton prénom.' : '' },
+        { id: 'pf-nom', l: 'Nom', k: 'nom', type: 'text', ac: 'family-name', err: pTried && !P.nom.trim() ? 'Indique ton nom.' : '' },
+        { id: 'pf-email', l: 'E-mail', k: 'email', type: 'email', ac: 'email', err: pTried && !mailOk ? 'Cette adresse e-mail ne semble pas valide.' : '' },
+        { id: 'pf-pays', l: 'Pays de résidence', k: 'pays', sel: true, opts: opt([['FR', 'France'], ['BE', 'Belgique'], ['CH', 'Suisse'], ['LU', 'Luxembourg'], ['CA', 'Canada'], ['MA', 'Maroc'], ['OT', 'Autre pays']]) },
+        { id: 'pf-langue', l: 'Langue', k: 'langue', sel: true, opts: opt([['fr', 'Français'], ['en', 'English (bientôt)']]) },
+        { id: 'pf-devise', l: 'Devise d’affichage', k: 'devise', sel: true, opts: opt([['EUR', 'Euro (€)'], ['USD', 'Dollar US ($)'], ['CHF', 'Franc suisse (CHF)'], ['CAD', 'Dollar canadien (CA$)']]) }
+      ].map(function (f) { return Object.assign({ inp: !f.sel, sel: !!f.sel, opts: f.opts || [], v: P[f.k], on: setP(f.k), bd: f.err ? '#FF7A6B' : '#2A3346', ac: f.ac || 'off', type: f.type || 'text', err: f.err || '' }, f); }),
+      photo: function () { self.say('Dans la maquette, le changement de photo est simulé.'); },
+      save: function () { var p = self.state.pf; if (!p.prenom.trim() || !p.nom.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) { self.setState({ pfTried: true }); return; } self.setState({ pfTried: false }); self.say('Profil enregistré.'); }
+    };
+
+    // ---------- comptes
+    var A = s.addF, setA = function (k) { return function (ev) { var o = Object.assign({}, self.state.addF); o[k] = ev.target.value; self.setState({ addF: o }); }; };
+    var capN = Number(String(A.cap).replace(/\s/g, '').replace(',', '.'));
+    var aErrN = s.addTried && !A.name.trim() ? 'Donne un nom au compte.' : '', aErrC = s.addTried && !(capN > 0) ? 'Indique un capital supérieur à 0.' : '';
+    var PAL = ['#3DDC97', '#F5C26B', '#8FA6FF', '#CDB5FA', '#7FD1E8', '#F5A3C7', '#FF9A8E'];
+    var ac = {
+      canAdd: !s.adding, adding: s.adding, onlyOne: s.accs.length === 1,
+      openAdd: function () { self.setState({ adding: true, addTried: false, addF: { name: '', type: 'Réel', plat: 'MetaTrader 5', cap: '' } }); },
+      cancelAdd: function () { self.setState({ adding: false }); },
+      add: function () {
+        var f = self.state.addF, c = Number(String(f.cap).replace(/\s/g, '').replace(',', '.'));
+        if (!f.name.trim() || !(c > 0)) { self.setState({ addTried: true }); return; }
+        var l = self.state.accs.concat([{ id: 'acc' + Date.now(), name: f.name.trim(), type: f.type, plat: f.plat, cap: c, c: PAL[self.state.accs.length % PAL.length] }]);
+        self.setAccs(l); self.setState({ adding: false }); self.say('Compte « ' + f.name.trim() + ' » ajouté. Il apparaît dans le sélecteur de comptes du Journal et des Statistiques.');
+      },
+      fields: [
+        { id: 'ac-name', l: 'Nom du compte', k: 'name', ph: 'Ex. : Compte swing', err: aErrN },
+        { id: 'ac-type', l: 'Type', k: 'type', sel: true, opts: opt(['Réel', 'Prop firm', 'Démo']) },
+        { id: 'ac-plat', l: 'Plateforme', k: 'plat', sel: true, opts: opt(['MetaTrader 5', 'MetaTrader 4', 'cTrader', 'TradingView', 'Autre']) },
+        { id: 'ac-cap', l: 'Capital de départ (€)', k: 'cap', ph: 'Ex. : 10 000', err: aErrC }
+      ].map(function (f) { return Object.assign({ inp: !f.sel, sel: !!f.sel, opts: f.opts || [], v: A[f.k], on: setA(f.k), bd: f.err ? '#FF7A6B' : '#2A3346', type: 'text', ph: f.ph || '', err: f.err || '' }, f); }),
+      items: s.accs.map(function (a) {
+        return { name: a.name, sub: a.type + ' · ' + a.plat, cap: fmtEur(a.cap), c: a.c, confirm: s.delId === a.id, delOp: s.accs.length > 1 ? '1' : '.4',
+          askDel: function () { if (self.state.accs.length > 1) self.setState({ delId: a.id }); },
+          noDel: function () { self.setState({ delId: null }); },
+          del: function () { self.setAccs(self.state.accs.filter(function (x) { return x.id !== a.id; })); self.setState({ delId: null }); self.say('Compte « ' + a.name + ' » supprimé.'); } };
+      })
+    };
+    var BRK = [['mt5', 'MetaTrader 5', 'synchronisé il y a 12 min · 2 comptes'], ['ct', 'cTrader', 'synchronisé il y a 2 h · 1 compte'], ['mt4', 'MetaTrader 4', ''], ['tv', 'TradingView', '']];
+    var brk = BRK.map(function (b) {
+      var soon = b[0] === 'tv', on = !soon && s.brk[b[0]];
+      var setB = function (v) { var o = Object.assign({}, self.state.brk); o[b[0]] = v; self.setState({ brk: o }); };
+      return { n: b[1], on: on, canConnect: !on && !soon, badge: soon ? 'BIENTÔT' : on ? 'CONNECTÉ' : 'NON CONNECTÉ', bBg: soon ? '#1A2130' : on ? 'rgba(61,220,151,.12)' : '#1A2130', bFg: soon ? '#8A95AA' : on ? '#7BEBB9' : '#A3AEC2',
+        sub: soon ? 'Connexion prévue dans une prochaine version.' : on ? b[2] : 'Connecte ton compte pour importer tes trades automatiquement.',
+        sync: function () { self.say(b[1] + ' : synchronisation lancée.'); }, off: function () { setB(false); self.say(b[1] + ' déconnecté. Tes trades déjà importés sont conservés.'); } };
+    });
+
+    // ---------- préférences
+    var riskN = Number(String(s.risk).replace(',', '.')), riskOk = riskN > 0 && riskN <= 10;
+    var seg = function (key, l, d, opts) { return { l: l, d: d, opts: opts.map(function (o) { var on = s[key] === o[0]; return { l: o[1], pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { var u = {}; u[key] = o[0]; self.setState(u); } }; }) }; };
+    var ALL = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CAD', 'AUD/USD', 'XAU/USD', 'WTI', 'NAS100', 'CAC 40', 'DAX', 'BTC/USD', 'ETH/USD'];
+    var avail = ALL.filter(function (x) { return s.mes.indexOf(x) < 0; });
+    var setMes = function (l) { self.sset('tj.mesActifsListe', JSON.stringify(l)); self.setState({ mes: l }); };
+    var pr = {
+      risk: s.risk, riskBd: riskOk ? '#2A3346' : '#FF7A6B', onRisk: function (ev) { self.setState({ risk: ev.target.value }); },
+      tz: 'Europe/Paris (heure de Paris)',
+      segs: [seg('unit', 'Afficher les résultats en', 'Dans la liste des trades et le tableau de bord.', [['R', 'R'], ['eur', '€'], ['pct', '%']]), seg('week', 'La semaine commence le', 'Pour le calendrier et les statistiques par semaine.', [['lundi', 'Lundi'], ['dimanche', 'Dimanche']])],
+      mes: s.mes.map(function (m) { return { l: m, rm: function () { setMes(self.state.mes.filter(function (x) { return x !== m; })); } }; }),
+      addV: avail.indexOf(s.addV) >= 0 ? s.addV : (avail[0] || ''), addOpts: opt(avail),
+      onAdd: function (ev) { self.setState({ addV: ev.target.value }); },
+      add: function () { var v = avail.indexOf(self.state.addV) >= 0 ? self.state.addV : avail[0]; if (v) setMes(self.state.mes.concat([v])); },
+      coach: [
+        Object.assign({ l: 'Laisser le coach analyser mes trades', d: 'Désactivé, le coach ne lit plus ton journal. Les questions sur le trading et les analyses des marchés restent disponibles.' }, sw(s.coachOn, 'Laisser le coach analyser mes trades', function () { self.setState({ coachOn: !self.state.coachOn }); })),
+        Object.assign({ l: 'Recevoir le bilan de la semaine par e-mail', d: 'Chaque lundi matin : ton score, tes points forts et la piste à tester.' }, sw(s.coachMail, 'Recevoir le bilan de la semaine par e-mail', function () { self.setState({ coachMail: !self.state.coachMail }); }))
+      ]
+    };
+
+    // ---------- notifications
+    var NT = [['news', 'Alertes des news', 'Les alertes que tu as créées dans l’onglet News.'], ['coach', 'Bilan de la semaine du coach', 'Ton score et la piste à tester, chaque lundi.'], ['rappel', 'Rappel pour remplir le journal', 'À 18:00 les jours où tu as tradé sans noter ton émotion.'], ['resume', 'Résumé de fin de journée', 'Tes trades du jour et ton résultat.'], ['produit', 'Nouveautés de [NOM]', 'Nouvelles fonctionnalités et conseils d’utilisation, une fois par mois au plus.']];
+    var nt = NT.map(function (r) {
+      var v = s.nt[r[0]], tog = function (i) { return function () { var o = Object.assign({}, self.state.nt); var a = o[r[0]].slice(); a[i] = !a[i]; o[r[0]] = a; self.setState({ nt: o }); }; };
+      return { l: r[1], d: r[2], app: sw(v[0], r[1] + ' dans l’appli', tog(0)), mail: sw(v[1], r[1] + ' par e-mail', tog(1)) };
+    });
+
+    // ---------- abonnement
+    var annual = s.plan === 'annuel', cancelled = s.subSt === 'cancelled', end = annual ? '6 novembre 2027' : '6 décembre 2026';
+    var sb = {
+      title: annual ? 'Premium annuel' : 'Premium mensuel', price: annual ? '250 €' : '25 €', per: annual ? 'par an, TTC' : 'par mois, TTC',
+      status: cancelled ? 'Résilié : tu gardes Premium jusqu’au ' + end + ', puis ton compte passe à l’offre gratuite. Tes données sont conservées.' : 'Actif · prochain prélèvement le ' + end + ' · ' + (annual ? '250,00 €' : '25,00 €'),
+      active: !cancelled && s.subSt === 'active', canUp: !annual && !s.upAsk, upConfirm: s.upAsk && !cancelled, cancelStep: s.subSt === 'cancel1', cancelled: cancelled, end: end,
+      askUp: function () { self.setState({ upAsk: true }); }, noUp: function () { self.setState({ upAsk: false }); },
+      up: function () { self.setState({ plan: 'annuel', upAsk: false }); self.say('C’est fait : tu es passé à l’abonnement annuel. La facture est disponible ci-dessous.'); },
+      askCancel: function () { self.setState({ subSt: 'cancel1', upAsk: false }); },
+      keep: function () { self.setState({ subSt: 'active' }); },
+      cancel: function () { self.sset('tj.sub', 'cancelled'); self.setState({ subSt: 'cancelled' }); self.say('Résiliation enregistrée. Une confirmation a été envoyée à ' + self.state.pf.email + '.'); },
+      reactivate: function () { self.sset('tj.sub', null); self.setState({ subSt: 'active' }); self.say('Abonnement réactivé. Rien ne change pour toi.'); },
+      reason: s.reason, onReason: function (ev) { self.setState({ reason: ev.target.value }); },
+      reasons: opt([['', 'Choisir une raison'], ['prix', 'C’est trop cher'], ['usage', 'Je ne l’utilise pas assez'], ['manque', 'Il manque une fonctionnalité'], ['pause', 'Je fais une pause dans le trading'], ['autre', 'Autre raison']]),
+      card: function () { self.say('Dans le vrai produit, tu es redirigé vers la page sécurisée du prestataire de paiement pour changer de carte.'); },
+      invoices: (annual ? [['6 nov. 2026', 'F-2026-1106-0482', '225,00 €']] : []).concat([['6 nov. 2026', 'F-2026-1106-0241', '25,00 €'], ['6 oct. 2026', 'F-2026-1006-0233', '25,00 €'], ['6 sept. 2026', 'F-2026-0906-0219', '25,00 €']]).map(function (i) { return { d: i[0], n: i[1], amt: i[2], dl: function () { self.say('Facture ' + i[1] + ' téléchargée (simulé dans la maquette).'); } }; })
+    };
+
+    // ---------- sécurité
+    var pw = s.pw, pT = s.pwTried, newOk = pw[1].length >= 8 && /\d/.test(pw[1]);
+    var setPw = function (i) { return function (ev) { var a = self.state.pw.slice(); a[i] = ev.target.value; self.setState({ pw: a }); }; };
+    var errs = [pT && !pw[0] ? 'Indique ton mot de passe actuel.' : '', pT && !newOk ? '8 caractères minimum, dont un chiffre.' : '', pT && newOk && pw[2] !== pw[1] ? 'Les deux mots de passe ne correspondent pas.' : ''];
+    var DEV = { iphone: ['Application iPhone', 'Lyon · il y a 2 jours', 'M7 3h10v18H7zM11 18h2'], ipad: ['Safari sur iPad', 'Paris · il y a 9 jours', 'M5 3h14v18H5zM11 18h2'] };
+    var se = {
+      pwSub: s.pwDate, pwOpen: s.pwOpen, pwClosed: !s.pwOpen,
+      openPw: function () { self.setState({ pwOpen: true, pw: ['', '', ''], pwTried: false }); }, closePw: function () { self.setState({ pwOpen: false }); },
+      pw: [['se-pw0', 'Mot de passe actuel', 'current-password'], ['se-pw1', 'Nouveau mot de passe', 'new-password'], ['se-pw2', 'Confirmer le nouveau mot de passe', 'new-password']].map(function (f, i) { return { id: f[0], l: f[1], ac: f[2], v: pw[i], on: setPw(i), err: errs[i], bd: errs[i] ? '#FF7A6B' : '#2A3346' }; }),
+      savePw: function () { var p = self.state.pw, ok = p[0] && p[1].length >= 8 && /\d/.test(p[1]) && p[2] === p[1]; if (!ok) { self.setState({ pwTried: true }); return; } self.setState({ pwOpen: false, pwTried: false, pwDate: 'Modifié à l’instant' }); self.say('Mot de passe modifié. Les autres appareils devront se reconnecter.'); },
+      tfa: sw(s.tfa, 'Double authentification', function () { var v = !self.state.tfa; self.setState({ tfa: v }); self.say(v ? 'Double authentification activée.' : 'Double authentification désactivée.'); }),
+      tfaSub: s.tfa ? 'Activée : un code à 6 chiffres est demandé à chaque connexion sur un nouvel appareil.' : 'Recommandée : un code à 6 chiffres, généré par une application comme Google Authenticator, est demandé à chaque connexion sur un nouvel appareil.',
+      hasOthers: s.devices.length > 0,
+      outAll: function () { self.setState({ devices: [] }); self.say('Tous les autres appareils ont été déconnectés.'); },
+      devices: [{ n: 'Chrome sur Mac', sub: 'Paris · actif maintenant', icon: 'M3 5h18v11H3zM8 20h8M12 16v4', cur: true, other: false, out: null }].concat(s.devices.map(function (k) { return { n: DEV[k][0], sub: DEV[k][1], icon: DEV[k][2], cur: false, other: true, out: function () { self.setState({ devices: self.state.devices.filter(function (x) { return x !== k; }) }); } }; }))
+    };
+
+    // ---------- données
+    var dt = {
+      exportL: s.exportSt === 'prep' ? 'Préparation…' : s.exportSt === 'done' ? 'Demander un nouvel export' : 'Exporter mes données',
+      exportMsg: s.exportSt === 'done' ? 'Ton export est prêt. Un lien de téléchargement, valable 7 jours, a été envoyé à ' + s.pf.email + '.' : '',
+      export: function () { if (self.state.exportSt === 'prep') return; self.setState({ exportSt: 'prep' }); clearTimeout(self.et); self.et = setTimeout(function () { self.setState({ exportSt: 'done' }); }, 1500); },
+      docs: [['Politique de confidentialité', 'confid'], ['Gérer mes cookies', 'cookies'], ['Conditions générales d’utilisation', 'cgu'], ['Conditions générales de vente', 'cgv'], ['Mentions légales', 'mentions']].map(function (d) { return { l: d[0], go: legal(d[1]) }; }),
+      delOpen: s.delOpen && !s.deleted, delClosed: !s.delOpen && !s.deleted, deleted: s.deleted, delTxt: s.delTxt,
+      onDel: function (ev) { self.setState({ delTxt: ev.target.value }); },
+      delDis: s.delTxt.trim().toUpperCase() === 'SUPPRIMER' ? 'false' : 'true', delOp: s.delTxt.trim().toUpperCase() === 'SUPPRIMER' ? '1' : '.45',
+      askDel: function () { self.setState({ delOpen: true, delTxt: '' }); }, noDel: function () { self.setState({ delOpen: false }); },
+      del: function () { if (self.state.delTxt.trim().toUpperCase() !== 'SUPPRIMER') return; self.setState({ deleted: true, delOpen: false }); },
+      undo: function () { self.setState({ deleted: false, delTxt: '' }); self.say('Suppression annulée. Ton compte reste actif.'); }
+    };
+
+    var NAV_ON = 'set';
+    var navDef = [
+      { title: '', items: [['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', 'Dashboard.dc.html']] },
+      { title: 'OUTILS', items: [
+        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
+        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html'],
+        ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', 'Backtesting.dc.html'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', 'News.dc.html', '2', 'warn'],
+        ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', 'CoachIA.dc.html', 'NOUVEAU', 'accent']
+      ] },
+      { title: 'COMPTE', items: [
+        ['set', 'Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4', 'Parametres.dc.html'],
+        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01', 'Aide.dc.html'],
+        ['assist', 'Assistance', 'M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zM20 14h-3v6h2a1 1 0 0 0 1-1z', 'Assistance.dc.html']
+      ] }
+    ];
+    var navGroups = navDef.map(function (g) {
+      return { title: g.title, items: g.items.map(function (x) {
+        var on = x[0] === NAV_ON;
+        return { label: x[1], icon: x[2], href: x[3], badge: x[4] || '', bBg: x[5] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: x[5] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false' };
+      }) };
+    });
+
+    return {
+      accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
+      heroBg: 'linear-gradient(135deg, ' + this.soft(accent, 0.14) + ', #0E131D 60%)', avatarBg: 'linear-gradient(135deg, ' + accent + ', #B794F6)',
+      flash: s.flash, secs: secs,
+      isProfil: s.sec === 'profil', isComptes: s.sec === 'comptes', isPrefs: s.sec === 'prefs', isNotif: s.sec === 'notif', isSub: s.sec === 'sub', isSecu: s.sec === 'secu', isData: s.sec === 'data',
+      pf: pf, ac: ac, brk: brk, pr: pr, nt: nt, sb: sb, se: se, dt: dt,
+      lg: { cgv: legal('cgv') }
+    };
+  }
+}
+</script>
+</body>
+</html>

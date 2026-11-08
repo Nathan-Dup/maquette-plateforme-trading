@@ -22,13 +22,17 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 | `project/Replay.dc.html` | Backtesting : replay bougie par bougie avec prise de positions |
 | `project/News.dc.html` | News : calendrier économique, résultats d'entreprises, actualités, alertes |
 | `project/CoachIA.dc.html` | Coach IA : mon trading (bilan, pistes, questions sur tes trades), questions sur le trading, analyses des marchés |
+| `project/Parametres.dc.html` | Paramètres : profil, comptes et brokers, préférences, notifications, abonnement et factures, sécurité, données |
+| `project/Aide.dc.html` | Centre d'aide : recherche, thèmes, questions fréquentes |
+| `project/Assistance.dc.html` | Assistance : assistant IA et formulaire d'e-mail à l'équipe, suivi des demandes |
+| `project/Legal.dc.html` | Informations légales : mentions légales, CGU, CGV, confidentialité, cookies, avertissement sur les risques |
 | `project/news-logic.js` | Calculs communs liés aux news (surprises, trades près des news) |
 | `project/donnees-exemple.js` | Données d'exemple du calendrier et des prix (à remplacer par une vraie source) |
 | `project/canvas.json` | Disposition des écrans sur le canevas |
 
 ## Ce que fait l'application
 
-**Menu de gauche** : Tableau de bord seul en haut, puis OUTILS (Journal, Statistiques, Backtesting, News, Coach IA), puis COMPTE (Paramètres, Aide).
+**Menu de gauche** : Tableau de bord seul en haut, puis OUTILS (Journal, Statistiques, Backtesting, News, Coach IA), puis COMPTE (Paramètres, Aide, Assistance).
 
 **Comptes**
 - Sélecteur en haut de page : un, plusieurs ou tous les comptes à la fois.
@@ -69,6 +73,13 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 2. Questions trading : conversation sur le trading en général (bases, gestion du risque, psychologie, annonces, prop firms), avec exemples chiffrés. Dans la maquette, seules les questions de la liste « Sujets » ont une réponse complète.
 3. Analyses des marchés : le point du jour, les taux des banques centrales et leurs prochaines décisions, et des analyses économie / macro / géopolitique avec contexte, points surveillés, scénarios (réactions souvent observées, pas des prévisions) et rendez-vous du calendrier. Les chiffres sont cohérents avec le calendrier de la page News.
 
+**Paramètres, aide et assistance**
+- Paramètres : profil ; comptes de trading (les mêmes que dans le sélecteur du Journal) et connexions brokers ; préférences (risque par défaut, unité, début de semaine, mes actifs, coach) ; notifications ; abonnement (passage à l'annuel, résiliation en deux clics, factures) ; sécurité (mot de passe, double authentification, appareils) ; données (export, suppression du compte).
+- Aide : centre d'aide avec recherche, 7 thèmes et 20 questions fréquentes reliées aux bons écrans.
+- Assistance : assistant IA sur l'utilisation de l'application, qui passe la main à l'équipe avec la conversation jointe ; formulaire d'e-mail (sujet, message, capture, informations techniques) et suivi des demandes.
+
+**Pages légales** (`Legal.dc.html`) : mentions légales, CGU, CGV (avec rétractation, résiliation, médiation et modèle de formulaire), politique de confidentialité, politique cookies (avec réglage des choix) et avertissement sur les risques. Ce sont des modèles : les éléments entre crochets (société, SIREN, hébergeur, médiateur, prestataires…) sont à compléter, et l'ensemble est à faire valider par un professionnel du droit avant la mise en ligne. Un bandeau cookies s'affiche à la première visite de la page d'accueil.
+
 **Offre gratuite et Premium (backtest)** : en gratuit, 1 session de backtest, 1 actif, 3 mois d'historique, vitesse x1 et x2, et seulement la vue d'ensemble des statistiques. Premium : sessions illimitées, jusqu'à 4 actifs, toute la période, vitesse x4, toutes les statistiques et la comparaison réel vs backtest. Le détail est sur la page Tarifs.
 
 **Ton du Coach IA et des textes automatiques** : toujours un constat chiffré tiré des trades du trader, puis, s'il y a lieu, une « Piste à tester » qui porte sur son comportement (pause, nombre de trades, taille). Jamais d'avis sur le marché ni d'indication d'achat ou de vente. Les textes des news décrivent des faits et des effets habituels, sans dire quoi faire.
@@ -88,4 +99,5 @@ Cette maquette sert de cahier des charges visuel et fonctionnel. Ce n'est pas du
 - Dans la maquette, les pages se transmettent la période, les comptes et les trades ajoutés par le stockage de session du navigateur. Dans le vrai produit, tout cela vient de la base de données.
 - `Statistiques.dc.html` est une copie de `Journal.dc.html`. Dans le vrai produit, ce sera la même page avec un paramètre d'URL.
 - Points à traiter : fuseaux horaires et changement d'heure, trades fermés en plusieurs fois, stop loss manquant pour le calcul en R, devise des comptes, taille de position, coût de la connexion aux brokers.
-- `[NOM]` et `[BROKER]` sont à remplacer.
+- `[NOM]` et `[BROKER]` sont à remplacer, ainsi que les éléments entre crochets des pages légales.
+- Dans la maquette, la liste « Mes actifs » des Paramètres est enregistrée mais la page News utilise encore la liste d'exemple du module `news-logic.js` : dans le vrai produit, les deux viendront du profil.

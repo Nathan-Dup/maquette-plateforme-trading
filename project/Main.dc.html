@@ -843,12 +843,23 @@ input[type=range]{accent-color:#6E8BFF}
 </div>
 <div style="display: flex; gap: 56px; flex-wrap: wrap; font-size: 14px">
 <div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Produit</span><a href="Fonctionnalites.dc.html">Fonctionnalités</a><a href="Fonctionnalites.dc.html">Journal</a><a href="Fonctionnalites.dc.html">Backtesting</a><a href="Fonctionnalites.dc.html">News</a><a href="Fonctionnalites.dc.html">Coach IA</a><a href="#tarifs">Tarifs</a></div>
-<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Ressources</span><a href="#top">Académie</a><a href="#top">Blog</a><a href="#top">Centre d'aide</a></div>
-<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Légal</span><a href="#top">CGU / CGV</a><a href="#top">Confidentialité</a><a href="#top">Mentions légales</a></div>
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Ressources</span><a href="#top">Académie</a><a href="#top">Blog</a><a href="Aide.dc.html">Centre d'aide</a></div>
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Légal</span><a href="Legal.dc.html" onClick="{{lg.cgu}}">CGU</a><a href="Legal.dc.html" onClick="{{lg.cgv}}">CGV</a><a href="Legal.dc.html" onClick="{{lg.confid}}">Confidentialité</a><a href="Legal.dc.html" onClick="{{lg.cookies}}">Gérer mes cookies</a><a href="Legal.dc.html" onClick="{{lg.mentions}}">Mentions légales</a><a href="Legal.dc.html" onClick="{{lg.risques}}">Avertissement sur les risques</a></div>
 </div>
 </div>
 <div style="max-width: 1200px; margin: 0 auto; padding: 22px 24px 40px; border-top: 1px solid #1A2130; font-size: 12px; line-height: 1.6; color: #8A95AA">Le trading comporte un risque élevé de perte en capital. [NOM] fournit des outils d'analyse et ne constitue pas un conseil en investissement. Les analyses du coach IA sont informatives. © 2026 [NOM]</div>
 </footer>
+
+<sc-if value="{{ckb.show}}" hint-placeholder-val="{{false}}">
+<div role="dialog" aria-label="Cookies" style="position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 60; max-width: 760px; margin: 0 auto; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 16px 18px; border-radius: 16px; background: #0E131D; border: 1px solid #2A3346; box-shadow: 0 20px 60px rgba(0,0,0,.55)">
+<div style="flex: 1 1 320px; min-width: 0; font-size: 13px; line-height: 1.55; color: #C9D3E6">[NOM] utilise des cookies nécessaires au fonctionnement du site et, avec ton accord, des cookies de mesure d'audience. Aucun cookie publicitaire. <a href="Legal.dc.html" onClick="{{lg.cookies}}" style="color: #C9D3FF; text-decoration: underline">En savoir plus</a></div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<button type="button" onClick="{{ckb.refuse}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Tout refuser</button>
+<a href="Legal.dc.html" onClick="{{lg.cookies}}" style="display: inline-flex; align-items: center; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; font-weight: 600">Personnaliser</a>
+<button type="button" onClick="{{ckb.accept}}" style="cursor: pointer; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Tout accepter</button>
+</div>
+</div>
+</sc-if>
 
 </div>
 </x-dc>
@@ -1255,6 +1266,8 @@ class Component extends DCLogic {
     };
 
     return {
+      ckb: (function () { var done = function (v) { try { window.sessionStorage.setItem('tj.cookieAud', v); } catch (e) {} self.setState({ ckDone: true }); }; var pending = false; try { pending = window.sessionStorage.getItem('tj.cookieAud') === null; } catch (e) {} return { show: !s.ckDone && pending, refuse: function () { done('0'); }, accept: function () { done('1'); } }; })(),
+      lg: (function () { var f = function (t) { return function () { try { window.sessionStorage.setItem('tj.legal', t); } catch (e) {} }; }; return { mentions: f('mentions'), cgu: f('cgu'), cgv: f('cgv'), confid: f('confid'), cookies: f('cookies'), risques: f('risques') }; })(),
       rootRef: this.rootRef,
       closeMenu: function () { self.setState({ menu: '' }); },
       menus: [['Accueil', '#top', ''], ['Outils', '#outils', 'outils'], ['Fonctionnalités', 'Fonctionnalites.dc.html', null], ['Tarifs', 'Tarifs.dc.html', 'tarifs'], ['Pourquoi nous ?', '#connecte', 'connecte']].map(function (l) {

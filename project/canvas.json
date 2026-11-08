@@ -125,6 +125,42 @@
       "w": 1440,
       "x": 18360,
       "y": 0
+    },
+    "Parametres.dc.html": {
+      "expand": "fill",
+      "h": 1300,
+      "is_interactive": true,
+      "title": "Paramètres",
+      "w": 1440,
+      "x": 19880,
+      "y": 0
+    },
+    "Aide.dc.html": {
+      "expand": "fill",
+      "h": 1500,
+      "is_interactive": true,
+      "title": "Aide (centre d’aide)",
+      "w": 1440,
+      "x": 21400,
+      "y": 0
+    },
+    "Assistance.dc.html": {
+      "expand": "fill",
+      "h": 1300,
+      "is_interactive": true,
+      "title": "Assistance (assistant IA et e-mail)",
+      "w": 1440,
+      "x": 22920,
+      "y": 0
+    },
+    "Legal.dc.html": {
+      "expand": "fill",
+      "h": 2400,
+      "is_interactive": true,
+      "title": "Informations légales (CGU, CGV, confidentialité…)",
+      "w": 1440,
+      "x": 24440,
+      "y": 0
     }
   },
   "createdOnFiles": {
@@ -159,7 +195,11 @@
     "Backtesting.dc.html",
     "Replay.dc.html",
     "News.dc.html",
-    "CoachIA.dc.html"
+    "CoachIA.dc.html",
+    "Parametres.dc.html",
+    "Aide.dc.html",
+    "Assistance.dc.html",
+    "Legal.dc.html"
   ],
   "pages": [],
   "title": "Maquette plateforme trading"

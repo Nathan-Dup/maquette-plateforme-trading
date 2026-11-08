@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Aide</title>
+<script src="./support.js"></script>
+<script src="./news-logic.js"></script>
+<script src="./donnees-exemple.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#A3AEC2;text-decoration:none}a:hover{color:#FFFFFF}
+button,input,select{font-family:inherit}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{animation:fu .7s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}
+@keyframes sl{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.open{animation:sl .3s ease both}
+@keyframes puo{0%{box-shadow:0 0 0 0 rgba(245,166,91,.6)}100%{box-shadow:0 0 0 9px rgba(245,166,91,0)}}
+.puo{animation:puo 1.8s ease-out infinite}
+.nav{transition:background .2s,color .2s}.nav:hover{background:#131927;color:#EEF1F6}
+.chip{transition:background .2s,color .2s,border-color .2s}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28;border-color:#36415B}
+.row{transition:background .2s}.row:hover{background:#121826 !important}
+.scard{transition:border-color .25s,transform .25s}.scard:hover{border-color:#36415B !important;transform:translateY(-2px)}
+.cd{transition:border-color .15s,background .15s}.cd:hover{border-color:#36415B !important}
+.inp:focus{outline:none;border-color:#6E8BFF !important;box-shadow:0 0 0 3px rgba(110,139,255,.2)}
+.sw{transition:background .2s}.sw span{transition:transform .2s}
+.noanim *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+.mcard{transition:transform .25s,box-shadow .25s,border-color .25s}.mcard:hover{transform:translateY(-2px)}
+@keyframes td{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.tdot{width:6px;height:6px;border-radius:3px;background:#A3AEC2;animation:td 1.2s infinite ease-in-out}.tdot:nth-child(2){animation-delay:.15s}.tdot:nth-child(3){animation-delay:.3s}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(110,139,255,.6)}100%{box-shadow:0 0 0 8px rgba(110,139,255,0)}}.pu{animation:pu 1.8s ease-out infinite}
+.sw{transition:background .2s}.sw span{transition:transform .2s}
+.danger{transition:background .2s,border-color .2s}.danger:hover{background:rgba(255,122,107,.12)}
+.acc{transition:background .2s,border-color .2s}.acc:hover{border-color:#36415B !important}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; min-height: 100vh">
+<aside style="flex: 1 1 248px; background: #0B0F17; border-right: 1px solid #171D2A; padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px">
+<span style="width: 32px; height: 32px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 19px; font-weight: 700">[NOM]</span>
+</div>
+<nav aria-label="Menu de l'application" style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
+<div>
+<sc-if value="{{g.title}}" hint-placeholder-val="{{true}}"><div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div></sc-if>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="3">
+<a class="nav" href="{{n.href}}" aria-current="{{n.current}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; background: {{n.bg}}; color: {{n.fg}}; font-weight: {{n.fw}}">
+<span style="position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: {{n.bar}}"></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+<span style="flex: 1">{{n.label}}</span>
+<sc-if value="{{n.badge}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 999px; background: {{n.bBg}}; color: {{n.bFg}}">{{n.badge}}</span></sc-if>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid #1A2130">
+<span style="width: 34px; height: 34px; border-radius: 17px; background: #1D2433; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #DCE2EC">AM</span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 600">Alex Martin</div><div style="font-size: 11px; color: #8A95AA">Premium · renouvellement le 6 déc.</div></div>
+</div>
+</aside>
+<main id="top" style="flex: 999 1 560px; min-width: 0; padding: 26px 36px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+
+<div class="fu" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div>
+<div style="font-size: 13px; color: #8A95AA">Compte · Aide</div>
+<h1 class="h" style="font-size: 30px; margin: 6px 0 0; font-weight: 700">Centre d'aide</h1>
+<p style="font-size: 14px; color: #A3AEC2; margin: 6px 0 0">Les réponses aux questions les plus fréquentes, rangées par thème.</p>
+</div>
+<span style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(61,220,151,.3); background: rgba(61,220,151,.08); font-size: 12px; font-weight: 600; color: #BDF5DC"><span style="width: 7px; height: 7px; border-radius: 4px; background: #3DDC97"></span>Tous les services fonctionnent</span>
+</div>
+
+<section aria-label="Rechercher dans l'aide" class="fu d1" style="background: {{heroBg}}; border: 1px solid #1D2433; border-radius: 20px; padding: 26px 28px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
+<h2 class="h" style="font-size: 22px; margin: 0; font-weight: 600">Comment peut-on t'aider ?</h2>
+<div class="search" style="display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 16px; border-radius: 14px; background: #0B0F17; border: 1px solid #2A3346; max-width: 720px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14M21 21l-5-5"></path></svg>
+<label for="aide-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Rechercher</label>
+<input id="aide-q" type="search" value="{{q}}" onChange="{{onQ}}" placeholder="Rechercher : import, résilier, R, coach…" style="flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: #EEF1F6; font: inherit; font-size: 15px">
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; color: #8A95AA"><span>Recherches fréquentes :</span><sc-for list="{{popular}}" as="p" hint-placeholder-count="4"><button class="chip" type="button" onClick="{{p.pick}}" style="cursor: pointer; border: 0; background: transparent; color: #C9D3FF; font-size: 13px; font-weight: 600; padding: 0; text-decoration: underline">{{p.l}}</button></sc-for></div>
+</section>
+
+<div class="fu d2" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px">
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="7">
+<button class="scard" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 16px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: #EEF1F6">
+<span style="width: 36px; height: 36px; border-radius: 10px; background: {{c.ibg}}; color: {{c.ic}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg></span>
+<span style="font-size: 14px; font-weight: 600">{{c.l}}</span>
+<span style="font-size: 12px; color: #8A95AA">{{c.n}}</span>
+</button>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+<section aria-label="Questions fréquentes" style="flex: 999 1 560px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 16px 20px; background: #0B1019; border-bottom: 1px solid #1A2130">
+<h2 class="h" style="font-size: 17px; margin: 0; font-weight: 600">{{listTitle}}</h2>
+<span style="display: inline-flex; align-items: center; gap: 10px"><span style="font-size: 12px; color: #8A95AA">{{listCount}}</span><sc-if value="{{filtered}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{reset}}" style="cursor: pointer; border: 0; background: transparent; color: #A3AEC2; font-size: 12px; font-weight: 600; text-decoration: underline">Tout afficher</button></sc-if></span>
+</div>
+<sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+<div style="padding: 36px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px">
+<div style="font-size: 15px; font-weight: 600">Aucun article ne correspond à « {{q}} »</div>
+<div style="font-size: 13px; color: #A3AEC2">Pose directement ta question à l'assistance : l'assistant IA répond tout de suite, et l'équipe sous 24 h ouvrées.</div>
+<a class="btn" href="Assistance.dc.html" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 10px; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700">Contacter l'assistance</a>
+</div>
+</sc-if>
+<sc-for list="{{faq}}" as="f" hint-placeholder-count="6">
+<div style="border-top: 1px solid #151B27; background: {{f.bg}}">
+<button class="row" type="button" onClick="{{f.pick}}" aria-expanded="{{f.expanded}}" style="cursor: pointer; width: 100%; text-align: left; display: flex; align-items: center; gap: 12px; padding: 15px 20px; border: 0; background: transparent; color: #EEF1F6">
+<span style="flex: none; font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 6px; background: {{f.cBg}}; color: {{f.cFg}}">{{f.cat}}</span>
+<span style="flex: 1; min-width: 0; font-size: 14px; font-weight: 600; line-height: 1.4">{{f.q}}</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A95AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{f.rot}}; transition: transform .2s"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{f.open}}" hint-placeholder-val="{{false}}">
+<div class="open" style="padding: 0 20px 18px 20px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.65; color: #C9D3E6">
+<sc-for list="{{f.paras}}" as="p" hint-placeholder-count="1"><p style="margin: 0">{{p.t}}</p></sc-for>
+<sc-if value="{{f.hasList}}" hint-placeholder-val="{{false}}"><ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px"><sc-for list="{{f.list}}" as="li" hint-placeholder-count="3"><li>{{li.t}}</li></sc-for></ul></sc-if>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 6px">
+<span style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{f.links}}" as="lk" hint-placeholder-count="1"><a class="ghost" href="{{lk.href}}" onClick="{{lk.go}}" style="display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid #2A3346; color: #EEF1F6; font-size: 13px; font-weight: 600">{{lk.l}} →</a></sc-for></span>
+<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #8A95AA">
+<sc-if value="{{f.askFb}}" hint-placeholder-val="{{true}}">Cet article t'a aidé ?<button class="ghost" type="button" onClick="{{f.yes}}" style="cursor: pointer; height: 28px; padding: 0 10px; border-radius: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 12px">Oui</button><button class="ghost" type="button" onClick="{{f.no}}" style="cursor: pointer; height: 28px; padding: 0 10px; border-radius: 8px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 12px">Non</button></sc-if>
+<sc-if value="{{f.fbYes}}" hint-placeholder-val="{{false}}"><span style="color: #7BEBB9">Merci pour ton retour !</span></sc-if>
+<sc-if value="{{f.fbNo}}" hint-placeholder-val="{{false}}"><span>Désolé. <a href="Assistance.dc.html" style="color: #C9D3FF; text-decoration: underline">Écris à l'assistance</a>, on t'aide.</span></sc-if>
+</span>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</section>
+
+<aside style="flex: 1 1 280px; max-width: 360px; display: flex; flex-direction: column; gap: 14px">
+<section aria-label="Bien démarrer" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 18px 18px 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; margin-bottom: 8px">BIEN DÉMARRER EN 3 ÉTAPES</div>
+<sc-for list="{{steps}}" as="st" hint-placeholder-count="3">
+<a class="row" href="{{st.href}}" style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 6px; border-top: 1px solid #151B27; border-radius: 8px; color: #EEF1F6">
+<span class="num" style="flex: none; width: 26px; height: 26px; border-radius: 13px; background: {{accentSoft}}; color: #C9D3FF; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{st.n}}</span>
+<span style="min-width: 0"><span style="display: block; font-size: 14px; font-weight: 600">{{st.t}}</span><span style="display: block; font-size: 12px; color: #8A95AA; margin-top: 2px; line-height: 1.45">{{st.d}}</span></span>
+</a>
+</sc-for>
+</section>
+<section aria-label="Contacter l'assistance" style="background: {{heroBg}}; border: 1px solid {{accentLine}}; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 12px; background: {{avatarBg}}; display: flex; align-items: center; justify-content: center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zM20 14h-3v6h2a1 1 0 0 0 1-1z"></path></svg></span>
+<div class="h" style="font-size: 17px; font-weight: 600">Tu ne trouves pas ta&nbsp;réponse&nbsp;?</div>
+<div style="font-size: 13px; line-height: 1.55; color: #A3AEC2">L'assistant IA répond tout de suite. Si besoin, tu écris à l'équipe : réponse sous 24 h ouvrées, en français.</div>
+<a class="btn" href="Assistance.dc.html" style="align-self: flex-start; display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 10px; background: {{accent}}; color: #0A0D14; font-size: 13px; font-weight: 700">Contacter l'assistance</a>
+</section>
+<section aria-label="Raccourcis" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 16px 18px 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; margin-bottom: 6px">RACCOURCIS</div>
+<sc-for list="{{shortcuts}}" as="sc" hint-placeholder-count="4">
+<a class="row" href="{{sc.href}}" onClick="{{sc.go}}" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 6px; border-top: 1px solid #151B27; border-radius: 6px; color: #DCE2EC; font-size: 13px"><span>{{sc.l}}</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5B6577" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</sc-for>
+</section>
+</aside>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { q: '', cat: 'all', open: 'import', fb: {} };
+  }
+  componentDidMount() { try { window.scrollTo(0, 0); } catch (e) {} }
+  sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
+  sset(k, v) { try { if (v === null) window.sessionStorage.removeItem(k); else window.sessionStorage.setItem(k, v); } catch (e) {} }
+  go(to, extra) { var o = { to: to, t: Date.now() }; for (var k in (extra || {})) o[k] = extra[k]; this.sset('tj.go', JSON.stringify(o)); }
+  norm(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  articles() {
+    var self = this;
+    var L = function (l, href, go) { return { l: l, href: href, go: go || null }; };
+    var set = function (sec) { return function () { self.go('set', { sec: sec }); }; };
+    var legal = function (tab) { return function () { self.sset('tj.legal', tab); }; };
+    return [
+      { id: 'import', cat: 'start', q: 'Comment importer mes trades ?', k: 'import mt4 mt5 ctrader csv fichier broker connexion',
+        paras: ['Trois façons d’ajouter tes trades, à combiner comme tu veux :'],
+        list: ['Connexion broker : tes trades arrivent automatiquement depuis MetaTrader 4, MetaTrader 5 ou cTrader, en lecture seule.', 'Fichier : exporte ton historique depuis ta plateforme (CSV ou HTML) et dépose-le dans Importer.', 'Saisie manuelle : pour un trade isolé, avec ton émotion et une capture.'],
+        links: [L('Importer des trades', 'Importer.dc.html')] },
+      { id: 'manuel', cat: 'start', q: 'Comment ajouter un trade à la main ?', k: 'ajouter trade manuel saisie nouveau',
+        paras: ['Dans le Journal, clique sur « Nouveau trade ». Indique l’actif, le sens, l’entrée, le stop, la sortie et la taille : le résultat en euros et en R est calculé tout seul. Tu peux ajouter ton émotion, une note et une capture du graphique.'],
+        links: [L('Nouveau trade', 'NouveauTrade.dc.html')] },
+      { id: 'comptes', cat: 'start', q: 'Comment ajouter ou supprimer un compte de trading ?', k: 'compte ajouter supprimer prop firm demo capital',
+        paras: ['Depuis le sélecteur de comptes en haut du Journal et des Statistiques, ou dans Paramètres > Comptes et brokers. Indique le type (réel, prop firm ou démo), la plateforme et le capital de départ : il sert à calculer tes rendements en %.'],
+        links: [L('Gérer mes comptes', 'Parametres.dc.html', set('comptes'))] },
+      { id: 'r', cat: 'journal', q: 'Que veut dire « R » dans mes résultats ?', k: 'r risque multiple resultat unite',
+        paras: ['R, c’est ton résultat rapporté à ce que tu as risqué. Si tu risques 100 € (la distance entre ton entrée et ton stop) et que tu gagnes 200 €, le trade fait +2 R. Un stop touché fait −1 R.', 'Mesurer en R permet de comparer des trades de tailles différentes. Il faut un stop loss sur le trade pour le calculer.'],
+        links: [] },
+      { id: 'quinze', cat: 'journal', q: 'Pourquoi certains conseils n’apparaissent pas ?', k: '15 trades conseils coach meilleur creneau message',
+        paras: ['Toutes tes statistiques s’affichent dès le premier trade. En revanche, les conseils rédigés (meilleure session, meilleur créneau, analyses du coach) n’apparaissent qu’à partir de 15 trades sur la sélection en cours, pour que les conclusions soient fiables. Élargis la période ou sélectionne plus de comptes pour les voir.'],
+        links: [L('Voir mes statistiques', 'Statistiques.dc.html')] },
+      { id: 'calc', cat: 'journal', q: 'Comment sont calculés les rendements et le drawdown ?', k: 'drawdown rendement pourcentage capital frais calcul',
+        paras: ['Les rendements et le drawdown en % sont calculés sur le capital des comptes sélectionnés. Les frais et commissions sont inclus dans le résultat net. Le drawdown est la plus forte baisse depuis un sommet sur la période choisie.'],
+        links: [] },
+      { id: 'export', cat: 'journal', q: 'Comment exporter mon journal ?', k: 'exporter export csv excel pdf rapport',
+        paras: ['Dans le Journal, onglet « Exporter » : CSV pour tous, Excel et rapport PDF avec Premium. Tu peux aussi télécharger toutes tes données d’un coup dans Paramètres > Données et confidentialité.'],
+        links: [L('Ouvrir le Journal', 'Journal.dc.html')] },
+      { id: 'btstart', cat: 'bt', q: 'Comment lancer une session de backtest ?', k: 'backtest session replay lancer nouvelle',
+        paras: ['Dans Backtesting, clique sur « Nouvelle session ». Choisis jusqu’à 4 actifs, l’unité de temps, la période, ton capital et ton risque par trade. Le replay avance bougie par bougie : tu places tes ordres comme en direct, sans voir la suite.'],
+        links: [L('Ouvrir le Backtesting', 'Backtesting.dc.html')] },
+      { id: 'btsep', cat: 'bt', q: 'Mes trades de test sont-ils mélangés à mes vrais trades ?', k: 'backtest separe reel statistiques melange',
+        paras: ['Non. Les trades de backtest ont leurs propres statistiques, séparées de ton journal. L’onglet « Réel vs backtest » compare les deux sur les mêmes actifs.'],
+        links: [] },
+      { id: 'btfree', cat: 'bt', q: 'Que comprend le backtest de l’offre gratuite ?', k: 'gratuit backtest limite session premium',
+        paras: ['Une session complète : 1 actif sur 3 mois d’historique, vitesse x1 et x2, avec la vue d’ensemble des statistiques. Premium débloque les sessions illimitées, jusqu’à 4 actifs, toute la période, la vitesse x4, toutes les statistiques et la comparaison avec le réel.'],
+        links: [L('Voir les offres', 'Tarifs.dc.html')] },
+      { id: 'filtres', cat: 'news', q: 'Comment filtrer les annonces par pays ou par importance ?', k: 'filtre pays importance news annonces calendrier',
+        paras: ['Dans News, le bouton « Filtres » permet de choisir l’importance (forte, moyenne, faible), les pays affichés et de ne garder que tes actifs. Les filtres s’appliquent au calendrier et aux actualités.'],
+        links: [L('Ouvrir les News', 'News.dc.html')] },
+      { id: 'alerte', cat: 'news', q: 'Comment créer une alerte avant une annonce ?', k: 'alerte notification annonce prevenir',
+        paras: ['Ouvre une annonce dans le calendrier et clique sur « Me prévenir avant », ou utilise le bouton « Créer une alerte ». Tu choisis le délai et le canal : appli ou e-mail. Les alertes se gèrent dans l’onglet Alertes.'],
+        links: [L('Ouvrir les News', 'News.dc.html')] },
+      { id: 'coachdata', cat: 'coach', q: 'Sur quelles données s’appuie le coach IA ?', k: 'coach donnees ia analyse',
+        paras: ['Sur les trades de ton journal, pour les comptes et la période sélectionnés, et sur les émotions que tu notes. Il rédige ses analyses à partir de 15 trades. Tu peux désactiver l’analyse de tes trades dans Paramètres > Préférences.'],
+        links: [L('Ouvrir le Coach IA', 'CoachIA.dc.html')] },
+      { id: 'coachadv', cat: 'coach', q: 'Le coach me dit-il quoi acheter ou vendre ?', k: 'conseil investissement acheter vendre coach',
+        paras: ['Non. Le coach analyse ton comportement et tes résultats passés, explique le trading et décrit l’actualité des marchés avec des scénarios. Il ne donne aucun conseil en investissement ni aucune recommandation d’achat ou de vente.'],
+        links: [L('Avertissement sur les risques', 'Legal.dc.html', legal('risques'))] },
+      { id: 'resil', cat: 'sub', q: 'Comment résilier mon abonnement ?', k: 'resilier resiliation abonnement annuler arreter',
+        paras: ['Dans Paramètres > Abonnement, clique sur « Résilier l’abonnement » puis confirme. Tu gardes Premium jusqu’à la fin de la période payée, sans nouveau prélèvement, puis ton compte passe à l’offre gratuite. Tes données sont conservées.'],
+        links: [L('Gérer mon abonnement', 'Parametres.dc.html', set('sub'))] },
+      { id: 'factures', cat: 'sub', q: 'Où trouver mes factures ?', k: 'facture factures recu paiement telecharger',
+        paras: ['Toutes tes factures sont dans Paramètres > Abonnement > Factures, à télécharger en PDF. Une copie t’est aussi envoyée par e-mail à chaque paiement.'],
+        links: [L('Mes factures', 'Parametres.dc.html', set('sub'))] },
+      { id: 'rembourse', cat: 'sub', q: 'Puis-je être remboursé ?', k: 'rembourser remboursement retractation 14 jours',
+        paras: ['Si tu es un particulier, tu disposes de 14 jours après ta souscription pour te rétracter. Si tu as utilisé Premium pendant ce délai, seule la part correspondant aux jours utilisés est conservée. Les détails sont dans les conditions générales de vente.'],
+        links: [L('Conditions générales de vente', 'Legal.dc.html', legal('cgv'))] },
+      { id: 'mdp', cat: 'data', q: 'Comment changer de mot de passe ou activer la double authentification ?', k: 'mot de passe double authentification securite 2fa connexion',
+        paras: ['Dans Paramètres > Sécurité. Tu peux aussi y voir les appareils connectés à ton compte et les déconnecter.'],
+        links: [L('Sécurité du compte', 'Parametres.dc.html', set('secu'))] },
+      { id: 'secu', cat: 'data', q: 'Mes données sont-elles en sécurité ?', k: 'securite donnees chiffrement confidentialite hebergement',
+        paras: ['Tes données sont chiffrées pendant leur transfert et leur stockage, hébergées dans l’Union européenne, et ne sont jamais vendues. Les connexions aux brokers se font en lecture seule : personne ne peut passer d’ordre depuis [NOM].'],
+        links: [L('Politique de confidentialité', 'Legal.dc.html', legal('confid'))] },
+      { id: 'suppr', cat: 'data', q: 'Comment exporter ou supprimer toutes mes données ?', k: 'supprimer compte exporter donnees rgpd effacer',
+        paras: ['Dans Paramètres > Données et confidentialité : « Exporter mes données » t’envoie un fichier ZIP complet, « Supprimer mon compte » efface ton compte et tes données sous 30 jours.'],
+        links: [L('Mes données', 'Parametres.dc.html', set('data'))] }
+    ];
+  }
+  renderVals() {
+    var self = this, s = this.state;
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var soft = this.soft(accent, 0.13), aLine = this.soft(accent, 0.38);
+    var CATS = [
+      ['start', 'Bien démarrer', 'M5 3l14 9-14 9z', accent],
+      ['journal', 'Journal et statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', '#7FD1E8'],
+      ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', '#F5A65B'],
+      ['news', 'News et alertes', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '#B794F6'],
+      ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', '#3DDC97'],
+      ['sub', 'Compte et abonnement', 'M3 6h18v12H3zM3 10h18M7 15h4', '#F5C26B'],
+      ['data', 'Sécurité et données', 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z', '#FF9A8E']
+    ];
+    var CM = {}; CATS.forEach(function (c) { CM[c[0]] = c; });
+    var ART = this.articles(), q = this.norm(s.q).trim();
+    var words = q ? q.split(/\s+/) : [];
+    var shown = ART.filter(function (a) {
+      if (s.cat !== 'all' && a.cat !== s.cat) return false;
+      if (!words.length) return true;
+      var hay = self.norm(a.q + ' ' + a.k + ' ' + a.paras.join(' ') + ' ' + (a.list || []).join(' '));
+      return words.every(function (w) { return hay.indexOf(w) >= 0; });
+    });
+    var w = function (t) { return { t: t }; };
+    var faq = shown.map(function (a) {
+      var op = s.open === a.id, fb = s.fb[a.id], c = CM[a.cat];
+      var setFb = function (v) { return function () { var o = Object.assign({}, self.state.fb); o[a.id] = v; self.setState({ fb: o }); }; };
+      return { q: a.q, cat: c[1], cBg: self.soft(c[3], 0.14), cFg: c[3], open: op, expanded: op ? 'true' : 'false', rot: op ? 'rotate(180deg)' : 'none', bg: op ? '#111724' : 'transparent',
+        paras: a.paras.map(w), list: (a.list || []).map(w), hasList: !!(a.list && a.list.length), links: a.links,
+        askFb: !fb, fbYes: fb === 'oui', fbNo: fb === 'non', yes: setFb('oui'), no: setFb('non'),
+        pick: function () { self.setState({ open: self.state.open === a.id ? null : a.id }); } };
+    });
+    var cats = CATS.map(function (c) {
+      var on = s.cat === c[0], n = ART.filter(function (a) { return a.cat === c[0]; }).length;
+      return { l: c[1], icon: c[2], n: n + ' article' + (n > 1 ? 's' : ''), pressed: on ? 'true' : 'false', bd: on ? c[3] : '#1D2433', bg: on ? 'linear-gradient(135deg, ' + self.soft(c[3], 0.14) + ', #0E131D 70%)' : '#0E131D', ibg: on ? c[3] : self.soft(c[3], 0.14), ic: on ? '#0A0D14' : c[3],
+        pick: function () { self.setState({ cat: self.state.cat === c[0] ? 'all' : c[0], open: null }); } };
+    });
+    var filtered = s.cat !== 'all' || !!q;
+    var NAV_ON = 'help';
+    var navDef = [
+      { title: '', items: [['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', 'Dashboard.dc.html']] },
+      { title: 'OUTILS', items: [
+        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
+        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html'],
+        ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', 'Backtesting.dc.html'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', 'News.dc.html', '2', 'warn'],
+        ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', 'CoachIA.dc.html', 'NOUVEAU', 'accent']
+      ] },
+      { title: 'COMPTE', items: [
+        ['set', 'Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4', 'Parametres.dc.html'],
+        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01', 'Aide.dc.html'],
+        ['assist', 'Assistance', 'M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zM20 14h-3v6h2a1 1 0 0 0 1-1z', 'Assistance.dc.html']
+      ] }
+    ];
+    var navGroups = navDef.map(function (g) {
+      return { title: g.title, items: g.items.map(function (x) {
+        var on = x[0] === NAV_ON;
+        return { label: x[1], icon: x[2], href: x[3], badge: x[4] || '', bBg: x[5] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: x[5] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false' };
+      }) };
+    });
+
+    return {
+      accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
+      heroBg: 'linear-gradient(135deg, ' + this.soft(accent, 0.14) + ', #0E131D 60%)', avatarBg: 'linear-gradient(135deg, ' + accent + ', #B794F6)',
+      q: s.q, onQ: function (ev) { self.setState({ q: ev.target.value, open: null }); },
+      popular: ['résilier', 'importer', 'factures', 'R'].map(function (p) { return { l: p, pick: function () { self.setState({ q: p, cat: 'all', open: null }); } }; }),
+      cats: cats, faq: faq, empty: shown.length === 0, filtered: filtered,
+      listTitle: s.cat !== 'all' ? CM[s.cat][1] : q ? 'Résultats de la recherche' : 'Questions fréquentes',
+      listCount: shown.length + ' article' + (shown.length > 1 ? 's' : ''),
+      reset: function () { self.setState({ q: '', cat: 'all' }); },
+      steps: [
+        { n: '1', t: 'Importer tes trades', d: 'Connexion broker, fichier ou saisie manuelle.', href: 'Importer.dc.html' },
+        { n: '2', t: 'Lire tes statistiques', d: 'Heures, sessions, actifs : ce qui marche pour toi.', href: 'Statistiques.dc.html' },
+        { n: '3', t: 'Suivre ta piste de la semaine', d: 'Le coach te propose un seul point à améliorer.', href: 'CoachIA.dc.html' }
+      ],
+      shortcuts: [
+        { l: 'Gérer mon abonnement', href: 'Parametres.dc.html', go: function () { self.go('set', { sec: 'sub' }); } },
+        { l: 'Télécharger mes factures', href: 'Parametres.dc.html', go: function () { self.go('set', { sec: 'sub' }); } },
+        { l: 'Exporter toutes mes données', href: 'Parametres.dc.html', go: function () { self.go('set', { sec: 'data' }); } },
+        { l: 'Conditions générales de vente', href: 'Legal.dc.html', go: function () { self.sset('tj.legal', 'cgv'); } }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

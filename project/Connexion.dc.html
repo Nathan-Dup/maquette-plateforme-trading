@@ -101,7 +101,7 @@ button,input{font-family:inherit}
 <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #C9D3E6; cursor: pointer"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #6E8BFF">Rester connecté</label>
 </sc-if>
 <sc-if value="{{signup}}" hint-placeholder-val="{{true}}">
-<label style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; color: #A3AEC2; cursor: pointer"><input type="checkbox" style="flex: none; width: 18px; height: 18px; margin-top: 1px; accent-color: #6E8BFF"><span>J'accepte les <a href="Main.dc.html" style="color: #EEF1F6; text-decoration: underline">conditions d'utilisation</a> et la <a href="Main.dc.html" style="color: #EEF1F6; text-decoration: underline">politique de confidentialité</a>.</span></label>
+<label style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; color: #A3AEC2; cursor: pointer"><input type="checkbox" style="flex: none; width: 18px; height: 18px; margin-top: 1px; accent-color: #6E8BFF"><span>J'accepte les <a href="Legal.dc.html" onClick="{{lg.cgu}}" style="color: #EEF1F6; text-decoration: underline">conditions d'utilisation</a> et la <a href="Legal.dc.html" onClick="{{lg.confid}}" style="color: #EEF1F6; text-decoration: underline">politique de confidentialité</a>.</span></label>
 </sc-if>
 
 <sc-if value="{{signup}}" hint-placeholder-val="{{true}}">
@@ -153,7 +153,7 @@ button,input{font-family:inherit}
 
 <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #6F7A90">
 <span>© 2026 [NOM]</span>
-<span style="display: flex; gap: 18px"><a href="Main.dc.html" style="color: #8A95AA">Confidentialité</a><a href="Main.dc.html" style="color: #8A95AA">CGU</a><a href="Main.dc.html" style="color: #8A95AA">Aide</a></span>
+<span style="display: flex; gap: 18px"><a href="Legal.dc.html" onClick="{{lg.confid}}" style="color: #8A95AA">Confidentialité</a><a href="Legal.dc.html" onClick="{{lg.cgu}}" style="color: #8A95AA">CGU</a><a href="Aide.dc.html" style="color: #8A95AA">Aide</a></span>
 </div>
 </main>
 
@@ -227,6 +227,7 @@ class Component extends DCLogic {
     var LAB = ['', 'Faible', 'Moyen', 'Bon', 'Excellent'];
     var strength = [0, 1, 2, 3].map(function (i) { return i < score ? COL[score] : '#1D2433'; });
     return {
+      lg: (function () { var f = function (t) { return function () { try { window.sessionStorage.setItem('tj.legal', t); } catch (e) {} }; }; return { mentions: f('mentions'), cgu: f('cgu'), cgv: f('cgv'), confid: f('confid'), cookies: f('cookies'), risques: f('risques') }; })(),
       accent: accent, accentSoft: this.soft(accent, 0.14), rootClass: anim ? '' : 'noanim',
       tabs: tabs, signup: signup, login: login,
       showForm: signup || login, reset: mode === 'reset', done: mode === 'done',

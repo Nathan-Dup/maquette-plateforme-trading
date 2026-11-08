@@ -357,8 +357,8 @@ h1,h2,h3{text-wrap:balance}
 </div>
 <div style="display: flex; gap: 56px; flex-wrap: wrap; font-size: 14px">
 <div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Produit</span><a href="#journal">Journal</a><a href="#backtesting">Backtesting</a><a href="#news">News</a><a href="#coach">Coach IA</a></div>
-<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Ressources</span><a href="Main.dc.html">Académie</a><a href="Main.dc.html">Blog</a><a href="Main.dc.html">Centre d'aide</a></div>
-<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Légal</span><a href="Main.dc.html">CGU / CGV</a><a href="Main.dc.html">Confidentialité</a><a href="Main.dc.html">Mentions légales</a></div>
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Ressources</span><a href="Main.dc.html">Académie</a><a href="Main.dc.html">Blog</a><a href="Aide.dc.html">Centre d'aide</a></div>
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="color: #EEF1F6; font-weight: 600">Légal</span><a href="Legal.dc.html" onClick="{{lg.cgu}}">CGU</a><a href="Legal.dc.html" onClick="{{lg.cgv}}">CGV</a><a href="Legal.dc.html" onClick="{{lg.confid}}">Confidentialité</a><a href="Legal.dc.html" onClick="{{lg.cookies}}">Gérer mes cookies</a><a href="Legal.dc.html" onClick="{{lg.mentions}}">Mentions légales</a><a href="Legal.dc.html" onClick="{{lg.risques}}">Avertissement sur les risques</a></div>
 </div>
 </div>
 <div style="max-width: 1200px; margin: 0 auto; padding: 20px 24px 36px; border-top: 1px solid #1A2130; font-size: 12px; line-height: 1.6; color: #8A95AA">Le trading comporte un risque élevé de perte en capital. [NOM] fournit des outils d'analyse et ne constitue pas un conseil en investissement. © 2026 [NOM]</div>
@@ -502,6 +502,7 @@ class Component extends DCLogic {
     ];
 
     return {
+      lg: (function () { var f = function (t) { return function () { try { window.sessionStorage.setItem('tj.legal', t); } catch (e) {} }; }; return { mentions: f('mentions'), cgu: f('cgu'), cgv: f('cgv'), confid: f('confid'), cookies: f('cookies'), risques: f('risques') }; })(),
       rootRef: this.rootRef, accent: accent, rootClass: anim ? '' : 'noanim',
       tools: tools, kstats: kstats, dims: dims, rows: rows, insight: DATA[s.dim].ins,
       jfeat: jfeat, candles: candles, mz: mz, bfeat: bfeat, markets: markets,

@@ -33,7 +33,7 @@ a{color:#A3AEC2}a:hover{color:#FFFFFF}
 <span style="padding: 12px 18px; border-radius: 12px; background: #151B28; border: 1px solid #2A3346; font-size: 15px">Tarifs</span>
 <span style="padding: 12px 18px; border-radius: 12px; background: #151B28; border: 1px solid #2A3346; font-size: 15px">Académie / Blog</span>
 <span style="padding: 12px 18px; border-radius: 12px; background: {{accentSoft}}; border: 1px solid {{accent}}; font-size: 15px; font-weight: 600">Inscription / Connexion</span>
-<span style="padding: 12px 18px; border-radius: 12px; background: #151B28; border: 1px solid #2A3346; font-size: 15px; color: #A3AEC2">Pages légales (CGU, RGPD, mentions)</span>
+<a href="Legal.dc.html" style="padding: 12px 18px; border-radius: 12px; background: #151B28; border: 1px solid #2A3346; font-size: 15px; color: #A3AEC2">Pages légales (mentions, CGU, CGV, confidentialité, cookies)</a>
 </div>
 </section>
 
@@ -99,7 +99,7 @@ class Component extends DCLogic {
         { name: 'News', phase: 'Phase 2', pbg: p2.bg, pfg: p2.fg, desc: 'Tout ce qui fait bouger les marchés.', items: ['Calendrier économique', "Résultats d'entreprises", 'Actus éco et géopolitiques', 'Alertes personnalisées'] },
         { name: 'Backtesting', phase: 'Phase 3', pbg: p3.bg, pfg: p3.fg, desc: 'Tester une stratégie avant de risquer son argent.', items: ['Mes sessions', 'Replay graphique', 'Statistiques du backtest', 'Comparaison backtest / réel'] },
         { name: 'Coach IA', phase: 'Phase 3', pbg: p3.bg, pfg: p3.fg, desc: 'Un coach qui lit ton journal et explique les marchés.', items: ['Bilan et pistes à tester', 'Questions sur tes trades', 'Questions sur le trading', 'Analyses éco, macro et géopolitiques'] },
-        { name: 'Compte', phase: '', pbg: '', pfg: '', desc: 'Réglages et abonnement.', items: ['Profil', 'Abonnement (Stripe)', 'Connexions brokers', 'Préférences'] }
+        { name: 'Compte', phase: '', pbg: '', pfg: '', desc: 'Réglages, aide et assistance.', items: ['Paramètres et abonnement', 'Sécurité et données', 'Centre d’aide', 'Assistance IA et e-mail'] }
       ]
     };
   }

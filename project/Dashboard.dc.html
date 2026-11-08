@@ -820,13 +820,14 @@ class Component extends DCLogic {
       ] },
       { title: 'COMPTE', items: [
         ['set', 'Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4'],
-        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01']
+        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01'],
+        ['assist', 'Assistance', 'M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zM20 14h-3v6h2a1 1 0 0 0 1-1z']
       ] }
     ];
     var navGroups = navDef.map(function (g) {
       return { title: g.title, items: g.items.map(function (n) {
         var on = s.nav === n[0];
-        return { label: n[1], icon: n[2], badge: n[3] || '', href: ({ journal: 'Journal.dc.html', stats: 'Statistiques.dc.html', bt: 'Backtesting.dc.html', news: 'News.dc.html', coach: 'CoachIA.dc.html' })[n[0]] || '#top', bBg: n[4] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: n[4] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false', pick: function () { if (n[0] !== 'journal' && n[0] !== 'stats' && n[0] !== 'bt' && n[0] !== 'news' && n[0] !== 'marche') self.setState({ nav: n[0] }); } };
+        return { label: n[1], icon: n[2], badge: n[3] || '', href: ({ journal: 'Journal.dc.html', stats: 'Statistiques.dc.html', bt: 'Backtesting.dc.html', news: 'News.dc.html', coach: 'CoachIA.dc.html', set: 'Parametres.dc.html', help: 'Aide.dc.html', assist: 'Assistance.dc.html' })[n[0]] || '#top', bBg: n[4] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: n[4] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false', pick: function () { if (n[0] !== 'journal' && n[0] !== 'stats' && n[0] !== 'bt' && n[0] !== 'news' && n[0] !== 'marche') self.setState({ nav: n[0] }); } };
       }) };
     });
 
