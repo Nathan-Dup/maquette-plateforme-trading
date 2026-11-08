@@ -21,6 +21,7 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 | `project/Backtesting.dc.html` | Backtesting : mes sessions, nouvelle session, réel vs backtest |
 | `project/Replay.dc.html` | Backtesting : replay bougie par bougie avec prise de positions |
 | `project/News.dc.html` | News : calendrier économique, résultats d'entreprises, actualités, alertes |
+| `project/CoachIA.dc.html` | Coach IA : mon trading (bilan, pistes, questions sur tes trades), questions sur le trading, analyses des marchés |
 | `project/news-logic.js` | Calculs communs liés aux news (surprises, trades près des news) |
 | `project/donnees-exemple.js` | Données d'exemple du calendrier et des prix (à remplacer par une vraie source) |
 | `project/canvas.json` | Disposition des écrans sur le canevas |
@@ -62,6 +63,11 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 - Calendrier économique avec un calendrier du mois : chaque jour affiche des points de couleur selon l'importance des annonces. On clique un jour pour voir ses annonces, en vue Jour ou Semaine, avec les flèches et le bouton « Aujourd'hui ». La liste « À venir · impact fort » montre les prochaines grosses annonces. En vue Jour, le bloc « À suivre » affiche en compact les prochains jours qui ont des annonces.
 - Bouton « Filtres » : mes actifs seulement, importance (forte, moyenne, faible), pays à afficher ou masquer. Les filtres s'appliquent au calendrier et aux actualités.
 - Onglets Résultats d'entreprises, Actualités et Alertes. Données d'exemple du 2 novembre au 18 décembre 2026.
+
+**Coach IA**, en 3 espaces :
+1. Mon trading : score sur 100 (rentabilité, régularité, discipline, émotions), bilan rédigé, « piste à tester cette semaine » que l'on peut suivre, observations du coach (sessions, émotions, comportement après une perte, nombre de trades par jour, actifs, jours de la semaine) avec un lien vers le bon onglet des Statistiques, et une conversation « Pose une question sur tes trades » qui répond avec les vrais chiffres de la sélection. Mêmes trades, comptes et période que le Journal ; rien n'est rédigé sous 15 trades.
+2. Questions trading : conversation sur le trading en général (bases, gestion du risque, psychologie, annonces, prop firms), avec exemples chiffrés. Dans la maquette, seules les questions de la liste « Sujets » ont une réponse complète.
+3. Analyses des marchés : le point du jour, les taux des banques centrales et leurs prochaines décisions, et des analyses économie / macro / géopolitique avec contexte, points surveillés, scénarios (réactions souvent observées, pas des prévisions) et rendez-vous du calendrier. Les chiffres sont cohérents avec le calendrier de la page News.
 
 **Offre gratuite et Premium (backtest)** : en gratuit, 1 session de backtest, 1 actif, 3 mois d'historique, vitesse x1 et x2, et seulement la vue d'ensemble des statistiques. Premium : sessions illimitées, jusqu'à 4 actifs, toute la période, vitesse x4, toutes les statistiques et la comparaison réel vs backtest. Le détail est sur la page Tarifs.
 

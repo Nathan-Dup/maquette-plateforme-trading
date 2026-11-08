@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Coach IA</title>
+<script src="./support.js"></script>
+<script src="./news-logic.js"></script>
+<script src="./donnees-exemple.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0D14}
+a{color:#A3AEC2;text-decoration:none}a:hover{color:#FFFFFF}
+button,input,select{font-family:inherit}
+.h{font-family:'Space Grotesk',Inter,system-ui,sans-serif;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{animation:fu .7s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}
+@keyframes sl{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.open{animation:sl .3s ease both}
+@keyframes puo{0%{box-shadow:0 0 0 0 rgba(245,166,91,.6)}100%{box-shadow:0 0 0 9px rgba(245,166,91,0)}}
+.puo{animation:puo 1.8s ease-out infinite}
+.nav{transition:background .2s,color .2s}.nav:hover{background:#131927;color:#EEF1F6}
+.chip{transition:background .2s,color .2s,border-color .2s}
+.btn{transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28;border-color:#36415B}
+.row{transition:background .2s}.row:hover{background:#121826 !important}
+.scard{transition:border-color .25s,transform .25s}.scard:hover{border-color:#36415B !important;transform:translateY(-2px)}
+.cd{transition:border-color .15s,background .15s}.cd:hover{border-color:#36415B !important}
+.inp:focus{outline:none;border-color:#6E8BFF !important;box-shadow:0 0 0 3px rgba(110,139,255,.2)}
+.sw{transition:background .2s}.sw span{transition:transform .2s}
+.noanim *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+.mcard{transition:transform .25s,box-shadow .25s,border-color .25s}.mcard:hover{transform:translateY(-2px)}
+@keyframes td{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.tdot{width:6px;height:6px;border-radius:3px;background:#A3AEC2;animation:td 1.2s infinite ease-in-out}.tdot:nth-child(2){animation-delay:.15s}.tdot:nth-child(3){animation-delay:.3s}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(110,139,255,.6)}100%{box-shadow:0 0 0 8px rgba(110,139,255,0)}}.pu{animation:pu 1.8s ease-out infinite}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="background: #0A0D14; color: #EEF1F6; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; min-height: 100vh">
+<aside style="flex: 1 1 248px; background: #0B0F17; border-right: 1px solid #171D2A; padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px">
+<span style="width: 32px; height: 32px; border-radius: 9px; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"></path><rect x="4.5" y="7" width="5" height="8" rx="1"></rect><rect x="14.5" y="10" width="5" height="6" rx="1"></rect></svg></span>
+<span class="h" style="font-size: 19px; font-weight: 700">[NOM]</span>
+</div>
+<nav aria-label="Menu de l'application" style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{navGroups}}" as="g" hint-placeholder-count="3">
+<div>
+<sc-if value="{{g.title}}" hint-placeholder-val="{{true}}"><div style="font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #6F7A90; padding: 0 12px 8px">{{g.title}}</div></sc-if>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="3">
+<a class="nav" href="{{n.href}}" aria-current="{{n.current}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; background: {{n.bg}}; color: {{n.fg}}; font-weight: {{n.fw}}">
+<span style="position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: {{n.bar}}"></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+<span style="flex: 1">{{n.label}}</span>
+<sc-if value="{{n.badge}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 999px; background: {{n.bBg}}; color: {{n.bFg}}">{{n.badge}}</span></sc-if>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid #1A2130">
+<span style="width: 34px; height: 34px; border-radius: 17px; background: #1D2433; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #DCE2EC">AM</span>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 600">Alex Martin</div><div style="font-size: 11px; color: #8A95AA">Premium · renouvellement le 6 déc.</div></div>
+</div>
+</aside>
+<main id="top" style="flex: 999 1 560px; min-width: 0; padding: 26px 36px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+
+<div class="fu" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+<div>
+<div style="font-size: 13px; color: #8A95AA">Outils · Coach IA</div>
+<h1 class="h" style="font-size: 30px; margin: 6px 0 0; font-weight: 700">Coach IA</h1>
+<p style="font-size: 14px; color: #A3AEC2; margin: 6px 0 0">Ton coach personnel : il analyse ton trading, répond à tes questions et décrypte l'actualité des marchés.</p>
+</div>
+<span style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid {{accentLine}}; background: {{accentSoft}}; font-size: 12px; font-weight: 600; color: #C9D3FF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10V7a6 6 0 0 1 12 0v3M5 10h14v11H5z"></path></svg>Tes données restent privées</span>
+</div>
+
+<div role="tablist" aria-label="Espaces du coach" class="fu d1" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<button class="mcard" type="button" role="tab" aria-selected="{{m.sel}}" onClick="{{m.pick}}" style="cursor: pointer; text-align: left; display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: 16px; border: 1px solid {{m.bd}}; background: {{m.bg}}; color: #EEF1F6; box-shadow: {{m.sh}}">
+<span style="flex: none; width: 42px; height: 42px; border-radius: 12px; background: {{m.ibg}}; color: {{m.ic}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.icon}}"></path></svg></span>
+<span style="min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 15px; font-weight: 700">{{m.t}}</span><span style="font-size: 12px; line-height: 1.45; color: #8A95AA">{{m.d}}</span></span>
+</button>
+</sc-for>
+</div>
+
+<!-- ============ MON TRADING ============ -->
+<sc-if value="{{isMoi}}" hint-placeholder-val="{{true}}">
+<section aria-label="Mon trading" class="fu d2" style="display: flex; flex-direction: column; gap: 18px">
+
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="font-size: 13px; color: #8A95AA">Analyse de <b style="color: #DCE2EC; font-weight: 600">{{moi.accL}}</b> · {{moi.periodL}} · {{moi.nL}}</div>
+<div role="group" aria-label="Période" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{periods}}" as="p" hint-placeholder-count="4">
+<button class="chip" type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; border-radius: 8px; min-height: 32px; background: {{p.bg}}; color: {{p.fg}}">{{p.l}}</button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: stretch">
+<section aria-label="Bilan du coach" style="flex: 999 1 560px; min-width: 0; background: {{heroBg}}; border: 1px solid #1D2433; border-radius: 20px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-wrap: wrap; gap: 24px; align-items: center">
+<div style="flex: none; position: relative; width: 132px; height: 132px">
+<svg width="132" height="132" viewBox="0 0 132 132" role="img" aria-label="{{moi.scoreAria}}"><circle cx="66" cy="66" r="56" fill="none" stroke="#1A2130" stroke-width="10"></circle><circle cx="66" cy="66" r="56" fill="none" stroke="{{moi.ringC}}" stroke-width="10" stroke-linecap="round" stroke-dasharray="{{moi.dash}}" transform="rotate(-90 66 66)"></circle></svg>
+<div style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center"><span class="h num" style="font-size: 34px; font-weight: 700; line-height: 1">{{moi.score}}</span><span style="font-size: 11px; color: #8A95AA; margin-top: 4px">score sur 100</span></div>
+</div>
+<div style="flex: 1 1 300px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap"><span style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA">BILAN DU COACH</span><sc-if value="{{moi.level}}" hint-placeholder-val="{{true}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 8px; border-radius: 6px; background: {{moi.levelBg}}; color: {{moi.levelFg}}">{{moi.level}}</span></sc-if></div>
+<p style="font-size: 15px; line-height: 1.6; color: #DCE2EC; margin: 8px 0 14px">{{moi.summary}}</p>
+<sc-if value="{{moi.showSubs}}" hint-placeholder-val="{{true}}">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 18px">
+<sc-for list="{{moi.subs}}" as="x" hint-placeholder-count="4">
+<div><div style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px"><span style="color: #A3AEC2">{{x.l}}</span><span class="num" style="font-weight: 700; color: #EEF1F6">{{x.v}}</span></div><div style="height: 6px; border-radius: 3px; background: #1A2130; margin-top: 6px; overflow: hidden"><span style="display: block; height: 100%; width: {{x.w}}%; background: {{x.c}}; border-radius: 3px"></span></div></div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<div style="flex: 1 1 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; border-top: 1px solid #1A2130; padding-top: 16px">
+<sc-for list="{{moi.kpis}}" as="k" hint-placeholder-count="4">
+<div><div style="font-size: 12px; color: #8A95AA">{{k.l}}</div><div class="h num" style="font-size: 22px; font-weight: 600; margin-top: 4px; color: {{k.c}}">{{k.v}}</div></div>
+</sc-for>
+</div>
+</section>
+
+<section aria-label="Piste de la semaine" style="flex: 1 1 300px; min-width: 0; background: #0E131D; border: 1px solid {{accentLine}}; border-radius: 20px; padding: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 0 0 4px {{accentGlow}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 8px"><span style="width: 28px; height: 28px; border-radius: 8px; background: {{accentSoft}}; color: #C9D3FF; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 7a5 5 0 1 0 0 10a5 5 0 1 0 0-10M12 11a1 1 0 1 0 0 2a1 1 0 1 0 0-2"></path></svg></span><span style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA">PISTE À TESTER CETTE SEMAINE</span></div>
+<div class="h" style="font-size: 19px; font-weight: 600; line-height: 1.35">{{obj.t}}</div>
+<div style="font-size: 13px; color: #A3AEC2; line-height: 1.55">{{obj.why}}</div>
+<sc-if value="{{obj.on}}" hint-placeholder-val="{{false}}">
+<div class="open" style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; background: #0B0F17; border: 1px solid #1D2433">
+<div style="display: flex; gap: 6px"><sc-for list="{{obj.days}}" as="d" hint-placeholder-count="5"><span title="{{d.l}}" style="flex: 1; height: 8px; border-radius: 4px; background: {{d.c}}"></span></sc-for></div>
+<div style="font-size: 12px; color: #8A95AA; line-height: 1.5">{{obj.prog}}</div>
+</div>
+</sc-if>
+<sc-if value="{{obj.can}}" hint-placeholder-val="{{true}}">
+<button class="{{obj.cls}}" type="button" onClick="{{obj.toggle}}" aria-pressed="{{obj.pressed}}" style="margin-top: auto; cursor: pointer; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px; border-radius: 11px; border: 1px solid {{obj.bd}}; background: {{obj.bg}}; color: {{obj.fg}}; font-size: 14px; font-weight: 700">{{obj.btn}}</button>
+</sc-if>
+</section>
+</div>
+
+<sc-if value="{{moi.few}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 18px 20px; border-radius: 16px; border: 1px dashed #2A3346; background: #0B0F17">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 12px; background: {{accentSoft}}; color: #C9D3FF; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span>
+<div style="flex: 1 1 320px; min-width: 0"><div style="font-size: 15px; font-weight: 600">Le coach a besoin d'un peu plus de trades</div><div style="font-size: 13px; color: #A3AEC2; margin-top: 4px; line-height: 1.5">{{moi.fewTxt}}</div></div>
+<button class="ghost" type="button" onClick="{{moi.widen}}" style="cursor: pointer; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Voir les 90 derniers jours</button>
+</div>
+</sc-if>
+
+<sc-if value="{{moi.hasIns}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 4px">
+<h2 class="h" style="font-size: 20px; margin: 0; font-weight: 600">Ce que le coach a repéré</h2>
+<span style="font-size: 12px; color: #8A95AA">{{moi.insSub}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px">
+<sc-for list="{{moi.ins}}" as="i" hint-placeholder-count="4">
+<article class="scard" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 18px; padding: 18px 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+<span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{i.tagBg}}; color: {{i.tagFg}}">{{i.tag}}</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: {{i.kc}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{i.kIcon}}"></path></svg>{{i.kind}}</span>
+</div>
+<h3 class="h" style="font-size: 17px; margin: 0; font-weight: 600; line-height: 1.35">{{i.title}}</h3>
+<div role="img" aria-label="{{i.aria}}" style="display: flex; flex-direction: column; gap: 7px">
+<sc-for list="{{i.bars}}" as="b" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: 104px minmax(0, 1fr) 62px; gap: 10px; align-items: center; font-size: 12px">
+<span style="color: #A3AEC2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{b.l}}</span>
+<span style="position: relative; height: 8px; border-radius: 4px; background: #151B27; overflow: hidden"><span style="position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: #2A3346"></span><span style="position: absolute; top: 0; bottom: 0; left: {{b.x}}%; width: {{b.w}}%; background: {{b.c}}; border-radius: 4px"></span></span>
+<span class="num" style="text-align: right; font-weight: 700; color: {{b.vc}}">{{b.v}}</span>
+</div>
+</sc-for>
+</div>
+<p style="font-size: 13px; line-height: 1.55; color: #A3AEC2; margin: 0">{{i.txt}}</p>
+<sc-if value="{{i.hasPiste}}" hint-placeholder-val="{{true}}"><div style="display: flex; gap: 8px; padding: 10px 12px; border-radius: 10px; background: {{accentSoft}}; border: 1px solid {{accentLine}}; font-size: 13px; line-height: 1.5; color: #DCE2EC"><b style="flex: none; color: #C9D3FF; font-weight: 700">Piste à tester :</b><span>{{i.piste}}</span></div></sc-if>
+<a href="Statistiques.dc.html" onClick="{{i.go}}" style="margin-top: auto; font-size: 13px; font-weight: 600; color: {{accent}}">{{i.link}} →</a>
+</article>
+</sc-for>
+</div>
+</sc-if>
+
+<section aria-label="Questions sur tes trades" style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: #0B1019; border-bottom: 1px solid #1A2130">
+<span style="flex: none; width: 34px; height: 34px; border-radius: 17px; background: {{avatarBg}}; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="#0A0D14" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span>
+<div style="min-width: 0"><h2 class="h" style="font-size: 16px; margin: 0; font-weight: 600">Pose une question sur tes trades</h2><div style="font-size: 12px; color: #8A95AA; margin-top: 2px">Le coach répond avec tes vrais chiffres, sur la sélection en cours.</div></div>
+</div>
+<sc-if value="{{chatA.has}}" hint-placeholder-val="{{false}}">
+<div ref="{{chatA.ref}}" aria-live="polite" style="max-height: 440px; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px">
+<sc-for list="{{chatA.msgs}}" as="m" hint-placeholder-count="2">
+<sc-if value="{{m.me}}" hint-placeholder-val="{{false}}"><div class="open" style="display: flex; justify-content: flex-end"><div style="max-width: 78%; padding: 10px 14px; border-radius: 14px 14px 4px 14px; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 500; line-height: 1.5">{{m.text}}</div></div></sc-if>
+<sc-if value="{{m.bot}}" hint-placeholder-val="{{true}}"><div class="open" style="display: flex; gap: 10px; align-items: flex-start"><span style="flex: none; width: 30px; height: 30px; border-radius: 15px; background: {{avatarBg}}; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="#0A0D14" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span><div style="max-width: 88%; min-width: 0; padding: 12px 16px; border-radius: 4px 14px 14px 14px; background: #121826; border: 1px solid #1D2433; font-size: 14px; line-height: 1.6; color: #DCE2EC; display: flex; flex-direction: column; gap: 8px">
+<sc-if value="{{m.title}}" hint-placeholder-val="{{true}}"><div style="font-size: 15px; font-weight: 700; color: #EEF1F6">{{m.title}}</div></sc-if>
+<sc-for list="{{m.paras}}" as="pp" hint-placeholder-count="1"><p style="margin: 0">{{pp.t}}</p></sc-for>
+<sc-if value="{{m.hasList}}" hint-placeholder-val="{{false}}"><ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px"><sc-for list="{{m.list}}" as="li" hint-placeholder-count="3"><li class="num">{{li.t}}</li></sc-for></ul></sc-if>
+<sc-if value="{{m.box}}" hint-placeholder-val="{{false}}"><div style="padding: 10px 12px; border-radius: 10px; background: #0B0F17; border: 1px solid #1D2433"><div style="font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; margin-bottom: 4px">{{m.boxT}}</div><div class="num" style="font-size: 13px; line-height: 1.55; color: #DCE2EC">{{m.box}}</div></div></sc-if>
+<sc-for list="{{m.after}}" as="pa" hint-placeholder-count="0"><p style="margin: 0">{{pa.t}}</p></sc-for>
+<sc-if value="{{m.piste}}" hint-placeholder-val="{{false}}"><div style="padding: 10px 12px; border-radius: 10px; background: {{accentSoft}}; border: 1px solid {{accentLine}}; font-size: 13px; line-height: 1.5"><b style="color: #C9D3FF">Piste à tester : </b>{{m.piste}}</div></sc-if>
+<sc-if value="{{m.link}}" hint-placeholder-val="{{false}}"><a href="{{m.href}}" onClick="{{m.go}}" style="font-size: 13px; font-weight: 600; color: {{accent}}">{{m.link}} →</a></sc-if>
+</div></div></sc-if>
+</sc-for>
+<sc-if value="{{chatA.typing}}" hint-placeholder-val="{{false}}"><div style="display: flex; gap: 10px; align-items: center"><span style="flex: none; width: 30px; height: 30px; border-radius: 15px; background: {{avatarBg}}; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="#0A0D14" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span><div role="status" aria-label="Le coach écrit" style="display: flex; gap: 5px; padding: 14px 16px; border-radius: 4px 14px 14px 14px; background: #121826; border: 1px solid #1D2433"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span></div></div></sc-if>
+</div>
+</sc-if>
+<div style="padding: 14px 20px 0; display: flex; gap: 8px; flex-wrap: wrap">
+<sc-for list="{{chatA.sugg}}" as="sg" hint-placeholder-count="4">
+<button class="chip" type="button" onClick="{{sg.pick}}" style="cursor: pointer; font-size: 12px; font-weight: 600; padding: 0 12px; min-height: 32px; border-radius: 999px; border: 1px solid #2A3346; background: transparent; color: #C9D3E6">{{sg.l}}</button>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; padding: 14px 20px 16px">
+<label for="in-chatA" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ta question</label>
+<input id="in-chatA" class="inp" type="text" autocomplete="off" value="{{chatA.q}}" onChange="{{chatA.onQ}}" onKeyDown="{{chatA.onKey}}" placeholder="Ta question sur tes trades, par exemple : quel jour me réussit le moins ?" style="flex: 1; min-width: 0; height: 46px; padding: 0 16px; border-radius: 12px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; box-sizing: border-box">
+<button class="btn" type="button" onClick="{{chatA.send}}" aria-label="Envoyer la question" style="cursor: pointer; flex: none; height: 46px; padding: 0 18px; border-radius: 12px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; opacity: {{chatA.sendOp}}">Envoyer<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</div>
+</section>
+
+</section>
+</sc-if>
+
+<!-- ============ QUESTIONS TRADING ============ -->
+<sc-if value="{{isQ}}" hint-placeholder-val="{{false}}">
+<section aria-label="Questions trading" class="fu d2" style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+
+<div style="flex: 999 1 560px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: #0B1019; border-bottom: 1px solid #1A2130">
+<span style="flex: none; width: 34px; height: 34px; border-radius: 17px; background: {{avatarBg}}; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="#0A0D14" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span>
+<div style="flex: 1; min-width: 0"><h2 class="h" style="font-size: 16px; margin: 0; font-weight: 600">Questions sur le trading</h2><div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #8A95AA; margin-top: 2px"><span style="width: 7px; height: 7px; border-radius: 4px; background: #3DDC97"></span>Disponible · réponses en français, avec des exemples</div></div>
+<sc-if value="{{chatB.has}}" hint-placeholder-val="{{false}}"><button class="ghost" type="button" onClick="{{chatB.reset}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Nouvelle conversation</button></sc-if>
+</div>
+<sc-if value="{{chatB.empty}}" hint-placeholder-val="{{true}}">
+<div style="padding: 36px 28px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px">
+<span style="width: 56px; height: 56px; border-radius: 18px; background: {{avatarBg}}; display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 40px {{accentGlow}}"><svg width="26" height="26" viewBox="0 0 24 24" fill="#0A0D14" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span>
+<h3 class="h" style="font-size: 22px; margin: 6px 0 0; font-weight: 600">Quelle est ta question ?</h3>
+<p style="font-size: 14px; color: #A3AEC2; margin: 0; max-width: 520px; line-height: 1.55">Bases, gestion du risque, psychologie, annonces économiques, prop firms : le coach explique simplement, avec des exemples chiffrés.</p>
+<div style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px; margin-top: 16px; text-align: left; max-width: 640px">
+<sc-for list="{{chatB.starters}}" as="st" hint-placeholder-count="4">
+<button class="scard" type="button" onClick="{{st.pick}}" style="cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 14px; border: 1px solid #1D2433; background: #0B0F17; color: #EEF1F6">
+<span style="font-size: 11px; font-weight: 700; letter-spacing: .04em; color: {{st.c}}">{{st.cat}}</span>
+<span style="font-size: 14px; font-weight: 600; line-height: 1.4">{{st.q}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{chatB.has}}" hint-placeholder-val="{{false}}">
+<div ref="{{chatB.ref}}" aria-live="polite" style="height: 520px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<sc-for list="{{chatB.msgs}}" as="m" hint-placeholder-count="2">
+<sc-if value="{{m.me}}" hint-placeholder-val="{{false}}"><div class="open" style="display: flex; justify-content: flex-end"><div style="max-width: 78%; padding: 10px 14px; border-radius: 14px 14px 4px 14px; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 500; line-height: 1.5">{{m.text}}</div></div></sc-if>
+<sc-if value="{{m.bot}}" hint-placeholder-val="{{true}}"><div class="open" style="display: flex; gap: 10px; align-items: flex-start"><span style="flex: none; width: 30px; height: 30px; border-radius: 15px; background: {{avatarBg}}; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="#0A0D14" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span><div style="max-width: 88%; min-width: 0; padding: 12px 16px; border-radius: 4px 14px 14px 14px; background: #121826; border: 1px solid #1D2433; font-size: 14px; line-height: 1.6; color: #DCE2EC; display: flex; flex-direction: column; gap: 8px">
+<sc-if value="{{m.title}}" hint-placeholder-val="{{true}}"><div style="font-size: 15px; font-weight: 700; color: #EEF1F6">{{m.title}}</div></sc-if>
+<sc-for list="{{m.paras}}" as="pp" hint-placeholder-count="1"><p style="margin: 0">{{pp.t}}</p></sc-for>
+<sc-if value="{{m.hasList}}" hint-placeholder-val="{{false}}"><ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px"><sc-for list="{{m.list}}" as="li" hint-placeholder-count="3"><li class="num">{{li.t}}</li></sc-for></ul></sc-if>
+<sc-if value="{{m.box}}" hint-placeholder-val="{{false}}"><div style="padding: 10px 12px; border-radius: 10px; background: #0B0F17; border: 1px solid #1D2433"><div style="font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; margin-bottom: 4px">{{m.boxT}}</div><div class="num" style="font-size: 13px; line-height: 1.55; color: #DCE2EC">{{m.box}}</div></div></sc-if>
+<sc-for list="{{m.after}}" as="pa" hint-placeholder-count="0"><p style="margin: 0">{{pa.t}}</p></sc-for>
+<sc-if value="{{m.piste}}" hint-placeholder-val="{{false}}"><div style="padding: 10px 12px; border-radius: 10px; background: {{accentSoft}}; border: 1px solid {{accentLine}}; font-size: 13px; line-height: 1.5"><b style="color: #C9D3FF">Piste à tester : </b>{{m.piste}}</div></sc-if>
+<sc-if value="{{m.link}}" hint-placeholder-val="{{false}}"><a href="{{m.href}}" onClick="{{m.go}}" style="font-size: 13px; font-weight: 600; color: {{accent}}">{{m.link}} →</a></sc-if>
+</div></div></sc-if>
+</sc-for>
+<sc-if value="{{chatB.typing}}" hint-placeholder-val="{{false}}"><div style="display: flex; gap: 10px; align-items: center"><span style="flex: none; width: 30px; height: 30px; border-radius: 15px; background: {{avatarBg}}; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="#0A0D14" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span><div role="status" aria-label="Le coach écrit" style="display: flex; gap: 5px; padding: 14px 16px; border-radius: 4px 14px 14px 14px; background: #121826; border: 1px solid #1D2433"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span></div></div></sc-if>
+</div>
+</sc-if>
+<div style="display: flex; gap: 10px; padding: 14px 20px 16px">
+<label for="in-chatB" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ta question</label>
+<input id="in-chatB" class="inp" type="text" autocomplete="off" value="{{chatB.q}}" onChange="{{chatB.onQ}}" onKeyDown="{{chatB.onKey}}" placeholder="Pose ta question sur le trading…" style="flex: 1; min-width: 0; height: 46px; padding: 0 16px; border-radius: 12px; background: #0B0F17; border: 1px solid #2A3346; color: #EEF1F6; font-size: 14px; box-sizing: border-box">
+<button class="btn" type="button" onClick="{{chatB.send}}" aria-label="Envoyer la question" style="cursor: pointer; flex: none; height: 46px; padding: 0 18px; border-radius: 12px; border: 0; background: {{accent}}; color: #0A0D14; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; opacity: {{chatB.sendOp}}">Envoyer<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</div>
+<div style="padding: 0 20px 14px; font-size: 11px; color: #6F7A90">Le coach explique et donne des exemples. Il ne dit jamais quoi acheter ou vendre.</div>
+</div>
+
+<aside aria-label="Sujets" style="flex: 1 1 280px; max-width: 360px; display: flex; flex-direction: column; gap: 14px">
+<div style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 16px 12px 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; padding: 0 8px 6px">SUJETS</div>
+<sc-for list="{{topics}}" as="tp" hint-placeholder-count="5">
+<div style="padding: 8px 0 6px; border-top: 1px solid #151B27">
+<div style="display: flex; align-items: center; gap: 8px; padding: 4px 8px; font-size: 13px; font-weight: 700; color: {{tp.c}}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{tp.icon}}"></path></svg>{{tp.l}}</div>
+<sc-for list="{{tp.qs}}" as="tq" hint-placeholder-count="2">
+<button class="row" type="button" onClick="{{tq.pick}}" style="cursor: pointer; width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 8px; border: 0; border-radius: 8px; background: transparent; color: #C9D3E6; font-size: 13px; line-height: 1.4">{{tq.q}}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5B6577" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M9 6l6 6-6 6"></path></svg></button>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</aside>
+</section>
+</sc-if>
+
+<!-- ============ ANALYSES DES MARCHÉS ============ -->
+<sc-if value="{{isM}}" hint-placeholder-val="{{false}}">
+<section aria-label="Analyses des marchés" class="fu d2" style="display: flex; flex-direction: column; gap: 18px">
+
+<sc-if value="{{mk.list}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: stretch">
+<section aria-label="Le point du jour" style="flex: 999 1 520px; min-width: 0; background: {{heroBg}}; border: 1px solid #1D2433; border-radius: 20px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap"><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA"><span class="pu" style="width: 7px; height: 7px; border-radius: 4px; background: {{accent}}"></span>LE POINT DU JOUR</span><span style="font-size: 12px; color: #8A95AA">{{mk.briefDate}}</span></div>
+<h2 class="h" style="font-size: 23px; margin: 0; font-weight: 600; line-height: 1.3">{{mk.briefTitle}}</h2>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{mk.brief}}" as="b" hint-placeholder-count="4">
+<li style="display: flex; gap: 10px; font-size: 14px; line-height: 1.55; color: #C9D3E6"><span style="flex: none; width: 6px; height: 6px; border-radius: 3px; background: {{b.c}}; margin-top: 8px"></span><span><b style="color: #EEF1F6; font-weight: 600">{{b.lead}} · </b>{{b.t}}</span></li>
+</sc-for>
+</ul>
+<div style="border-top: 1px solid #1A2130; padding-top: 14px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px"><span style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA">À L'AGENDA AUJOURD'HUI</span><a href="News.dc.html" style="font-size: 13px; font-weight: 600; color: {{accent}}">Ouvrir le calendrier →</a></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{mk.agenda}}" as="a" hint-placeholder-count="4">
+<a href="News.dc.html" class="chip" style="display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 10px; border: 1px solid #1D2433; background: #0B0F17; color: #DCE2EC; font-size: 12px"><span class="num" style="font-weight: 700">{{a.t}}</span><span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 5px; background: {{a.bg}}; color: {{a.fg}}">{{a.cur}}</span><span>{{a.title}}</span></a>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section aria-label="Banques centrales" style="flex: 1 1 340px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 20px 22px 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px"><span style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA">BANQUES CENTRALES</span><span style="font-size: 11px; color: #6F7A90">taux directeur</span></div>
+<sc-for list="{{mk.cb}}" as="c" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 10px 0; border-top: 1px solid #151B27">
+<div style="min-width: 0; display: flex; align-items: center; gap: 8px"><span style="flex: none; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 5px; background: #1A2130; color: #C9D3E6">{{c.cur}}</span><span style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{c.n}}</span></div>
+<span class="h num" style="font-size: 17px; font-weight: 600; text-align: right">{{c.rate}}</span>
+<span style="font-size: 12px; color: #8A95AA">Prochaine décision : {{c.next}}</span>
+<span style="font-size: 11px; font-weight: 700; text-align: right; color: {{c.ec}}">{{c.exp}}</span>
+</div>
+</sc-for>
+</section>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 4px">
+<h2 class="h" style="font-size: 20px; margin: 0; font-weight: 600">Analyses</h2>
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+<div role="group" aria-label="Thème" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{mk.cats}}" as="c" hint-placeholder-count="4">
+<button class="chip" type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 12px; min-height: 34px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}">{{c.l}}</button>
+</sc-for>
+</div>
+<button class="chip" type="button" onClick="{{mk.mine.pick}}" aria-pressed="{{mk.mine.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 0 12px; min-height: 34px; border-radius: 999px; border: 1px solid {{mk.mine.bd}}; background: {{mk.mine.bg}}; color: {{mk.mine.fg}}"><span style="width: 14px; height: 14px; box-sizing: border-box; border-radius: 4px; border: 1.5px solid {{mk.mine.bd}}; background: {{mk.mine.box}}; display: flex; align-items: center; justify-content: center"><sc-if value="{{mk.mine.on}}" hint-placeholder-val="{{false}}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span>Mes actifs</button>
+</div>
+</div>
+<sc-if value="{{mk.empty}}" hint-placeholder-val="{{false}}"><div style="padding: 36px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center; font-size: 14px; color: #A3AEC2">Aucune analyse sur ce thème pour tes actifs.</div></sc-if>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px">
+<sc-for list="{{mk.arts}}" as="a" hint-placeholder-count="6">
+<button class="scard" type="button" onClick="{{a.open}}" style="cursor: pointer; text-align: left; background: #0E131D; border: 1px solid #1D2433; border-radius: 18px; padding: 18px 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 10px; color: #EEF1F6">
+<span style="display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{a.catBg}}; color: {{a.catFg}}">{{a.cat}}</span><span style="font-size: 12px; color: #8A95AA">{{a.read}} de lecture</span></span><span style="font-size: 12px; color: #6F7A90">{{a.date}}</span></span>
+<span class="h" style="font-size: 18px; font-weight: 600; line-height: 1.35">{{a.title}}</span>
+<span style="font-size: 13px; line-height: 1.55; color: #A3AEC2">{{a.chapo}}</span>
+<span style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{a.tags}}" as="tg" hint-placeholder-count="3"><span style="font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: {{tg.bg}}; color: {{tg.fg}}">{{tg.l}}</span></sc-for></span>
+<span style="margin-top: auto; font-size: 13px; font-weight: 600; color: {{accent}}">Lire l'analyse →</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{mk.reading}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
+<article class="open" style="flex: 999 1 600px; min-width: 0; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 26px 30px 30px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); display: flex; flex-direction: column; gap: 18px">
+<button class="ghost" type="button" onClick="{{mk.back}}" style="cursor: pointer; align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>Toutes les analyses</button>
+<div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: {{rd.catBg}}; color: {{rd.catFg}}">{{rd.cat}}</span><span style="font-size: 12px; color: #8A95AA">{{rd.date}} · {{rd.read}} de lecture</span></div>
+<h2 class="h" style="font-size: 28px; margin: 12px 0 0; font-weight: 700; line-height: 1.25">{{rd.title}}</h2>
+<p style="font-size: 16px; line-height: 1.6; color: #A3AEC2; margin: 12px 0 0">{{rd.chapo}}</p>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 14px"><span style="font-size: 12px; color: #8A95AA; margin-right: 4px">Actifs concernés</span><sc-for list="{{rd.tags}}" as="tg" hint-placeholder-count="3"><span style="font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: {{tg.bg}}; color: {{tg.fg}}">{{tg.l}}</span></sc-for></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 14px; background: {{accentSoft}}; border: 1px solid {{accentLine}}">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #C9D3FF; margin-bottom: 8px">EN BREF</div>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.55; color: #DCE2EC"><sc-for list="{{rd.brief}}" as="b" hint-placeholder-count="3"><li>{{b.t}}</li></sc-for></ul>
+</div>
+<sc-for list="{{rd.secs}}" as="sc" hint-placeholder-count="2">
+<div>
+<h3 class="h" style="font-size: 18px; margin: 0 0 8px; font-weight: 600">{{sc.h}}</h3>
+<sc-for list="{{sc.paras}}" as="p" hint-placeholder-count="1"><p style="margin: 0 0 8px; font-size: 15px; line-height: 1.65; color: #C9D3E6">{{p.t}}</p></sc-for>
+<sc-if value="{{sc.hasList}}" hint-placeholder-val="{{false}}"><ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.6; color: #C9D3E6"><sc-for list="{{sc.list}}" as="li" hint-placeholder-count="3"><li>{{li.t}}</li></sc-for></ul></sc-if>
+</div>
+</sc-for>
+<div>
+<h3 class="h" style="font-size: 18px; margin: 0 0 4px; font-weight: 600">Scénarios</h3>
+<p style="margin: 0 0 12px; font-size: 13px; color: #8A95AA">Réactions souvent observées par le passé, pas des prévisions.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px">
+<sc-for list="{{rd.scen}}" as="x" hint-placeholder-count="2">
+<div style="padding: 14px 16px; border-radius: 14px; background: #0B0F17; border: 1px solid #1D2433; display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 14px; font-weight: 600; line-height: 1.4">{{x.si}}</div>
+<sc-for list="{{x.fx}}" as="f" hint-placeholder-count="2">
+<div style="display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.45; color: #A3AEC2"><span style="flex: none; display: inline-flex; align-items: center; gap: 4px; min-width: 76px; font-weight: 700; color: {{f.c}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.icon}}"></path></svg>{{f.a}}</span><span>{{f.t}}</span></div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+<div>
+<h3 class="h" style="font-size: 18px; margin: 0 0 10px; font-weight: 600">À l'agenda</h3>
+<div style="display: flex; flex-direction: column; border: 1px solid #1D2433; border-radius: 14px; overflow: hidden">
+<sc-for list="{{rd.agenda}}" as="ag" hint-placeholder-count="3">
+<a href="News.dc.html" class="row" style="display: grid; grid-template-columns: 96px 52px 50px minmax(0, 1fr); gap: 12px; align-items: center; padding: 11px 14px; border-top: 1px solid #151B27; color: #DCE2EC; font-size: 13px"><span style="color: #A3AEC2; font-weight: 600">{{ag.d}}</span><span class="num">{{ag.t}}</span><span style="justify-self: start; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 5px; background: #1A2130; color: #C9D3E6">{{ag.cur}}</span><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ag.title}}</span></a>
+</sc-for>
+</div>
+</div>
+<div style="font-size: 12px; line-height: 1.5; color: #6F7A90; border-top: 1px solid #1A2130; padding-top: 14px">Analyse rédigée par le coach IA à partir de l'actualité et du calendrier économique, à but d'information. Elle décrit des mécanismes et des scénarios, pas une recommandation d'achat ou de vente.</div>
+</article>
+<aside aria-label="Autres analyses" style="flex: 1 1 260px; max-width: 340px; background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; padding: 16px 12px 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; padding: 0 8px 8px">AUTRES ANALYSES</div>
+<sc-for list="{{mk.others}}" as="o" hint-placeholder-count="4">
+<button class="row" type="button" onClick="{{o.open}}" style="cursor: pointer; width: 100%; text-align: left; display: flex; flex-direction: column; gap: 4px; padding: 10px 8px; border: 0; border-top: 1px solid #151B27; border-radius: 0; background: transparent; color: #EEF1F6">
+<span style="font-size: 11px; font-weight: 700; color: {{o.catFg}}">{{o.cat}} · <span style="color: #6F7A90; font-weight: 500">{{o.date}}</span></span>
+<span style="font-size: 13px; font-weight: 600; line-height: 1.4">{{o.title}}</span>
+</button>
+</sc-for>
+</aside>
+</div>
+</sc-if>
+</section>
+</sc-if>
+
+<div style="font-size: 11px; color: #6F7A90">Le coach IA analyse tes données et explique les marchés à but d'information. Il ne donne pas de conseil en investissement. Données d'exemple pour la maquette.</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#6E8BFF","options":["#6E8BFF","#3DDC97","#F5C26B","#B794F6"]},"animations":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":1700}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var self = this;
+    var T = this.gen();
+    this.enrich(T);
+    this.base = T;
+    this.lastAdded = this.sget('tj.added') || '';
+    this.trades = this.withAdded(this.lastAdded);
+    var sp = this.sget('tj.period');
+    var mode = 'moi';
+    try { var o = JSON.parse(this.sget('tj.go') || 'null'); if (o && o.to === 'coach' && Date.now() - o.t < 15000) { this.sset('tj.go', null); if (o.mode) mode = o.mode; } } catch (e) {}
+    this.refA = function (el) { self.elA = el; };
+    this.refB = function (el) { self.elB = el; };
+    this.state = {
+      mode: mode, period: ['7j', '30j', '90j', 'tout'].indexOf(sp) >= 0 ? sp : '30j', accs: this.loadAccs(), accSel: this.loadSel(),
+      objOn: this.sget('tj.coachObj') === '1', qa: '', msgsA: [], typA: false, qb: '', msgsB: [], typB: false, cat: 'all', mineM: false, art: null
+    };
+  }
+  componentDidMount() { try { window.scrollTo(0, 0); } catch (e) {} }
+  componentDidUpdate() {
+    var s = this.state, kA = s.msgsA.length + (s.typA ? 'x' : ''), kB = s.msgsB.length + (s.typB ? 'x' : '');
+    if (kA !== this.kA) { this.kA = kA; if (this.elA) this.elA.scrollTop = this.elA.scrollHeight; }
+    if (kB !== this.kB) { this.kB = kB; if (this.elB) this.elB.scrollTop = this.elB.scrollHeight; }
+  }
+  componentWillUnmount() { clearTimeout(this.tA); clearTimeout(this.tB); }
+  sget(k) { try { return window.sessionStorage.getItem(k); } catch (e) { return null; } }
+  sset(k, v) { try { if (v === null) window.sessionStorage.removeItem(k); else window.sessionStorage.setItem(k, v); } catch (e) {} }
+  go(to, extra) { var o = { to: to, t: Date.now() }; for (var k in (extra || {})) o[k] = extra[k]; this.sset('tj.go', JSON.stringify(o)); }
+  defAccounts() {
+    return [
+      { id: 'live', name: 'Compte réel', type: 'Réel', plat: 'MetaTrader 5', cap: 20000, c: '#3DDC97' },
+      { id: 'prop', name: 'Challenge prop firm', type: 'Prop firm', plat: 'MetaTrader 5', cap: 50000, c: '#F5C26B' },
+      { id: 'demo', name: 'Compte démo', type: 'Démo', plat: 'cTrader', cap: 10000, c: '#8FA6FF' }
+    ];
+  }
+  loadAccs() { try { var l = JSON.parse(this.sget('tj.accounts') || 'null'); if (l && l.length) return l; } catch (e) {} return this.defAccounts(); }
+  loadSel() { try { var l = JSON.parse(this.sget('tj.accSel') || 'null'); if (l && l.length) return l; } catch (e) {} return ['all']; }
+  selIds(st) {
+    var ids = st.accs.map(function (a) { return a.id; });
+    var sel = st.accSel.indexOf('all') >= 0 ? ids : st.accSel.filter(function (x) { return ids.indexOf(x) >= 0; });
+    return sel.length ? sel : ids;
+  }
+  accOf(t) { if (t.acc) return t.acc; var h = (t.id * 7919) % 13; if (t.t >= Date.UTC(2026, 8, 1) && h < 4) return 'prop'; if (h >= 11) return 'demo'; return 'live'; }
+  rng(seed) { var s = seed; return function () { s = (s * 1664525 + 1013904223) % 4294967296; return s / 4294967296; }; }
+  // Même liste de trades que le Journal (même tirage, mêmes ajustements autour des news).
+  gen() {
+    var r = this.rng(42), out = [], day = Date.UTC(2026, 10, 6), id = 0;
+    var A = [['EUR/USD', 'fx'], ['GBP/USD', 'fx'], ['USD/JPY', 'fx'], ['XAU/USD', 'co'], ['WTI', 'co'], ['BTC/USD', 'cr'], ['ETH/USD', 'cr'], ['NAS100', 'st'], ['CAC 40', 'st'], ['NVDA', 'st']];
+    var EMO = ['Calme', 'Confiant', 'FOMO', 'Stressé', 'Impatient'], EW = [0.36, 0.24, 0.14, 0.14, 0.12], guard = 0;
+    while (out.length < 230 && guard < 400) {
+      guard++;
+      var dow = new Date(day).getUTCDay();
+      if (dow !== 0 && dow !== 6) {
+        var n = Math.floor(r() * 3.3);
+        for (var k = 0; k < n; k++) {
+          var a = A[Math.floor(r() * A.length)];
+          var x = r(), e = 0, acc = 0;
+          for (var j = 0; j < EW.length; j++) { acc += EW[j]; if (x < acc) { e = j; break; } }
+          var emo = EMO[e], rs = r();
+          var ses = rs < 0.2 ? 'Asie' : rs < 0.6 ? 'Londres' : 'New York';
+          var p = emo === 'Calme' ? 0.62 : emo === 'Confiant' ? 0.57 : emo === 'Stressé' ? 0.42 : 0.33;
+          if (ses === 'Londres') p += 0.05;
+          if (ses === 'Asie') p -= 0.07;
+          var win = r() < p;
+          var R = win ? Math.round((1 + r() * 1.9) * 10) / 10 : (r() < 0.2 ? -0.5 : -1);
+          var hour = ses === 'Asie' ? 2 + Math.floor(r() * 5) : ses === 'Londres' ? 9 + Math.floor(r() * 4) : 14 + Math.floor(r() * 5);
+          out.push({ t: day + hour * 3600000 + Math.floor(r() * 12) * 300000, sym: a[0], mk: a[1], ses: ses, emo: emo, R: R, pnl: R * 200, id: ++id });
+        }
+      }
+      day -= 86400000;
+    }
+    var TJ = window.TJNews;
+    if (TJ && TJ.exemple && out.length) {
+      var lo = Infinity, hi = -Infinity, rN = this.rng(7), OFF = [-20, -10, -5, 5, 10, 20];
+      out.forEach(function (t) { if (t.t < lo) lo = t.t; if (t.t > hi) hi = t.t; });
+      var pubs = TJ.exemple.publicationsPeriode(lo - 86400000, hi + 86400000), fortes = {};
+      out.forEach(function (t) {
+        if (t.ses !== 'New York') return;
+        if (!fortes[t.sym]) fortes[t.sym] = TJ.newsFortesPour(t.sym, pubs);
+        var jd = Math.floor(t.t / 86400000);
+        var nw = fortes[t.sym].filter(function (p) { var loc = p.t + TJ.outils.decalageParis(p.t) * 3600000, h = new Date(loc).getUTCHours(); return Math.floor(loc / 86400000) === jd && h >= 14 && h < 19; })[0];
+        if (!nw) return;
+        t.t = nw.t + TJ.outils.decalageParis(nw.t) * 3600000 + OFF[Math.floor(rN() * OFF.length)] * 60000;
+      });
+    }
+    out.sort(function (a, b) { return a.t - b.t; });
+    return out;
+  }
+  // Mêmes tirages que enrich() du Journal, pour garder le même sens et la même durée sur chaque trade.
+  enrich(T) {
+    var r = this.rng(99);
+    T.forEach(function (t) {
+      var win = t.R > 0;
+      t.dir = r() < 0.56 ? 'Long' : 'Short';
+      t.dur = 6 + Math.floor(r() * (win ? 210 : 90));
+      r(); r();
+      if (win || t.emo !== 'FOMO') r();
+      t.hour = new Date(t.t).getUTCHours();
+      t.dow = new Date(t.t).getUTCDay();
+    });
+  }
+  withAdded(str) {
+    var l = []; try { l = JSON.parse(str || '[]') || []; } catch (e) { l = []; }
+    l.forEach(function (t) {
+      var d = new Date(t.t); t.hour = d.getUTCHours(); t.dow = d.getUTCDay();
+      if (!t.ses) t.ses = t.hour < 8 ? 'Asie' : t.hour < 14 ? 'Londres' : 'New York';
+      if (t.pnl === undefined) t.pnl = (t.R || 0) * 200;
+    });
+    return this.base.concat(l).sort(function (a, b) { return a.t - b.t; });
+  }
+  selection(s) {
+    var self = this, ids = this.selIds(s), DAY = 86400000, END = Date.UTC(2026, 10, 6, 23, 59);
+    var days = { '7j': 7, '30j': 30, '90j': 90, 'tout': 0 }[s.period];
+    return this.trades.filter(function (t) { return ids.indexOf(self.accOf(t)) >= 0 && (!days || t.t > END - days * DAY); });
+  }
+  fR(r) { return (r >= 0 ? '+' : '−') + Math.abs(r).toFixed(2).replace('.', ',') + ' R'; }
+  fEur(v) { return (v >= 0 ? '+' : '−') + Math.abs(Math.round(v)).toLocaleString('fr-FR') + ' €'; }
+  soft(hex, a) {
+    var h = String(hex || '#6E8BFF').replace('#', '');
+    if (h.length === 3) { h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; }
+    var n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+
+  // ---------- Analyse des trades : tout ce que le coach dit vient d'ici
+  analyse(F) {
+    var self = this, DAY = 86400000;
+    var st = function (L) { var n = L.length, w = 0, sR = 0, pnl = 0; L.forEach(function (t) { if (t.R > 0) w++; sR += t.R; pnl += t.pnl; }); return { n: n, w: w, wr: n ? w / n * 100 : 0, e: n ? sR / n : 0, pnl: pnl }; };
+    var G = st(F);
+    var by = function (kf, keys, min) {
+      var m = {};
+      F.forEach(function (t) { var k = kf(t); if (k === null || k === undefined) return; (m[k] = m[k] || []).push(t); });
+      return (keys || Object.keys(m)).map(function (k) { var x = st(m[k] || []); x.k = k; return x; }).filter(function (x) { return x.n >= (min || 4); });
+    };
+    // contexte de chaque trade : rang dans la journée, trade précédent
+    var ctx = {}, perDay = {};
+    F.forEach(function (t, i) {
+      var dk = Math.floor(t.t / DAY), L = perDay[dk] = perDay[dk] || [];
+      var p1 = L[L.length - 1], p2 = L[L.length - 2];
+      ctx[t.id] = { rank: L.length + 1, prevLoss: !!p1 && p1.R <= 0, prevWin: !!p1 && p1.R > 0, twoLoss: !!p1 && !!p2 && p1.R <= 0 && p2.R <= 0, quick: !!p1 && p1.R <= 0 && t.t - p1.t < 30 * 60000 };
+      L.push(t);
+    });
+    var nDays = Object.keys(perDay).length;
+    var ses = by(function (t) { return t.ses; }, ['Asie', 'Londres', 'New York']);
+    var emo = by(function (t) { return t.emo; }, ['Calme', 'Confiant', 'Stressé', 'Impatient', 'FOMO']);
+    var sym = by(function (t) { return t.sym; }, null, 5).sort(function (a, b) { return b.e - a.e; });
+    var JN = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    var dow = by(function (t) { return t.dow >= 1 && t.dow <= 5 ? JN[t.dow] : null; }, ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'], 5);
+    var rank = by(function (t) { var r = ctx[t.id].rank; return r === 1 ? '1er trade du jour' : r === 2 ? '2e trade' : '3e trade et plus'; }, ['1er trade du jour', '2e trade', '3e trade et plus']);
+    var after = by(function (t) { var c = ctx[t.id]; return c.twoLoss ? 'Après 2 pertes' : c.prevLoss ? 'Après une perte' : c.prevWin ? 'Après un gain' : null; }, ['Après un gain', 'Après une perte', 'Après 2 pertes'], 3);
+    var aLossAll = st(F.filter(function (t) { return ctx[t.id].prevLoss; }));
+    var quick = st(F.filter(function (t) { return ctx[t.id].quick; }));
+    // drawdown en R
+    var cum = 0, peak = 0, dd = 0; F.forEach(function (t) { cum += t.R; if (cum > peak) peak = cum; if (peak - cum > dd) dd = peak - cum; });
+    // évolution : 1re moitié contre 2e moitié
+    var half = Math.floor(F.length / 2), h1 = st(F.slice(0, half)), h2 = st(F.slice(half));
+    var p3 = F.length ? F.filter(function (t) { return ctx[t.id].rank >= 3; }).length / F.length : 0;
+    var calmShare = F.length ? F.filter(function (t) { return t.emo === 'Calme' || t.emo === 'Confiant'; }).length / F.length : 0;
+    return { G: G, ses: ses, emo: emo, sym: sym, dow: dow, rank: rank, after: after, aLossAll: aLossAll, quick: quick, dd: dd, h1: h1, h2: h2, p3: p3, calmShare: calmShare, nDays: nDays, perDayAvg: nDays ? F.length / nDays : 0 };
+  }
+  sesName(k) { return k === 'Asie' ? 'asiatique' : k === 'Londres' ? 'de Londres' : 'de New York'; }
+  insights(A) {
+    var self = this, fR = this.fR.bind(this), out = [], G = A.G;
+    var best = function (L) { return L.slice().sort(function (a, b) { return b.e - a.e; })[0]; };
+    var worst = function (L) { return L.slice().sort(function (a, b) { return a.e - b.e; })[0]; };
+    if (A.ses.length >= 2) {
+      var b = best(A.ses), w = worst(A.ses), bad = w.e < 0 && b.e - w.e > 0.2;
+      out.push({ tag: 'Heures et sessions', sub: 'hr', bad: bad, list: A.ses,
+        title: bad ? 'La session ' + this.sesName(w.k) + ' te coûte de l’argent' : 'La session ' + this.sesName(b.k) + ' est ta meilleure fenêtre',
+        txt: 'En session ' + this.sesName(b.k) + ', tu fais ' + fR(b.e) + ' par trade sur ' + b.n + ' trades' + (bad ? ', contre ' + fR(w.e) + ' sur les ' + w.n + ' trades de la session ' + this.sesName(w.k) + '.' : '. C’est ta session la plus rentable.'),
+        piste: bad ? 'réduire tes trades en session ' + this.sesName(w.k) + ' pendant 2 semaines, puis comparer.' : '',
+        goodS: 'la session ' + this.sesName(b.k) + ' (' + fR(b.e) + ' par trade)', badS: 'la session ' + this.sesName(w.k) + ' (' + fR(w.e) + ' par trade)',
+        impact: (b.e - w.e) * Math.min(b.n, w.n) });
+    }
+    if (A.emo.length >= 2) {
+      var calm = A.emo.filter(function (x) { return x.k === 'Calme'; })[0] || best(A.emo), we = worst(A.emo), badE = we.e < 0;
+      out.push({ tag: 'Émotions', sub: 'be', bad: badE, list: A.emo,
+        title: badE ? 'En état « ' + we.k + ' », tes trades deviennent perdants' : 'Tes émotions pèsent peu sur tes résultats',
+        txt: 'Tes ' + we.n + ' trades pris en état « ' + we.k + ' » font ' + fR(we.e) + ' par trade, contre ' + fR(calm.e) + ' quand tu es « ' + calm.k + ' ».',
+        piste: badE ? 'quand tu te sens « ' + we.k + ' », une pause de 10 minutes avant d’entrer.' : '',
+        goodS: 'les trades pris en état « ' + calm.k + ' » (' + fR(calm.e) + ')', badS: 'les trades pris en état « ' + we.k + ' » (' + fR(we.e) + ')',
+        impact: Math.max(0, calm.e - we.e) * we.n });
+    }
+    if (A.after.length >= 2) {
+      var al = A.after.filter(function (x) { return x.k !== 'Après un gain'; }), wa = worst(al.length ? al : A.after), badA = wa.e < G.e - 0.15;
+      out.push({ tag: 'Comportement', sub: 'be', bad: badA, list: A.after,
+        title: badA ? (wa.k === 'Après 2 pertes' ? 'Après 2 pertes d’affilée, ton résultat chute' : 'Après une perte, ton résultat baisse nettement') : 'Tes pertes ne perturbent pas tes trades suivants',
+        txt: badA ? wa.k + ', tu fais ' + fR(wa.e) + ' par trade (' + wa.n + ' trades), contre ' + fR(G.e) + ' en moyenne.' : 'Après une perte, tu fais ' + fR(A.aLossAll.e) + ' par trade, proche de ta moyenne (' + fR(G.e) + ').',
+        piste: badA ? 'une pause de 15 minutes après une perte, et l’arrêt de la séance après 2 pertes d’affilée.' : '',
+        goodS: 'ta réaction après une perte', badS: 'les trades pris juste après une perte (' + fR(wa.e) + ')',
+        impact: Math.max(0, G.e - wa.e) * wa.n });
+    }
+    var r3x = A.rank.filter(function (x) { return x.k === '3e trade et plus'; })[0];
+    if (A.rank.length >= 2 && r3x) {
+      var r1 = A.rank[0], r3 = r3x, badR = r3.e < r1.e - 0.2;
+      out.push({ tag: 'Comportement', sub: 'be', bad: badR, list: A.rank,
+        title: badR ? 'Tes résultats baissent à partir du 3e trade de la journée' : 'Ton nombre de trades par jour ne te pénalise pas',
+        txt: 'Tu prends en moyenne ' + A.perDayAvg.toFixed(1).replace('.', ',') + ' trades par jour de trading. ' + (r3 ? 'À partir du 3e trade, tu fais ' + fR(r3.e) + ' par trade, contre ' + fR(r1.e) + ' sur le 1er.' : ''),
+        piste: badR ? '2 trades maximum par jour pendant une semaine.' : '',
+        goodS: 'ton 1er trade de la journée (' + fR(r1.e) + ')', badS: r3 ? 'les trades à partir du 3e de la journée (' + fR(r3.e) + ')' : '',
+        impact: r3 ? Math.max(0, r1.e - r3.e) * r3.n : 0 });
+    }
+    if (A.sym.length >= 2) {
+      var bs = A.sym[0], ws = A.sym[A.sym.length - 1], badS = ws.e < 0;
+      var four = A.sym.length > 4 ? A.sym.slice(0, 2).concat(A.sym.slice(-2)) : A.sym;
+      out.push({ tag: 'Actifs', sub: 'as', bad: badS, list: four,
+        title: badS ? ws.k + ' te coûte de l’argent' : bs.k + ' est ton actif le plus rentable',
+        txt: bs.k + ' est ton actif le plus rentable (' + fR(bs.e) + ' par trade sur ' + bs.n + ' trades)' + (badS ? ', alors que ' + ws.k + ' fait ' + fR(ws.e) + ' sur ' + ws.n + ' trades.' : '.'),
+        piste: badS ? 'une taille réduite sur ' + ws.k + ' le temps de comprendre ce qui ne marche pas.' : '',
+        goodS: bs.k + ' (' + fR(bs.e) + ' par trade)', badS: ws.k + ' (' + fR(ws.e) + ' par trade)',
+        impact: badS ? (bs.e - ws.e) * ws.n : (bs.e - ws.e) * 2 });
+    }
+    if (A.dow.length >= 3) {
+      var bd = best(A.dow), wd = worst(A.dow), badD = wd.e < 0;
+      out.push({ tag: 'Jours de la semaine', sub: 'hr', bad: badD, list: A.dow,
+        title: badD ? 'Le ' + wd.k.toLowerCase() + ' est ton jour le plus difficile' : 'Le ' + bd.k.toLowerCase() + ' est ton meilleur jour',
+        txt: 'Le ' + bd.k.toLowerCase() + ', tu fais ' + fR(bd.e) + ' par trade' + (badD ? ', contre ' + fR(wd.e) + ' le ' + wd.k.toLowerCase() + ' (' + wd.n + ' trades).' : '.'),
+        piste: badD ? 'une taille réduite le ' + wd.k.toLowerCase() + ' pendant 2 semaines, puis comparer.' : '',
+        goodS: 'le ' + bd.k.toLowerCase() + ' (' + fR(bd.e) + ')', badS: 'le ' + wd.k.toLowerCase() + ' (' + fR(wd.e) + ')',
+        impact: badD ? (bd.e - wd.e) * wd.n * 0.8 : 0 });
+    }
+    out.sort(function (a, b) { return (b.bad - a.bad) || (b.impact - a.impact); });
+    return out;
+  }
+  score(A) {
+    var c = function (v) { return Math.max(0, Math.min(100, Math.round(v))); };
+    var aL = A.aLossAll.n ? A.aLossAll.e : A.G.e;
+    var subs = [
+      { l: 'Rentabilité', v: c(50 + A.G.e * 60) },
+      { l: 'Régularité', v: c(100 - A.dd * 5) },
+      { l: 'Discipline', v: c(92 - A.p3 * 60 - Math.max(0, A.G.e - aL) * 50) },
+      { l: 'Gestion des émotions', v: c(A.calmShare * 100 + 10) }
+    ];
+    var tot = Math.round(subs.reduce(function (x, s) { return x + s.v; }, 0) / subs.length);
+    return { subs: subs, tot: tot };
+  }
+
+  // ---------- Questions sur tes trades (réponses calculées sur la sélection)
+  norm(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  answerA(text) {
+    var self = this, s = this.state, F = this.selection(s), A = this.analyse(F), fR = this.fR.bind(this), q = this.norm(text);
+    var mk = function (o) { return Object.assign({ bot: true, title: '', paras: [], list: [], hasList: false, box: '', boxT: '', after: [], piste: '', link: '', href: '', go: null }, o); };
+    var row = function (x) { return { t: x.k + ' : ' + fR(x.e) + ' par trade · ' + Math.round(x.wr) + ' % de réussite · ' + x.n + ' trades' }; };
+    var lnk = function (sub, label) { return { link: label, href: 'Statistiques.dc.html', go: function () { self.sset('tj.period', s.period); self.go('stats', { tab: 'stats', stSub: sub, period: s.period }); } }; };
+    if (F.length < 15) return mk({ title: 'Il me faut un peu plus de trades', paras: [{ t: 'Sur cette sélection, tu as ' + F.length + ' trade' + (F.length > 1 ? 's' : '') + '. À partir de 15, je peux te répondre avec des chiffres fiables. Essaie une période plus longue en haut de la page.' }] });
+    var has = function (w) { return w.some(function (x) { return q.indexOf(x) >= 0; }); };
+    var sortE = function (L) { return L.slice().sort(function (a, b) { return b.e - a.e; }); };
+    if (has(['session', 'heure', 'creneau', 'londres', 'asie', 'new york', 'moment'])) {
+      var S = sortE(A.ses);
+      return mk(Object.assign({ title: 'Ta meilleure session : ' + S[0].k, paras: [{ t: 'Voici tes résultats par session sur ' + F.length + ' trades :' }], list: S.map(row), hasList: true,
+        after: [{ t: S[S.length - 1].e < 0 ? 'La session ' + this.sesName(S[S.length - 1].k) + ' est la seule où tu perds de l’argent en moyenne.' : 'Tu es rentable sur toutes les sessions.' }],
+        piste: S[S.length - 1].e < 0 ? 'réduire tes trades en session ' + this.sesName(S[S.length - 1].k) + ' pendant 2 semaines.' : '' }, lnk('hr', 'Voir Heures et sessions')));
+    }
+    if (has(['jour', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'semaine'])) {
+      var D = sortE(A.dow), wd = D[D.length - 1];
+      return mk(Object.assign({ title: wd.e < 0 ? 'Le ' + wd.k.toLowerCase() + ' est ton jour le plus difficile' : 'Ton jour le moins bon : le ' + wd.k.toLowerCase(), paras: [{ t: 'Tes résultats par jour de la semaine :' }], list: D.map(row), hasList: true,
+        piste: wd.e < 0 ? 'une taille réduite le ' + wd.k.toLowerCase() + ' pendant 2 semaines, puis comparer.' : '' }, lnk('hr', 'Voir les jours de la semaine')));
+    }
+    if (has(['perte', 'perdu', 'revenge', 'apres', 'serie'])) {
+      return mk(Object.assign({ title: 'Ce qui se passe après une perte', paras: [{ t: 'En moyenne, tu fais ' + fR(A.G.e) + ' par trade. Selon le trade qui précède :' }], list: A.after.map(row), hasList: true,
+        box: A.quick.n ? A.quick.n + ' trades pris moins de 30 minutes après une perte : ' + fR(A.quick.e) + ' par trade.' : '', boxT: 'TRADES PRIS TRÈS VITE',
+        piste: A.aLossAll.e < A.G.e - 0.15 ? 'une pause de 15 minutes après une perte, et l’arrêt de la séance après 2 pertes d’affilée.' : '' }, lnk('be', 'Voir Comportement')));
+    }
+    if (has(['trop', 'surtrad', 'nombre', 'combien', 'par jour'])) {
+      var r3 = A.rank.filter(function (x) { return x.k === '3e trade et plus'; })[0], r1 = A.rank[0];
+      return mk(Object.assign({ title: 'Ton rythme : ' + A.perDayAvg.toFixed(1).replace('.', ',') + ' trades par jour de trading', paras: [{ t: 'Tes résultats selon le rang du trade dans la journée :' }], list: A.rank.map(row), hasList: true,
+        after: [{ t: r3 && r3.e < r1.e - 0.2 ? 'Tes résultats baissent nettement à partir du 3e trade : c’est souvent le signe que la fatigue ou l’envie de se refaire prennent le dessus.' : 'Ton nombre de trades par jour ne pèse pas sur tes résultats.' }],
+        piste: r3 && r3.e < r1.e - 0.2 ? '2 trades maximum par jour pendant une semaine.' : '' }, lnk('be', 'Voir Comportement')));
+    }
+    if (has(['actif', 'paire', 'symbole', 'instrument', 'or ', 'xau', 'bitcoin', 'btc', 'eur', 'nas', 'cac', 'wti', 'gbp', 'coute', 'rapporte'])) {
+      var Y = A.sym, wy = Y[Y.length - 1];
+      return mk(Object.assign({ title: wy.e < 0 ? wy.k + ' est l’actif qui te coûte le plus' : Y[0].k + ' est ton actif le plus rentable', paras: [{ t: 'Tes actifs avec au moins 5 trades, du meilleur au moins bon :' }], list: Y.map(row), hasList: true,
+        piste: wy.e < 0 ? 'une taille réduite sur ' + wy.k + ' le temps de comprendre ce qui ne marche pas.' : '' }, lnk('as', 'Voir Actifs et sens')));
+    }
+    if (has(['emotion', 'fomo', 'stress', 'calme', 'ressens', 'impatien', 'confian', 'mental', 'psycho'])) {
+      var E = sortE(A.emo), we = E[E.length - 1];
+      return mk(Object.assign({ title: 'Tes résultats selon ton état émotionnel', paras: [{ t: 'D’après les émotions notées sur tes trades :' }], list: E.map(row), hasList: true,
+        piste: we.e < 0 ? 'quand tu te sens « ' + we.k + ' », une pause de 10 minutes avant d’entrer.' : '' }, lnk('be', 'Voir Comportement')));
+    }
+    if (has(['progres', 'evolution', 'mieux', 'ameliore', 'avance', 'evolue'])) {
+      var up = A.h2.e > A.h1.e + 0.05, down = A.h2.e < A.h1.e - 0.05;
+      return mk(Object.assign({ title: up ? 'Oui, tu progresses' : down ? 'Tes derniers trades sont moins bons' : 'Tes résultats sont stables', paras: [{ t: 'Comparaison entre la première et la seconde moitié de la période :' }],
+        list: [{ t: 'Première moitié : ' + fR(A.h1.e) + ' par trade · ' + Math.round(A.h1.wr) + ' % de réussite · ' + A.h1.n + ' trades' }, { t: 'Seconde moitié : ' + fR(A.h2.e) + ' par trade · ' + Math.round(A.h2.wr) + ' % de réussite · ' + A.h2.n + ' trades' }], hasList: true }, lnk('ev', 'Voir Évolution')));
+    }
+    return mk({ title: 'Je n’ai pas bien compris la question', paras: [{ t: 'Dans la maquette, je réponds sur tes sessions, tes jours de la semaine, tes actifs, tes émotions, ta réaction après une perte, ton nombre de trades par jour et ta progression. Dans le vrai produit, le coach comprendra toutes les formulations.' }] });
+  }
+  sendA(text) {
+    var self = this, t = String(text || '').trim();
+    if (!t || this.state.typA) return;
+    this.setState({ msgsA: this.state.msgsA.concat([{ me: true, text: t }]), qa: '', typA: true });
+    clearTimeout(this.tA);
+    this.tA = setTimeout(function () { self.setState({ msgsA: self.state.msgsA.concat([self.answerA(t)]), typA: false }); }, 900);
+  }
+
+  // ---------- Questions sur le trading (base de réponses de la maquette)
+  kb() {
+    return [
+      { id: 'taille', cat: 'risk', q: 'Comment calculer la taille de ma position ?', keys: ['taille', 'lot', 'position', 'sizing', 'combien risquer'],
+        title: 'La taille se calcule à partir de ton risque, pas l’inverse',
+        paras: ['Tu décides d’abord combien tu acceptes de perdre si ton stop est touché, puis tu en déduis la taille. Beaucoup de traders risquent entre 0,5 % et 1 % de leur capital par trade.'],
+        list: ['Risque en euros = capital × pourcentage de risque', 'Distance du stop, en pips ou en points', 'Taille = risque ÷ (distance du stop × valeur d’un pip pour 1 lot)'],
+        boxT: 'EXEMPLE CHIFFRÉ', box: 'Capital 10 000 € · risque 1 % = 100 €, soit environ 116 $. Stop à 20 pips sur EUR/USD : 1 lot standard vaut 10 $ par pip, donc 200 $ pour 20 pips. Taille : 116 ÷ 200 ≈ 0,58 lot.',
+        after: ['Si ton stop est plus large, la taille baisse : le montant risqué reste le même.'] },
+      { id: 'rr', cat: 'bases', q: 'C’est quoi le ratio risque / rendement ?', keys: ['ratio', 'risque rendement', 'risque/rendement', 'rr', 'risk reward', '1:2', 'multiple de r'],
+        title: 'Le ratio compare ce que tu vises à ce que tu risques',
+        paras: ['Un ratio de 1:2 veut dire que ton objectif est deux fois plus loin que ton stop : si tu risques 100 €, tu vises 200 €. On parle aussi de résultat en R : un trade qui atteint l’objectif rapporte +2 R, un stop touché coûte −1 R.'],
+        list: ['Ratio 1:1 : il faut plus de 50 % de réussite pour gagner de l’argent', 'Ratio 1:2 : le seuil tombe à 33 %', 'Ratio 1:3 : le seuil tombe à 25 %'],
+        boxT: 'LA FORMULE', box: 'Taux de réussite minimum = 1 ÷ (1 + ratio). Pour 1:2 : 1 ÷ 3 ≈ 33 %, avant frais.', after: [] },
+      { id: 'esp', cat: 'bases', q: 'C’est quoi l’espérance d’une stratégie ?', keys: ['esperance', 'expectancy', 'rapporte en moyenne'],
+        title: 'L’espérance, c’est ce que rapporte un trade en moyenne',
+        paras: ['Elle combine ton taux de réussite et la taille de tes gains et de tes pertes. Une espérance positive veut dire que, sur un grand nombre de trades, ta façon de trader gagne de l’argent. C’est l’un des chiffres les plus importants de tes statistiques.'],
+        list: [], boxT: 'EXEMPLE', box: '45 % de réussite, gain moyen +2 R, perte moyenne −1 R : 0,45 × 2 − 0,55 × 1 = +0,35 R par trade. Sur 100 trades à 100 € de risque : environ +3 500 €, avant frais.', after: [] },
+      { id: 'ordres', cat: 'bases', q: 'Quelle différence entre un ordre limite et un ordre stop ?', keys: ['ordre', 'limite', 'limit', 'buy stop', 'sell stop', 'au marche'],
+        title: 'Les deux attendent un prix, mais pas dans le même sens',
+        paras: ['Le stop loss que tu places sur un trade est justement un ordre stop : il ferme ta position si le prix va trop loin contre toi.'],
+        list: ['Ordre limite : exécuté à un prix plus favorable que le prix actuel. Un achat limite se place sous le prix, une vente limite au-dessus.', 'Ordre stop : déclenché quand le prix franchit un niveau. Un achat stop se place au-dessus du prix, une vente stop en dessous.', 'Ordre au marché : exécuté tout de suite, au meilleur prix disponible.'],
+        boxT: 'EXEMPLE', box: 'EUR/USD cote 1,1620. Achat limite à 1,1600 : tu achètes si le prix redescend. Achat stop à 1,1650 : tu achètes si le prix casse au-dessus.', after: [] },
+      { id: 'dd', cat: 'risk', q: 'Qu’est-ce que le drawdown ?', keys: ['drawdown', 'baisse du capital', 'perte max', 'dd'],
+        title: 'Le drawdown mesure la plus forte baisse depuis un sommet',
+        paras: ['Si ton compte passe de 10 000 € à 8 500 € avant de remonter, ton drawdown est de 15 %. Il dit combien il faut encaisser, financièrement et moralement, pour suivre ta façon de trader.'],
+        list: ['−10 % demande +11 % pour revenir au sommet', '−20 % demande +25 %', '−50 % demande +100 %'],
+        boxT: 'À RETENIR', box: 'Plus le drawdown est profond, plus il est long à rattraper. C’est pour ça que le risque par trade compte autant que le taux de réussite.', after: [] },
+      { id: 'levier', cat: 'risk', q: 'Comment fonctionne l’effet de levier ?', keys: ['levier', 'leverage', 'marge', 'margin'],
+        title: 'Le levier augmente la taille de position, donc les gains et les pertes',
+        paras: ['Avec un levier de 1:30, 1 000 € de marge permettent d’ouvrir une position de 30 000 €. Une variation de 1 % du prix représente alors 300 €, soit 30 % de la marge engagée.'],
+        list: [], boxT: 'À RETENIR', box: 'Si tu calcules ta taille à partir de ton stop, le levier ne change pas ton risque : il réduit seulement la marge bloquée. En Europe, le levier maximum pour les particuliers est de 1:30 sur les grandes paires de devises.', after: [] },
+      { id: 'serie', cat: 'psy', q: 'Comment gérer une série de pertes ?', keys: ['serie', 'pertes', 'perdre', 'tilt', 'revenge', 'mauvaise passe', 'moral'],
+        title: 'Une série de pertes est normale : ce qui compte, c’est ce que tu fais pendant',
+        paras: ['Même avec 55 % de réussite, plusieurs pertes d’affilée arrivent régulièrement sur quelques centaines de trades. Le vrai risque, ce n’est pas la série elle-même, mais les décisions prises sous le coup de la frustration.'],
+        list: ['Garder le même risque par trade, sans chercher à « se refaire »', 'Se fixer une perte maximum par jour, puis s’arrêter', 'Relire les trades perdants dans le journal : erreur ou simple aléa ?', 'Faire une pause après 2 ou 3 pertes d’affilée'],
+        boxT: 'LE SAVAIS-TU ?', box: 'Avec 50 % de réussite, il est très probable de vivre au moins une série de 5 pertes d’affilée sur 200 trades.', after: [] },
+      { id: 'routine', cat: 'psy', q: 'Comment construire une routine de trading ?', keys: ['routine', 'discipline', 'preparation', 'plan de trading', 'organisation'],
+        title: 'Une routine simple vaut mieux qu’un long rituel',
+        paras: ['L’idée est de répéter les mêmes étapes chaque jour pour décider à froid, avant que le marché ne bouge.'],
+        list: ['Avant : regarder le calendrier des annonces et noter ses niveaux importants', 'Pendant : ne prendre que les situations prévues, avec un risque fixe', 'Après : remplir le journal, noter son émotion et une leçon du jour', 'Chaque semaine : relire ses statistiques et choisir un seul point à améliorer'],
+        boxT: 'DANS LA PLATEFORME', box: 'Le bilan du coach et la « piste à tester » de la semaine te donnent ce point à améliorer.', after: [] },
+      { id: 'nfp', cat: 'mkt', q: 'Que se passe-t-il pendant le NFP ?', keys: ['nfp', 'emploi', 'annonce', 'news', '14:30', 'volatil', 'spread'],
+        title: 'Le NFP est l’une des annonces qui font le plus bouger les marchés',
+        paras: ['Publié en général le premier vendredi du mois à 14:30, heure de Paris, il donne le nombre d’emplois créés aux États-Unis le mois précédent. L’écart entre le chiffre publié et la prévision peut provoquer des mouvements rapides sur le dollar, l’or et les indices américains.'],
+        list: ['Les spreads s’élargissent souvent dans les secondes autour de la publication', 'Les ordres peuvent être exécutés à un prix différent de celui prévu (glissement)', 'Le premier mouvement est parfois effacé dans les minutes qui suivent'],
+        boxT: 'DANS LA PLATEFORME', box: 'Le calendrier de l’onglet News affiche la prévision, le précédent et la réaction passée de tes actifs. Ton journal montre aussi tes résultats sur les trades pris près des news.', after: [] },
+      { id: 'sessions', cat: 'mkt', q: 'Quelles sont les sessions de marché ?', keys: ['session', 'horaire', 'ouverture', 'asie', 'londres', 'new york', 'heures de marche'],
+        title: 'Le forex tourne en continu, en trois grandes sessions',
+        paras: ['Les horaires ci-dessous sont en heure de Paris et peuvent bouger d’une heure selon les changements d’heure.'],
+        list: ['Asie (Tokyo, Sydney) : de 1:00 à 10:00 environ, souvent plus calme', 'Londres : de 9:00 à 18:00, la session la plus active sur le forex', 'New York : de 14:00 à 23:00, avec les annonces américaines de 14:30 et 16:00'],
+        boxT: 'LE MOMENT LE PLUS ACTIF', box: 'Le chevauchement Londres – New York, de 14:00 à 18:00 environ, concentre une grande partie des volumes de la journée.', after: [] },
+      { id: 'prop', cat: 'prop', q: 'Comment fonctionnent les challenges de prop firm ?', keys: ['prop', 'challenge', 'firm', 'financement', 'funded', 'compte finance'],
+        title: 'Un challenge sert à prouver que tu sais gérer le risque',
+        paras: ['Tu paies des frais d’inscription pour trader un compte fourni par la société. Si tu atteins l’objectif sans enfreindre les règles, tu accèdes à un compte financé et tu touches une part des gains.'],
+        list: ['Un objectif de gain, souvent autour de 8 à 10 % en phase 1', 'Une perte maximum par jour, souvent autour de 5 %', 'Une perte maximum totale, souvent autour de 10 %', 'Parfois un nombre minimum de jours de trading'],
+        boxT: 'À SAVOIR', box: 'Les règles changent d’une société à l’autre : lis-les en détail. Dans ton journal, le type de compte « Prop firm » te permet de suivre ces comptes à part.', after: [] },
+      { id: 'propdd', cat: 'prop', q: 'Comment éviter de perdre un challenge sur la perte journalière ?', keys: ['perte journaliere', 'daily', 'regle', 'echouer', 'rater'],
+        title: 'La perte maximum par jour se gère avant d’ouvrir le premier trade',
+        paras: ['La plupart des challenges ratés le sont sur une seule mauvaise journée, pas sur une mauvaise semaine.'],
+        list: ['Fixer sa propre limite plus basse que celle de la société, par exemple 3 % si la règle est à 5 %', 'Compter les positions ouvertes : la perte latente compte souvent dans la limite', 'Réduire la taille après deux pertes dans la même journée'],
+        boxT: 'EXEMPLE', box: 'Compte de 50 000 € avec une perte maximum de 5 % par jour : 2 500 €. Avec 0,5 % de risque par trade (250 €), il faut 10 pertes d’affilée pour l’atteindre.', after: [] }
+    ];
+  }
+  answerB(text) {
+    var q = this.norm(text), best = null, bs = 0;
+    var self = this;
+    this.kb().forEach(function (e) {
+      if (self.norm(e.q) === q) { best = e; bs = 99; return; }
+      var sc = e.keys.filter(function (k) { return q.indexOf(self.norm(k)) >= 0; }).length;
+      if (sc > bs) { bs = sc; best = e; }
+    });
+    var base = { bot: true, title: '', paras: [], list: [], hasList: false, box: '', boxT: '', after: [], piste: '', link: '', href: '', go: null };
+    if (!best) return Object.assign(base, { title: 'Bonne question !', paras: [{ t: 'Dans la maquette, le coach répond aux questions de la liste « Sujets ». Dans le vrai produit, il répondra à toutes tes questions sur le trading, avec des explications et des exemples chiffrés.' }] });
+    var w = function (t) { return { t: t }; };
+    return Object.assign(base, { title: best.title, paras: best.paras.map(w), list: best.list.map(w), hasList: best.list.length > 0, box: best.box, boxT: best.boxT, after: best.after.map(w) });
+  }
+  sendB(text) {
+    var self = this, t = String(text || '').trim();
+    if (!t || this.state.typB) return;
+    this.setState({ msgsB: this.state.msgsB.concat([{ me: true, text: t }]), qb: '', typB: true });
+    clearTimeout(this.tB);
+    this.tB = setTimeout(function () { self.setState({ msgsB: self.state.msgsB.concat([self.answerB(t)]), typB: false }); }, 1100);
+  }
+
+  // ---------- Analyses des marchés (données d'exemple, cohérentes avec le calendrier de la page News)
+  articles() {
+    return [
+      { id: 'nfp', cat: 'eco', title: 'Emploi américain : ce que le NFP de 14:30 peut changer', date: 'Aujourd’hui · 07:30', read: '4 min', actifs: ['EUR/USD', 'XAU/USD', 'NAS100', 'USD/JPY'],
+        chapo: 'Le rapport sur l’emploi américain tombe cet après-midi. Le marché attend 165 000 créations de postes, après 142 000 le mois dernier : l’écart avec ce chiffre donnera le ton pour le dollar jusqu’à la réunion de la Fed du 16 décembre.',
+        brief: ['Prévision : 165 k emplois, chômage stable à 4,2 %', 'Un chiffre loin de la prévision rendrait une baisse de taux de la Fed en décembre plus ou moins probable', 'Le Canada publie ses chiffres de l’emploi à la même minute'],
+        secs: [{ h: 'Le contexte', paras: ['Le marché du travail américain ralentit doucement depuis l’été : moins de créations de postes, mais un chômage qui reste bas. Ce ralentissement est l’un des arguments de la Fed pour continuer à baisser ses taux.'] },
+          { h: 'Ce qui est surveillé', list: ['Le nombre d’emplois créés, comparé aux 165 k attendus', 'Le taux de chômage, attendu à 4,2 %', 'La hausse des salaires, qui renseigne sur l’inflation à venir', 'Les révisions des mois précédents, parfois aussi importantes que le chiffre du mois'] }],
+        scen: [{ si: 'Si le chiffre est nettement au-dessus de 165 k', fx: [['USD', 'up', 'Le dollar se renforce souvent'], ['XAU/USD', 'down', 'L’or recule fréquemment'], ['NAS100', 'var', 'Réaction partagée : économie solide, mais baisse de taux moins probable']] },
+          { si: 'Si le chiffre est nettement en dessous', fx: [['USD', 'down', 'Le dollar recule souvent'], ['XAU/USD', 'up', 'L’or a tendance à monter'], ['NAS100', 'var', 'Réaction partagée : baisse de taux plus probable, mais inquiétude sur la croissance']] },
+          { si: 'Si le chiffre est proche de la prévision', fx: [['Tous', 'var', 'Les salaires et les révisions font alors la différence']] }],
+        agenda: [['Aujourd’hui', '14:30', 'USD', 'NFP — Emplois non agricoles'], ['Aujourd’hui', '14:30', 'USD', 'Taux de chômage'], ['Mer. 11 nov.', '14:30', 'USD', 'Inflation CPI (a/a)']] },
+      { id: 'fed', cat: 'macro', title: 'Fed : la dernière baisse de taux de l’année se joue en décembre', date: 'Hier · 18:00', read: '5 min', actifs: ['EUR/USD', 'XAU/USD', 'NAS100', 'BTC/USD'],
+        chapo: 'Avec un taux directeur à 3,75 %, la Fed a déjà baissé ses taux plusieurs fois cette année. Le marché attend une nouvelle baisse à 3,50 % le 16 décembre, mais l’emploi et l’inflation des prochaines semaines peuvent encore changer la donne.',
+        brief: ['Taux actuel : 3,75 % · décision le 16 décembre à 20:00', 'Attente du marché : baisse à 3,50 %', 'Trois chiffres clés d’ici là : l’emploi (6 nov.), l’inflation CPI (11 nov.) et l’inflation PCE (25 nov.)'],
+        secs: [{ h: 'Le contexte', paras: ['L’inflation américaine s’est rapprochée de l’objectif de 2 % de la Fed sans l’atteindre complètement, et le marché du travail ralentit. Pour une majorité des membres de la Fed, ces deux éléments justifient de continuer à baisser les taux, mais à un rythme prudent.'] },
+          { h: 'Ce qui est surveillé', list: ['Le compte rendu de la dernière réunion, publié le 18 novembre', 'Les discours des membres de la Fed', 'Les nouvelles projections de taux publiées le 16 décembre'] }],
+        scen: [{ si: 'Si la Fed baisse ses taux et laisse entendre d’autres baisses', fx: [['USD', 'down', 'Le dollar recule souvent'], ['XAU/USD', 'up', 'L’or en profite fréquemment'], ['NAS100', 'up', 'Les indices sont souvent soutenus']] },
+          { si: 'Si la Fed baisse ses taux mais annonce une pause', fx: [['USD', 'up', 'Le dollar peut se reprendre'], ['NAS100', 'var', 'Réaction souvent hésitante']] },
+          { si: 'Si la Fed ne baisse pas ses taux', fx: [['USD', 'up', 'Le dollar se renforce souvent nettement'], ['XAU/USD', 'down', 'L’or recule fréquemment'], ['NAS100', 'down', 'Les indices sont souvent sous pression']] }],
+        agenda: [['Mer. 18 nov.', '20:00', 'USD', 'Compte rendu de la Fed (minutes)'], ['Mer. 25 nov.', '16:00', 'USD', 'Inflation PCE (a/a)'], ['Mer. 16 déc.', '20:00', 'USD', 'Décision de taux de la Fed']] },
+      { id: 'opep', cat: 'geo', title: 'OPEP+ : les quotas de production au centre du jeu', date: 'Aujourd’hui · 12:10', read: '3 min', actifs: ['WTI', 'USD/CAD'],
+        chapo: 'Les pays de l’OPEP+ se réunissent aujourd’hui pour décider de leur production des prochains mois. Les annonces tombent souvent en fin de réunion, sans heure fixe.',
+        brief: ['Réunion en cours, annonce attendue en fin de journée', 'Une baisse de production réduirait l’offre de pétrole', 'Le dollar canadien est souvent sensible au prix du pétrole'],
+        secs: [{ h: 'Le contexte', paras: ['Le prix du pétrole a nettement baissé depuis le début de l’année, autour de 61 $ le baril de WTI. Plusieurs pays du groupe ont besoin de prix plus élevés pour équilibrer leur budget, mais une baisse de production leur fait aussi perdre des parts de marché.'] },
+          { h: 'Ce qui est surveillé', list: ['Le niveau des quotas pour les prochains mois', 'Le respect des quotas par chaque pays, souvent imparfait', 'Les stocks américains publiés chaque mercredi (EIA)'] }],
+        scen: [{ si: 'Si l’OPEP+ annonce une baisse de production', fx: [['WTI', 'up', 'Le pétrole monte souvent'], ['USD/CAD', 'down', 'Le dollar canadien est souvent soutenu']] },
+          { si: 'Si les quotas restent inchangés', fx: [['WTI', 'var', 'Réaction souvent limitée : le marché attendait ce statu quo']] },
+          { si: 'Si l’OPEP+ augmente sa production', fx: [['WTI', 'down', 'Le pétrole recule souvent'], ['USD/CAD', 'up', 'Le dollar canadien est souvent sous pression']] }],
+        agenda: [['Mer. 11 nov.', '16:30', 'USD', 'Stocks de pétrole (EIA)'], ['Mer. 18 nov.', '16:30', 'USD', 'Stocks de pétrole (EIA)']] },
+      { id: 'bce', cat: 'macro', title: 'BCE : pourquoi la pause semble installée', date: 'Mer. 4 nov. · 09:15', read: '4 min', actifs: ['EUR/USD', 'DAX', 'CAC 40'],
+        chapo: 'Après avoir ramené son taux de dépôt à 2,00 %, la BCE laisse entendre qu’elle peut attendre. La croissance de la zone euro reste faible, mais l’inflation est revenue près de l’objectif.',
+        brief: ['Taux de dépôt : 2,00 % · prochaine décision le 17 décembre', 'Statu quo attendu, avec de nouvelles prévisions économiques', 'Chiffre clé d’ici là : l’inflation de la zone euro du 1er décembre'],
+        secs: [{ h: 'Le contexte', paras: ['La BCE a commencé à baisser ses taux plus tôt que la Fed. Avec une inflation proche de 2 %, plusieurs membres du conseil estiment que le taux actuel n’est ni trop haut ni trop bas : c’est ce qu’ils appellent un taux « neutre ».'] },
+          { h: 'Ce qui est surveillé', list: ['La croissance de la zone euro (PIB du 9 novembre)', 'Le moral des entreprises allemandes (indice Ifo du 23 novembre)', 'L’inflation flash du 1er décembre'] }],
+        scen: [{ si: 'Si l’inflation repasse nettement sous 2 %', fx: [['EUR/USD', 'down', 'L’euro peut reculer, une nouvelle baisse de taux redevenant possible'], ['DAX', 'up', 'Les indices européens sont souvent soutenus']] },
+          { si: 'Si la croissance surprend à la hausse', fx: [['EUR/USD', 'up', 'L’euro est souvent soutenu']] }],
+        agenda: [['Lun. 9 nov.', '11:00', 'EUR', 'PIB zone euro (estimation)'], ['Mar. 1 déc.', '11:00', 'EUR', 'Inflation zone euro (flash)'], ['Jeu. 17 déc.', '14:15', 'EUR', 'Décision de taux de la BCE']] },
+      { id: 'douanes', cat: 'geo', title: 'Droits de douane : où en sont les négociations commerciales', date: 'Aujourd’hui · 09:45', read: '5 min', actifs: ['NAS100', 'EUR/USD', 'AUD/USD'],
+        chapo: 'Un nouveau cycle de négociations commerciales s’ouvre. Toute annonce sur les droits de douane peut peser sur les actions industrielles et les devises des pays exportateurs.',
+        brief: ['Nouveau cycle de discussions entre les grandes économies', 'Secteurs les plus exposés : industrie, automobile, semi-conducteurs', 'Les annonces arrivent souvent sans prévenir, par communiqué ou déclaration'],
+        secs: [{ h: 'Le contexte', paras: ['Les droits de douane sont des taxes sur les produits importés. Quand un pays les augmente, les entreprises qui exportent vers ce pays vendent plus cher ou gagnent moins, ce qui peut peser sur leurs résultats et sur la devise du pays exportateur.'] },
+          { h: 'Ce qui est surveillé', list: ['Les déclarations officielles à la sortie des réunions', 'Les secteurs visés et les dates d’entrée en vigueur', 'Les éventuelles mesures de représailles'] }],
+        scen: [{ si: 'Si un accord est annoncé', fx: [['NAS100', 'up', 'Les indices sont souvent soutenus'], ['AUD/USD', 'up', 'Les devises liées au commerce mondial en profitent souvent']] },
+          { si: 'Si de nouveaux droits de douane sont annoncés', fx: [['NAS100', 'down', 'Les actions industrielles et technologiques reculent souvent'], ['AUD/USD', 'down', 'Le dollar australien est souvent sous pression']] }],
+        agenda: [['Mar. 10 nov.', '02:30', 'CNY', 'Inflation Chine (a/a)'], ['Lun. 30 nov.', '02:30', 'CNY', 'PMI manufacturier officiel Chine']] },
+      { id: 'uk', cat: 'eco', title: 'Royaume-Uni : l’inflation, juge de paix pour la Banque d’Angleterre', date: 'Mar. 3 nov. · 17:40', read: '4 min', actifs: ['GBP/USD', 'FTSE 100'],
+        chapo: 'La Banque d’Angleterre devrait laisser son taux à 4,75 % le 12 novembre. Pour décembre, tout dépendra de l’inflation du 18 novembre, encore nettement au-dessus de l’objectif de 2 %.',
+        brief: ['Taux actuel : 4,75 % · statu quo attendu le 12 novembre', 'Inflation attendue à 3,6 % le 18 novembre, après 3,8 %', 'Une baisse à 4,50 % est attendue le 17 décembre'],
+        secs: [{ h: 'Le contexte', paras: ['L’économie britannique ralentit, mais l’inflation baisse plus lentement que dans la zone euro ou aux États-Unis, en particulier dans les services. La Banque d’Angleterre avance donc prudemment.'] },
+          { h: 'Ce qui est surveillé', list: ['Le vote des 9 membres du comité le 12 novembre : un vote serré annonce souvent une baisse prochaine', 'Le chômage (10 novembre) et la croissance (13 novembre)', 'L’inflation des services, la plus suivie par la banque'] }],
+        scen: [{ si: 'Si l’inflation baisse plus vite que prévu', fx: [['GBP/USD', 'down', 'La livre recule souvent, une baisse de taux devenant plus probable'], ['FTSE 100', 'up', 'Les actions britanniques sont souvent soutenues']] },
+          { si: 'Si l’inflation reste élevée', fx: [['GBP/USD', 'up', 'La livre est souvent soutenue']] }],
+        agenda: [['Jeu. 12 nov.', '13:00', 'GBP', 'Décision de taux de la Banque d’Angleterre'], ['Mer. 18 nov.', '08:00', 'GBP', 'Inflation Royaume-Uni (a/a)'], ['Jeu. 17 déc.', '13:00', 'GBP', 'Décision de taux de la Banque d’Angleterre']] },
+      { id: 'boj', cat: 'macro', title: 'Japon : la Banque du Japon face au yen faible', date: 'Lun. 2 nov. · 08:30', read: '3 min', actifs: ['USD/JPY', 'Nikkei 225'],
+        chapo: 'À 0,75 %, le taux de la Banque du Japon reste l’un des plus bas du monde. Un yen faible renchérit les importations et pousse certains membres à envisager une nouvelle hausse.',
+        brief: ['Taux actuel : 0,75 % · prochaine décision le 18 décembre', 'Un écart de taux important avec les États-Unis pèse sur le yen', 'PIB japonais publié le 9 novembre'],
+        secs: [{ h: 'Le contexte', paras: ['Pendant des années, la Banque du Japon a gardé des taux proches de zéro, voire négatifs. Elle les remonte très progressivement depuis 2024, avec prudence pour ne pas freiner la croissance.'] },
+          { h: 'Ce qui est surveillé', list: ['Les déclarations du gouverneur sur la prochaine hausse', 'Les négociations salariales, qui soutiennent l’inflation', 'D’éventuelles interventions du ministère des Finances quand le yen baisse trop vite'] }],
+        scen: [{ si: 'Si la Banque du Japon relève ses taux', fx: [['USD/JPY', 'down', 'Le yen se renforce souvent'], ['Nikkei 225', 'down', 'Les exportateurs japonais sont souvent sous pression']] },
+          { si: 'Si elle repousse la hausse', fx: [['USD/JPY', 'up', 'Le yen reste souvent faible']] }],
+        agenda: [['Lun. 9 nov.', '00:50', 'JPY', 'PIB Japon (t/t, estimation)'], ['Ven. 18 déc.', '04:00', 'JPY', 'Décision de taux de la Banque du Japon']] }
+    ];
+  }
+
+  renderVals() {
+    var self = this, s = this.state;
+    var accent = this.props.accent ?? '#6E8BFF';
+    var anim = this.props.animations ?? true;
+    var soft = this.soft(accent, 0.13), aLine = this.soft(accent, 0.38);
+    var GAIN = '#3DDC97', LOSS = '#FF7A6B', GAINT = '#7BEBB9', LOSST = '#FF9A8E', WARN = '#F5B87A';
+    var fR = this.fR.bind(this);
+    var TJ = window.TJNews, MES = TJ ? TJ.MES_ACTIFS : ['EUR/USD', 'XAU/USD', 'NAS100'];
+    var setMode = function (m) { self.setState({ mode: m }); try { window.scrollTo(0, 0); } catch (e) {} };
+
+    // ---------- espaces
+    var MODES = [
+      ['moi', 'Mon trading', 'Bilan, points forts et pistes à tester, à partir de ton journal', 'M4 20V10M10 20V4M16 20v-7M22 20H2', accent],
+      ['questions', 'Questions trading', 'Bases, gestion du risque, psychologie : pose n’importe quelle question', 'M4 5h16v11H8l-4 4zM8 9h8M8 12h5', '#B794F6'],
+      ['marches', 'Analyses des marchés', 'Économie, macro et géopolitique, expliquées simplement', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', '#3DDC97']
+    ];
+    var modes = MODES.map(function (m) {
+      var on = s.mode === m[0];
+      return { t: m[1], d: m[2], icon: m[3], sel: on ? 'true' : 'false', bd: on ? aLine : '#1D2433', bg: on ? 'linear-gradient(135deg, ' + self.soft(m[4], 0.16) + ', #0E131D 70%)' : '#0E131D',
+        sh: on ? '0 10px 30px ' + self.soft(m[4], 0.12) : 'none', ibg: on ? m[4] : self.soft(m[4], 0.14), ic: on ? '#0A0D14' : m[4], pick: function () { setMode(m[0]); } };
+    });
+
+    // ---------- MON TRADING
+    var F = this.selection(s), n = F.length, few = n < 15, A = this.analyse(F);
+    var ids = this.selIds(s), all = ids.length === s.accs.length, one = s.accs.filter(function (a) { return a.id === ids[0]; })[0];
+    var periodL = { '7j': 'les 7 derniers jours', '30j': 'les 30 derniers jours', '90j': 'les 90 derniers jours', 'tout': 'tout l’historique' }[s.period];
+    var periods = [['7j', '7 j'], ['30j', '30 j'], ['90j', '90 j'], ['tout', 'Tout']].map(function (p) {
+      var on = s.period === p[0];
+      return { l: p[1], pressed: on ? 'true' : 'false', bg: on ? '#1D2433' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.sset('tj.period', p[0]); self.setState({ period: p[0] }); } };
+    });
+    var INS = few ? [] : this.insights(A);
+    var TAG = { 'Heures et sessions': ['rgba(110,139,255,.16)', '#A9BBFF'], 'Émotions': ['rgba(183,148,246,.16)', '#CDB5FA'], 'Comportement': ['rgba(245,166,91,.14)', '#F5B87A'], 'Actifs': ['rgba(61,220,151,.12)', '#7BEBB9'], 'Jours de la semaine': ['rgba(127,209,232,.14)', '#9FDDEE'] };
+    var SUBL = { hr: 'Voir Heures et sessions', be: 'Voir Comportement', as: 'Voir Actifs et sens', ev: 'Voir Évolution' };
+    var ins = INS.slice(0, 6).map(function (i) {
+      var mx = Math.max.apply(null, i.list.map(function (x) { return Math.abs(x.e); }).concat([0.1]));
+      return { tag: i.tag, tagBg: TAG[i.tag][0], tagFg: TAG[i.tag][1], kind: i.bad ? 'À surveiller' : 'Point fort', kc: i.bad ? WARN : GAINT, kIcon: i.bad ? 'M12 8v5M12 16h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0' : 'M5 12l5 5 9-10',
+        title: i.title, txt: i.txt, hasPiste: !!i.piste, piste: i.piste, link: SUBL[i.sub],
+        aria: i.list.map(function (x) { return x.k + ' ' + fR(x.e) + ' par trade'; }).join(', '),
+        bars: i.list.map(function (x) { var w = Math.abs(x.e) / mx * 50; return { l: x.k, v: fR(x.e), vc: x.e >= 0 ? GAINT : LOSST, c: x.e >= 0 ? GAIN : LOSS, w: w.toFixed(1), x: (x.e >= 0 ? 50 : 50 - w).toFixed(1) }; }),
+        go: function () { self.go('stats', { tab: 'stats', stSub: i.sub, period: s.period }); } };
+    });
+    var SC = this.score(A), lvl = SC.tot >= 80 ? ['TRÈS BON', 'rgba(61,220,151,.14)', GAINT] : SC.tot >= 62 ? ['SOLIDE', soft, '#C9D3FF'] : SC.tot >= 45 ? ['À CONSOLIDER', 'rgba(245,166,91,.14)', WARN] : ['FRAGILE', 'rgba(255,122,107,.14)', LOSST];
+    var goodI = INS.filter(function (i) { return !i.bad; })[0], badI = INS.filter(function (i) { return i.bad; })[0];
+    var summary = few ? 'Sur ' + periodL + ', tu as ' + n + ' trade' + (n > 1 ? 's' : '') + '. Le coach rédige son bilan à partir de 15 trades, pour que ses conclusions soient fiables. Tes chiffres restent visibles ci-dessous.'
+      : 'Sur ' + periodL + ', ' + n + ' trades, ' + Math.round(A.G.wr) + ' % de réussite et ' + fR(A.G.e) + ' par trade en moyenne. ' + (goodI ? 'Ton point fort : ' + goodI.goodS + '. ' : '') + (badI ? 'Ce qui te coûte le plus : ' + badI.badS + '.' : 'Aucun point faible net sur cette période.');
+    var C = 2 * Math.PI * 56;
+    var moi = {
+      accL: all ? 'Tous les comptes' : ids.length === 1 && one ? one.name : ids.length + ' comptes', periodL: periodL, nL: n + ' trade' + (n > 1 ? 's' : ''),
+      score: few ? '—' : String(SC.tot), dash: (few ? 0 : C * SC.tot / 100).toFixed(1) + ' ' + C.toFixed(1), ringC: few ? '#2A3346' : SC.tot >= 60 ? accent : SC.tot >= 45 ? '#F5A65B' : LOSS,
+      scoreAria: few ? 'Score indisponible : moins de 15 trades' : 'Score du coach : ' + SC.tot + ' sur 100',
+      level: few ? '' : lvl[0], levelBg: lvl[1], levelFg: lvl[2], summary: summary, showSubs: !few,
+      subs: SC.subs.map(function (x) { return { l: x.l, v: String(x.v), w: x.v, c: x.v >= 70 ? GAIN : x.v >= 50 ? accent : '#F5A65B' }; }),
+      kpis: [
+        { l: 'Trades', v: String(n), c: '#EEF1F6' },
+        { l: 'Taux de réussite', v: Math.round(A.G.wr) + ' %', c: '#EEF1F6' },
+        { l: 'Espérance', v: fR(A.G.e), c: A.G.e >= 0 ? GAIN : LOSS },
+        { l: 'Résultat', v: this.fEur(A.G.pnl), c: A.G.pnl >= 0 ? GAIN : LOSS }
+      ],
+      few: few, fewTxt: 'Tu as ' + n + ' trade' + (n > 1 ? 's' : '') + ' sur ' + periodL + '. Les analyses du coach apparaissent à partir de 15 trades : élargis la période ou ajoute des trades.',
+      widen: function () { self.sset('tj.period', '90j'); self.setState({ period: '90j' }); },
+      hasIns: ins.length > 0, ins: ins, insSub: ins.length + ' observation' + (ins.length > 1 ? 's' : '') + ' · basées sur ' + n + ' trades'
+    };
+    var oi = badI;
+    var obj = {
+      can: !few && !!oi, on: !few && !!oi && s.objOn,
+      t: few ? 'Disponible à partir de 15 trades' : oi ? oi.piste.charAt(0).toUpperCase() + oi.piste.slice(1) : 'Garder la même routine',
+      why: few ? 'Le coach choisira une piste à partir de tes trades dès que tu en auras assez sur la période.' : oi ? 'Pourquoi : ' + oi.txt : 'Aucun point faible net sur cette période : continue comme ça et garde ton journal à jour.',
+      days: ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.'].map(function (d, i) { return { l: d, c: i === 0 ? aLine : '#1D2433' }; }),
+      prog: 'Suivi depuis aujourd’hui · 0 séance sur 5. Le coach comparera tes résultats avant et après dans ton prochain bilan.',
+      btn: s.objOn ? 'Arrêter le suivi' : 'Suivre cette piste', pressed: s.objOn ? 'true' : 'false', cls: s.objOn ? 'ghost' : 'btn',
+      bd: s.objOn ? '#2A3346' : 'transparent', bg: s.objOn ? 'transparent' : accent, fg: s.objOn ? '#EEF1F6' : '#0A0D14',
+      toggle: function () { var v = !self.state.objOn; self.sset('tj.coachObj', v ? '1' : '0'); self.setState({ objOn: v }); }
+    };
+    var SUGG_A = ['Quelle est ma meilleure session ?', 'Quel jour me réussit le moins ?', 'Comment je réagis après une perte ?', 'Est-ce que je trade trop ?', 'Quel actif me coûte le plus ?', 'Est-ce que je progresse ?'];
+    var askedA = s.msgsA.filter(function (m) { return m.me; }).map(function (m) { return m.text; });
+    var chatA = {
+      has: s.msgsA.length > 0 || s.typA, msgs: s.msgsA, typing: s.typA, ref: this.refA, q: s.qa, sendOp: s.qa.trim() ? '1' : '.55',
+      sugg: SUGG_A.filter(function (q) { return askedA.indexOf(q) < 0; }).slice(0, 4).map(function (q) { return { l: q, pick: function () { self.sendA(q); } }; }),
+      onQ: function (ev) { self.setState({ qa: ev.target.value }); },
+      onKey: function (ev) { if (ev.key === 'Enter') { if (ev.preventDefault) ev.preventDefault(); self.sendA(self.state.qa); } },
+      send: function () { self.sendA(self.state.qa); }
+    };
+
+    // ---------- QUESTIONS TRADING
+    var CATS = { bases: ['Les bases', '#A9BBFF', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5'], risk: ['Gestion du risque', '#7BEBB9', 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z'], psy: ['Psychologie', '#CDB5FA', 'M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8M4 21a8 8 0 0 1 16 0'], mkt: ['Marchés et annonces', '#F5B87A', 'M3 3v18h18M7 15l4-4 3 3 5-6'], prop: ['Prop firms', '#9FDDEE', 'M3 7h18v13H3zM8 7V4h8v3'] };
+    var KB = this.kb();
+    var topics = Object.keys(CATS).map(function (k) {
+      return { l: CATS[k][0], c: CATS[k][1], icon: CATS[k][2], qs: KB.filter(function (e) { return e.cat === k; }).map(function (e) { return { q: e.q, pick: function () { self.sendB(e.q); } }; }) };
+    });
+    var chatB = {
+      has: s.msgsB.length > 0 || s.typB, empty: !(s.msgsB.length > 0 || s.typB), msgs: s.msgsB, typing: s.typB, ref: this.refB, q: s.qb, sendOp: s.qb.trim() ? '1' : '.55',
+      starters: ['taille', 'rr', 'serie', 'nfp'].map(function (id) { var e = KB.filter(function (x) { return x.id === id; })[0]; return { cat: CATS[e.cat][0].toUpperCase(), c: CATS[e.cat][1], q: e.q, pick: function () { self.sendB(e.q); } }; }),
+      onQ: function (ev) { self.setState({ qb: ev.target.value }); },
+      onKey: function (ev) { if (ev.key === 'Enter') { if (ev.preventDefault) ev.preventDefault(); self.sendB(self.state.qb); } },
+      send: function () { self.sendB(self.state.qb); },
+      reset: function () { clearTimeout(self.tB); self.setState({ msgsB: [], typB: false, qb: '' }); }
+    };
+
+    // ---------- ANALYSES DES MARCHÉS
+    var CATM = { eco: ['Économie', 'rgba(110,139,255,.16)', '#A9BBFF'], macro: ['Macro', 'rgba(61,220,151,.12)', '#7BEBB9'], geo: ['Géopolitique', 'rgba(183,148,246,.16)', '#CDB5FA'] };
+    var ARTS = this.articles();
+    var tagsOf = function (a) { return a.actifs.map(function (x) { var m = MES.indexOf(x) >= 0; return { l: x, bg: m ? soft : '#1A2130', fg: m ? '#C9D3FF' : '#A3AEC2' }; }); };
+    var open = function (id) { self.setState({ art: id }); try { window.scrollTo(0, 0); } catch (e) {} };
+    var shown = ARTS.filter(function (a) { return (s.cat === 'all' || a.cat === s.cat) && (!s.mineM || a.actifs.some(function (x) { return MES.indexOf(x) >= 0; })); });
+    var cur = ARTS.filter(function (a) { return a.id === s.art; })[0];
+    var FX = { up: ['M12 19V5M5 12l7-7 7 7', GAINT], down: ['M12 5v14M5 12l7 7 7-7', LOSST], var: ['M5 12h14M15 8l4 4-4 4M9 8l-4 4 4 4', '#A3AEC2'] };
+    var IMPC = { 3: ['rgba(255,122,107,.16)', LOSST], 2: ['rgba(245,166,91,.16)', WARN] };
+    var mk = {
+      list: !cur, reading: !!cur, empty: shown.length === 0,
+      briefDate: 'Vendredi 6 novembre · mis à jour à 07:30', briefTitle: 'Journée suspendue au rapport sur l’emploi américain',
+      brief: [
+        { lead: 'Emploi américain', t: 'Le NFP de 14:30 est attendu à 165 k. C’est le dernier rapport sur l’emploi avant la réunion de la Fed de décembre.', c: LOSS },
+        { lead: 'Pétrole', t: 'L’OPEP+ se réunit sur ses quotas de production ; l’annonce est attendue en fin de journée.', c: '#F5A65B' },
+        { lead: 'Or', t: 'Stable près de ses plus hauts en attendant le chiffre de l’emploi.', c: '#F5C26B' },
+        { lead: 'Europe', t: 'La production industrielle allemande surprend à la hausse : +0,5 % contre +0,2 % attendu.', c: accent }
+      ],
+      agenda: [['14:30', 'USD', 'NFP — Emplois non agricoles', 3], ['14:30', 'USD', 'Taux de chômage', 3], ['14:30', 'CAD', 'Emploi Canada', 2], ['16:00', 'USD', 'Confiance des consommateurs (Michigan)', 2]].map(function (a) { return { t: a[0], cur: a[1], title: a[2], bg: IMPC[a[3]][0], fg: IMPC[a[3]][1] }; }),
+      cb: [['Fed', 'USD', '3,75 %', '16 déc.', 'Baisse attendue à 3,50 %', LOSST], ['BCE', 'EUR', '2,00 %', '17 déc.', 'Statu quo attendu', '#A3AEC2'], ['Banque d’Angleterre', 'GBP', '4,75 %', '12 nov.', 'Statu quo attendu', '#A3AEC2'], ['Banque du Japon', 'JPY', '0,75 %', '18 déc.', 'Statu quo attendu', '#A3AEC2'], ['Banque du Canada', 'CAD', '2,25 %', '2 déc.', 'Statu quo attendu', '#A3AEC2'], ['Banque de réserve d’Australie', 'AUD', '3,60 %', '8 déc.', 'Statu quo attendu', '#A3AEC2']].map(function (c) { return { n: c[0], cur: c[1], rate: c[2], next: c[3], exp: c[4], ec: c[5] }; }),
+      cats: [['all', 'Tout'], ['eco', 'Économie'], ['macro', 'Macro'], ['geo', 'Géopolitique']].map(function (c) { var on = s.cat === c[0]; return { l: c[1], pressed: on ? 'true' : 'false', bg: on ? soft : 'transparent', bd: on ? accent : '#2A3346', fg: on ? '#EEF1F6' : '#A3AEC2', pick: function () { self.setState({ cat: c[0] }); } }; }),
+      mine: { on: s.mineM, pressed: s.mineM ? 'true' : 'false', bg: s.mineM ? soft : 'transparent', bd: s.mineM ? accent : '#2A3346', fg: s.mineM ? '#EEF1F6' : '#A3AEC2', box: s.mineM ? accent : 'transparent', pick: function () { self.setState({ mineM: !self.state.mineM }); } },
+      arts: shown.map(function (a) { return { title: a.title, chapo: a.chapo, date: a.date, read: a.read, cat: CATM[a.cat][0], catBg: CATM[a.cat][1], catFg: CATM[a.cat][2], tags: tagsOf(a), open: function () { open(a.id); } }; }),
+      others: ARTS.filter(function (a) { return a.id !== s.art; }).slice(0, 5).map(function (a) { return { title: a.title, date: a.date, cat: CATM[a.cat][0], catFg: CATM[a.cat][2], open: function () { open(a.id); } }; }),
+      back: function () { self.setState({ art: null }); }
+    };
+    var w = function (t) { return { t: t }; };
+    var rd = cur ? {
+      title: cur.title, chapo: cur.chapo, date: cur.date, read: cur.read, cat: CATM[cur.cat][0], catBg: CATM[cur.cat][1], catFg: CATM[cur.cat][2], tags: tagsOf(cur),
+      brief: cur.brief.map(w),
+      secs: cur.secs.map(function (x) { return { h: x.h, paras: (x.paras || []).map(w), list: (x.list || []).map(w), hasList: !!(x.list && x.list.length) }; }),
+      scen: cur.scen.map(function (x) { return { si: x.si, fx: x.fx.map(function (f) { return { a: f[0], t: f[2], icon: FX[f[1]][0], c: FX[f[1]][1] }; }) }; }),
+      agenda: cur.agenda.map(function (a) { return { d: a[0], t: a[1], cur: a[2], title: a[3] }; })
+    } : { title: '', chapo: '', date: '', read: '', cat: '', catBg: '', catFg: '', tags: [], brief: [], secs: [], scen: [], agenda: [] };
+
+    // ---------- menu
+    var navDef = [
+      { title: '', items: [['dash', 'Tableau de bord', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', 'Dashboard.dc.html']] },
+      { title: 'OUTILS', items: [
+        ['journal', 'Journal', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6', 'Journal.dc.html'],
+        ['stats', 'Statistiques', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Statistiques.dc.html'],
+        ['bt', 'Backtesting', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z', 'Backtesting.dc.html'],
+        ['news', 'News', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18', 'News.dc.html', '2', 'warn'],
+        ['coach', 'Coach IA', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', 'CoachIA.dc.html', 'NOUVEAU', 'accent']
+      ] },
+      { title: 'COMPTE', items: [
+        ['set', 'Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4', '#top'],
+        ['help', 'Aide', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01', '#top']
+      ] }
+    ];
+    var navGroups = navDef.map(function (g) {
+      return { title: g.title, items: g.items.map(function (x) {
+        var on = x[0] === 'coach';
+        return { label: x[1], icon: x[2], href: x[3], badge: x[4] || '', bBg: x[5] === 'accent' ? accent : 'rgba(245,166,91,.16)', bFg: x[5] === 'accent' ? '#0A0D14' : '#F5B87A', bg: on ? '#131927' : 'transparent', fg: on ? '#EEF1F6' : '#A3AEC2', fw: on ? '600' : '500', bar: on ? accent : 'transparent', current: on ? 'page' : 'false' };
+      }) };
+    });
+
+    return {
+      accent: accent, accentSoft: soft, accentLine: aLine, accentGlow: this.soft(accent, 0.08), rootClass: anim ? '' : 'noanim', navGroups: navGroups,
+      heroBg: 'linear-gradient(135deg, ' + this.soft(accent, 0.12) + ', #0E131D 55%)', avatarBg: 'linear-gradient(135deg, ' + accent + ', #B794F6)',
+      modes: modes, isMoi: s.mode === 'moi', isQ: s.mode === 'questions', isM: s.mode === 'marches',
+      periods: periods, moi: moi, obj: obj, chatA: chatA, topics: topics, chatB: chatB, mk: mk, rd: rd
+    };
+  }
+}
+</script>
+</body>
+</html>

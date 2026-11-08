@@ -116,6 +116,15 @@
       "w": 1440,
       "x": 4680,
       "y": 0
+    },
+    "CoachIA.dc.html": {
+      "expand": "fill",
+      "h": 1700,
+      "is_interactive": true,
+      "title": "Coach IA : mon trading, questions, analyses des marchés",
+      "w": 1440,
+      "x": 18360,
+      "y": 0
     }
   },
   "createdOnFiles": {
@@ -149,7 +158,8 @@
     "NouveauTrade.dc.html",
     "Backtesting.dc.html",
     "Replay.dc.html",
-    "News.dc.html"
+    "News.dc.html",
+    "CoachIA.dc.html"
   ],
   "pages": [],
   "title": "Maquette plateforme trading"

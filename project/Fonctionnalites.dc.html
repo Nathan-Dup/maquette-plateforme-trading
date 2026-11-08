@@ -268,7 +268,7 @@ h1,h2,h3{text-wrap:balance}
 <div class="rv" style="flex: 1 1 400px; min-width: 0">
 <div style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 9px; background: rgba(61,220,151,.14); display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7BEBB9" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span><span style="font-size: 12px; font-weight: 700; letter-spacing: .12em; color: #7BEBB9">04 · COACH IA</span></div>
 <h2 class="h" style="font-size: clamp(30px, 3.6vw, 46px); line-height: 1.08; margin: 16px 0 0; font-weight: 700">Un regard extérieur<br>sur ta façon de trader.</h2>
-<p style="font-size: 17px; line-height: 1.65; color: #A3AEC2; margin: 18px 0 0">Le coach lit ton journal, tes émotions et tes backtests. Il repère ce que tu ne vois plus et te le dit simplement, chaque semaine.</p>
+<p style="font-size: 17px; line-height: 1.65; color: #A3AEC2; margin: 18px 0 0">Le coach lit ton journal et tes émotions, répond à tes questions sur le trading et décrypte l’actualité des marchés. Il repère ce que tu ne vois plus et te le dit simplement, chaque semaine.</p>
 <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 24px">
 <sc-for list="{{cfeat}}" as="f" hint-placeholder-count="4">
 <div class="feat" style="display: flex; gap: 14px; padding: 12px; border-radius: 14px; margin-left: -12px">
@@ -400,7 +400,7 @@ class Component extends DCLogic {
       { href: '#journal', name: 'Journal de trading', sub: 'Statistiques, captures, émotions', soft: 'rgba(110,139,255,.14)', light: '#A9BBFF', icon: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6M9 11h6' },
       { href: '#backtesting', name: 'Backtesting en replay', sub: 'Rejoue le marché bougie par bougie', soft: 'rgba(245,166,91,.14)', light: '#F5B87A', icon: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M10 9l5 3-5 3z' },
       { href: '#news', name: 'News et calendrier', sub: 'Économie, géopolitique, résultats', soft: 'rgba(183,148,246,.14)', light: '#CDB5FA', icon: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18' },
-      { href: '#coach', name: 'Coach IA', sub: 'Analyse et bilan chaque semaine', soft: 'rgba(61,220,151,.14)', light: '#7BEBB9', icon: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z' }
+      { href: '#coach', name: 'Coach IA', sub: 'Bilan, questions et analyses des marchés', soft: 'rgba(61,220,151,.14)', light: '#7BEBB9', icon: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z' }
     ];
 
     var kstats = [
@@ -489,8 +489,8 @@ class Component extends DCLogic {
     var cfeat = [
       { t: 'Détection des biais', d: 'FOMO, revenge trading, surtrading : il les repère dans tes données.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 8v5M12 16h.01' },
       { t: 'Bilan chaque semaine', d: 'Ce qui a marché, ce qui coince, et un objectif concret.', i: 'M3 5h18v16H3zM3 10h18M8 3v4M16 3v4' },
-      { t: 'Questions libres', d: '« Pourquoi je perds le lundi ? » Il répond à partir de tes vrais trades.', i: 'M4 5h16v11H8l-4 4z' },
-      { t: 'Alertes de comportement', d: 'Il te prévient quand tu enchaînes les trades ou après plusieurs pertes d’affilée.', i: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z' }
+      { t: 'Questions libres', d: 'Sur tes trades (« Quel jour me réussit le moins ? ») ou sur le trading en général, avec des exemples chiffrés.', i: 'M4 5h16v11H8l-4 4z' },
+      { t: 'Analyses des marchés', d: 'Économie, macro et géopolitique : le point du jour, les banques centrales et des scénarios expliqués simplement.', i: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18' }
     ];
     var extras = [
       { t: 'Plusieurs comptes', d: 'Compte réel, challenges prop firm et démo : séparés ou cumulés.', i: 'M3 7h18v13H3zM8 7V4h8v3', soon: false },

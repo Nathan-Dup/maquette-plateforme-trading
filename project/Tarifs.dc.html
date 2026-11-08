@@ -280,7 +280,7 @@ class Component extends DCLogic {
         R('Calendrier économique', true, true), R('Filtres par pays, importance et actifs', true, true), R('Résultats d’entreprises et actualités', false, true), R('Réaction passée de tes actifs aux annonces', false, true), R('Résumés IA en français', false, true), R('Alertes personnalisées', false, true), R('Annonces affichées dans ton journal et le replay', false, true)
       ] },
       { t: 'COACH IA', c: G.c, soft: G.soft, i: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z', rows: [
-        R('Analyse automatique de tes trades', false, true), R('Bilan chaque semaine', false, true), R('Questions au coach', false, 'Illimité')
+        R('Bilan, score et pistes à tester', false, true), R('Questions sur tes trades', false, 'Illimité'), R('Questions sur le trading', false, 'Illimité'), R('Analyses éco, macro et géopolitiques', false, true)
       ] },
       { t: 'COMPTE ET SUPPORT', c: '#C9D3E6', soft: '#1A2130', i: 'M12 12a4 4 0 1 0 0-8a4 4 0 1 0 0 8M4 21a8 8 0 0 1 16 0', rows: [
         R('Export CSV de tes trades', true, true), R('Rapport PDF et export Excel', false, true), R('Support en français', 'Par e-mail', 'Prioritaire'), R('Nouveautés en avant-première', false, true)
@@ -292,7 +292,7 @@ class Component extends DCLogic {
       ['Comment annuler mon abonnement ?', 'En un clic depuis tes paramètres. Ton accès Premium reste actif jusqu’à la fin de la période payée, et tes données restent accessibles en version gratuite.'],
       ['Quels moyens de paiement acceptez-vous ?', 'Carte bancaire (Visa, Mastercard, CB) via un prestataire de paiement sécurisé. Nous ne stockons jamais tes informations bancaires.'],
       ['Quelles plateformes sont compatibles ?', 'MetaTrader 4 et 5, cTrader, TradingView et tout broker qui permet d’exporter un fichier CSV. D’autres connexions arriveront au fil des mises à jour.'],
-      ['Le coach IA me dit-il quoi acheter ou vendre ?', 'Non. Le coach analyse ton comportement et tes résultats passés pour t’aider à progresser. Il ne donne aucun conseil en investissement ni aucune recommandation d’achat ou de vente.'],
+      ['Le coach IA me dit-il quoi acheter ou vendre ?', 'Non. Le coach analyse ton comportement et tes résultats passés pour t’aider à progresser, et il explique l’actualité des marchés avec des scénarios. Il ne donne aucun conseil en investissement ni aucune recommandation d’achat ou de vente.'],
       ['Mes données sont-elles en sécurité ?', 'Tes connexions sont chiffrées et tes données t’appartiennent : tu peux les exporter ou les supprimer quand tu veux.'],
       ['Puis-je passer du mensuel à l’annuel ?', 'Oui, à tout moment. Le changement est calculé au prorata de ce que tu as déjà payé.']
     ];
@@ -309,7 +309,7 @@ class Component extends DCLogic {
         { t: 'Captures de graphique et suivi des émotions', c: B.c, soft: B.soft },
         { t: 'Backtesting illimité, jusqu’à 4 actifs par session', c: O.c, soft: O.soft },
         { t: 'News, résultats d’entreprises et alertes', c: V.c, soft: V.soft },
-        { t: 'Coach IA et bilan chaque semaine', c: G.c, soft: G.soft },
+        { t: 'Coach IA : bilan, questions et analyses des marchés', c: G.c, soft: G.soft },
         { t: 'Comptes illimités, rapport PDF et Excel', c: '#C9D3E6', soft: '#1A2130' }
       ],
       guar: [
