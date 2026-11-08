@@ -58,6 +58,11 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 - Réel vs backtest : comparaison d'une session avec les vrais trades sur les mêmes actifs.
 - Les trades de test restent séparés des statistiques réelles. Dans la maquette, les prix sont simulés ; le vrai produit aura besoin de données historiques de marché.
 
+**News**
+- Calendrier économique avec un calendrier du mois : chaque jour affiche des points de couleur selon l'importance des annonces. On clique un jour pour voir ses annonces, en vue Jour ou Semaine, avec les flèches et le bouton « Aujourd'hui ». La liste « À venir · impact fort » montre les prochaines grosses annonces.
+- Bouton « Filtres » : mes actifs seulement, importance (forte, moyenne, faible), pays à afficher ou masquer. Les filtres s'appliquent au calendrier et aux actualités.
+- Onglets Résultats d'entreprises, Actualités et Alertes. Données d'exemple du 2 novembre au 18 décembre 2026.
+
 **Offre gratuite et Premium (backtest)** : en gratuit, 1 session de backtest, 1 actif, 3 mois d'historique, vitesse x1 et x2, et seulement la vue d'ensemble des statistiques. Premium : sessions illimitées, jusqu'à 4 actifs, toute la période, vitesse x4, toutes les statistiques et la comparaison réel vs backtest. Le détail est sur la page Tarifs.
 
 **Ton du Coach IA et des textes automatiques** : toujours un constat chiffré tiré des trades du trader, puis, s'il y a lieu, une « Piste à tester » qui porte sur son comportement (pause, nombre de trades, taille). Jamais d'avis sur le marché ni d'indication d'achat ou de vente. Les textes des news décrivent des faits et des effets habituels, sans dire quoi faire.

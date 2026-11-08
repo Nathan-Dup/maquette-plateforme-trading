@@ -30,7 +30,7 @@ button,input,select{font-family:inherit}
 .ghost{transition:background .2s,border-color .2s}.ghost:hover{background:#151B28;border-color:#36415B}
 .row{transition:background .2s}.row:hover{background:#121826 !important}
 .scard{transition:border-color .25s,transform .25s}.scard:hover{border-color:#36415B !important;transform:translateY(-2px)}
-.wk{transition:border-color .2s,background .2s}.wk:hover{border-color:#36415B !important;background:#111724 !important}
+.cd{transition:border-color .15s,background .15s}.cd:hover{border-color:#36415B !important}
 .inp:focus{outline:none;border-color:#6E8BFF !important;box-shadow:0 0 0 3px rgba(110,139,255,.2)}
 .sw{transition:background .2s}.sw span{transition:transform .2s}
 .noanim *{animation:none !important;transition:none !important}
@@ -150,53 +150,97 @@ button,input,select{font-family:inherit}
 <sc-if value="{{isCal}}" hint-placeholder-val="{{true}}">
 <section aria-label="Calendrier économique" class="fu d2" style="display: flex; flex-direction: column; gap: 14px">
 
-<nav aria-label="Semaine" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px">
-<sc-for list="{{week}}" as="w" hint-placeholder-count="6">
-<a class="wk" href="{{w.href}}" onClick="{{w.pick}}" aria-current="{{w.current}}" aria-label="{{w.aria}}" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 14px; background: {{w.bg}}; border: 1px solid {{w.bd}}; color: #EEF1F6">
-<span style="display: flex; justify-content: space-between; align-items: center; gap: 6px"><span style="font-size: 13px; font-weight: 700">{{w.l}}</span><sc-if value="{{w.busy}}" hint-placeholder-val="{{false}}"><span style="font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 2px 6px; border-radius: 5px; background: rgba(255,122,107,.16); color: #FF9A8E">CHARGÉE</span></sc-if><sc-if value="{{w.today}}" hint-placeholder-val="{{false}}"><span style="font-size: 9px; font-weight: 800; letter-spacing: .05em; padding: 2px 6px; border-radius: 5px; background: {{accentSoft}}; color: #C9D3FF">AUJ.</span></sc-if></span>
-<span style="display: flex; gap: 12px; font-size: 12px; color: #A3AEC2">
-<span class="num" style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: {{w.fC}}"></span><b style="color: #EEF1F6">{{w.f}}</b> {{w.fL}}</span>
-<span class="num" style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: {{w.mC}}"></span><b style="color: #EEF1F6">{{w.m}}</b> {{w.mL}}</span>
-</span>
-</a>
-</sc-for>
-</nav>
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start">
 
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
-<div style="font-size: 13px; color: #8A95AA">Heures de Paris · semaine du 6 au 13 novembre</div>
+<aside aria-label="Choisir un jour" style="flex: 1 1 280px; max-width: 320px; display: flex; flex-direction: column; gap: 14px">
+<div style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); padding: 16px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px">
+<button class="ghost" type="button" onClick="{{cal.prevM}}" aria-label="Mois précédent" aria-disabled="{{cal.prevDis}}" style="cursor: pointer; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #DCE2EC; opacity: {{cal.prevOp}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<h2 class="h" style="font-size: 16px; margin: 0; font-weight: 600">{{cal.title}}</h2>
+<button class="ghost" type="button" onClick="{{cal.nextM}}" aria-label="Mois suivant" aria-disabled="{{cal.nextDis}}" style="cursor: pointer; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #DCE2EC; opacity: {{cal.nextOp}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{cal.wd}}" as="w" hint-placeholder-count="7"><div aria-hidden="true" style="text-align: center; font-size: 11px; font-weight: 700; color: #6F7A90; padding-bottom: 6px">{{w.l}}</div></sc-for>
+<sc-for list="{{cal.cells}}" as="c" hint-placeholder-count="35">
+<button class="cd" type="button" onClick="{{c.pick}}" aria-pressed="{{c.sel}}" aria-label="{{c.aria}}" style="cursor: pointer; height: 44px; padding: 0; border-radius: 10px; border: 1px solid {{c.bd}}; background: {{c.bg}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px">
+<span class="num" style="font-size: 13px; line-height: 1; font-weight: {{c.fw}}; color: {{c.fg}}">{{c.n}}</span>
+<span aria-hidden="true" style="display: flex; align-items: center; gap: 2px; height: 6px"><sc-for list="{{c.dots}}" as="dt" hint-placeholder-count="2"><span style="width: 5px; height: 5px; border-radius: 3px; background: {{dt.c}}"></span></sc-for><sc-if value="{{c.more}}" hint-placeholder-val="{{false}}"><span style="font-size: 8px; line-height: 1; font-weight: 700; color: #8A95AA">{{c.more}}</span></sc-if></span>
+</button>
+</sc-for>
+</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 14px; padding-top: 12px; border-top: 1px solid #1A2130; font-size: 11px; color: #8A95AA">
+<span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 6px; height: 6px; border-radius: 3px; background: #FF7A6B"></span>Fort</span>
+<span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 6px; height: 6px; border-radius: 3px; background: #F5A65B"></span>Moyen</span>
+<span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 6px; height: 6px; border-radius: 3px; background: #5B6577"></span>Faible</span>
+</div>
+</div>
+
+<div style="background: #0E131D; border: 1px solid #1D2433; border-radius: 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); padding: 16px 12px 10px">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #8A95AA; padding: 0 6px 8px">À VENIR · IMPACT FORT</div>
+<sc-for list="{{cal.next}}" as="x" hint-placeholder-count="5">
+<button class="row" type="button" onClick="{{x.pick}}" aria-label="{{x.aria}}" style="cursor: pointer; width: 100%; display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 9px 8px; border-radius: 10px; border: 1px solid {{x.bd}}; background: {{x.bg}}; color: #EEF1F6">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #8A95AA"><span style="font-weight: 700; color: #A3AEC2">{{x.d}}</span><span class="num">{{x.t}}</span><span style="font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 5px; background: rgba(255,122,107,.14); color: #FF9A8E">{{x.cur}}</span></span>
+<span style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%">{{x.title}}</span>
+</button>
+</sc-for>
+<sc-if value="{{cal.nextEmpty}}" hint-placeholder-val="{{false}}"><div style="padding: 4px 6px 10px; font-size: 13px; color: #8A95AA">Aucune annonce à impact fort à venir avec tes filtres.</div></sc-if>
+</div>
+</aside>
+
+<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+<button class="ghost" type="button" onClick="{{cal.back}}" aria-label="{{cal.backL}}" style="cursor: pointer; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<button class="ghost" type="button" onClick="{{cal.today}}" style="cursor: pointer; height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">Aujourd'hui</button>
+<button class="ghost" type="button" onClick="{{cal.fwd}}" aria-label="{{cal.fwdL}}" style="cursor: pointer; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #DCE2EC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+<div style="margin-left: 8px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap"><h2 class="h" style="font-size: 20px; margin: 0; font-weight: 600">{{cal.rangeL}}</h2><sc-if value="{{cal.isToday}}" hint-placeholder-val="{{true}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 7px; border-radius: 6px; background: {{accentSoft}}; color: #C9D3FF">AUJOURD'HUI</span></sc-if><sc-if value="{{cal.busy}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 7px; border-radius: 6px; background: rgba(255,122,107,.16); color: #FF9A8E">JOURNÉE CHARGÉE</span></sc-if></div>
+<div class="num" style="font-size: 12px; color: #8A95AA; margin-top: 3px">{{cal.rangeS}}</div>
+</div>
+</div>
+<div role="group" aria-label="Affichage" style="display: flex; gap: 2px; background: #0B0F17; border: 1px solid #1D2433; border-radius: 11px; padding: 3px">
+<sc-for list="{{cal.vues}}" as="v" hint-placeholder-count="2">
+<button class="chip" type="button" onClick="{{v.pick}}" aria-pressed="{{v.pressed}}" style="border: 0; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0 14px; border-radius: 8px; min-height: 32px; background: {{v.bg}}; color: {{v.fg}}">{{v.l}}</button>
+</sc-for>
+</div>
 </div>
 
 <sc-if value="{{calEmpty}}" hint-placeholder-val="{{false}}">
-<div style="padding: 40px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center; font-size: 14px; color: #A3AEC2">Aucune annonce avec ces filtres cette semaine.</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 44px 24px; border: 1px dashed #2A3346; border-radius: 20px; text-align: center">
+<div style="font-size: 14px; color: #A3AEC2">{{cal.emptyMsg}}</div>
+<sc-if value="{{cal.hasNext}}" hint-placeholder-val="{{true}}"><button class="ghost" type="button" onClick="{{cal.goNext}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A3346; background: transparent; color: #EEF1F6; font-size: 13px; font-weight: 600">{{cal.nextL}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button></sc-if>
+</div>
 </sc-if>
 
 <sc-for list="{{days}}" as="d" hint-placeholder-count="3">
 <div id="{{d.anchor}}" style="scroll-margin-top: 16px; background: #0E131D; border: 1px solid {{d.bd}}; border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,.04)">
+<sc-if value="{{d.head}}" hint-placeholder-val="{{false}}">
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; background: #0B1019; border-bottom: 1px solid #1A2130">
-<div style="display: flex; align-items: center; gap: 10px"><h2 class="h" style="font-size: 16px; margin: 0; font-weight: 600">{{d.label}}</h2><sc-if value="{{d.today}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 7px; border-radius: 6px; background: {{accentSoft}}; color: #C9D3FF">AUJOURD'HUI</span></sc-if></div>
+<div style="display: flex; align-items: center; gap: 10px"><h2 class="h" style="font-size: 16px; margin: 0; font-weight: 600">{{d.label}}</h2><sc-if value="{{d.today}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 7px; border-radius: 6px; background: {{accentSoft}}; color: #C9D3FF">AUJOURD'HUI</span></sc-if><sc-if value="{{d.busy}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 3px 7px; border-radius: 6px; background: rgba(255,122,107,.16); color: #FF9A8E">JOURNÉE CHARGÉE</span></sc-if></div>
 <span class="num" style="font-size: 12px; color: #8A95AA">{{d.count}}</span>
 </div>
+</sc-if>
 <div style="overflow-x: auto">
 <div style="min-width: 760px">
-<div style="display: grid; grid-template-columns: 64px 56px minmax(0, 1fr) 48px repeat(2, 84px) 104px; gap: 12px; padding: 8px 18px; font-size: 11px; font-weight: 600; color: #6F7A90; border-bottom: 1px solid #151B27">
+<div style="display: grid; grid-template-columns: 52px 50px minmax(0, 1fr) 44px repeat(2, 76px) 96px; gap: 12px; padding: 8px 18px; font-size: 11px; font-weight: 600; color: #6F7A90; border-bottom: 1px solid #151B27">
 <span>Heure</span><span>Devise</span><span>Annonce</span><span>Impact</span><span style="text-align: right">Précédent</span><span style="text-align: right">Prévision</span><span style="text-align: right">Réel</span>
 </div>
 <sc-for list="{{d.items}}" as="e" hint-placeholder-count="3">
 <div style="border-top: 1px solid #151B27; background: {{e.bg}}">
-<button class="row" type="button" onClick="{{e.pick}}" aria-expanded="{{e.expanded}}" style="width: 100%; text-align: left; cursor: pointer; border: 0; background: transparent; color: #EEF1F6; display: grid; grid-template-columns: 64px 56px minmax(0, 1fr) 48px repeat(2, 84px) 104px; gap: 12px; align-items: center; padding: 12px 18px; opacity: {{e.op}}">
+<button class="row" type="button" onClick="{{e.pick}}" aria-expanded="{{e.expanded}}" style="width: 100%; text-align: left; cursor: pointer; border: 0; background: transparent; color: #EEF1F6; display: grid; grid-template-columns: 52px 50px minmax(0, 1fr) 44px repeat(2, 76px) 96px; gap: 12px; align-items: center; padding: 12px 18px; opacity: {{e.op}}">
 <span class="num" style="font-size: 13px; font-weight: 600">{{e.t}}</span>
 <span style="justify-self: start; font-size: 11px; font-weight: 800; padding: 3px 7px; border-radius: 6px; background: #1A2130; color: #C9D3E6">{{e.cur}}</span>
-<span style="min-width: 0; display: flex; align-items: center; gap: 8px"><span style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{e.title}}</span><sc-if value="{{e.forte}}" hint-placeholder-val="{{false}}"><span style="flex: none; font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 2px 6px; border-radius: 5px; background: rgba(245,166,91,.16); color: #F5B87A">FORTE SURPRISE</span></sc-if><sc-if value="{{e.mine}}" hint-placeholder-val="{{false}}"><span style="flex: none; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 5px; background: {{accentSoft}}; color: #C9D3FF">tes actifs</span></sc-if><sc-if value="{{e.alert}}" hint-placeholder-val="{{false}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5B87A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Alerte active" style="flex: none"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg></sc-if></span>
+<span style="min-width: 0; display: flex; align-items: center; gap: 8px"><span title="{{e.title}}" style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{e.title}}</span><sc-if value="{{e.forte}}" hint-placeholder-val="{{false}}"><span style="flex: none; font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 2px 6px; border-radius: 5px; background: rgba(245,166,91,.16); color: #F5B87A">FORTE SURPRISE</span></sc-if><sc-if value="{{e.mine}}" hint-placeholder-val="{{false}}"><span style="flex: none; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 5px; background: {{accentSoft}}; color: #C9D3FF">tes actifs</span></sc-if><sc-if value="{{e.alert}}" hint-placeholder-val="{{false}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5B87A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Alerte active" style="flex: none"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg></sc-if></span>
 <span role="img" aria-label="{{e.aria}}" style="display: flex; gap: 2px; align-items: flex-end"><span style="width: 4px; height: 7px; border-radius: 1px; background: {{e.c1}}"></span><span style="width: 4px; height: 10px; border-radius: 1px; background: {{e.c2}}"></span><span style="width: 4px; height: 13px; border-radius: 1px; background: {{e.c3}}"></span></span>
 <span class="num" style="text-align: right; font-size: 13px; color: #A3AEC2">{{e.prev}}</span>
 <span class="num" style="text-align: right; font-size: 13px; color: #DCE2EC">{{e.fc}}</span>
 <span class="num" style="text-align: right; font-size: {{e.actFs}}; font-weight: {{e.actFw}}; color: {{e.actC}}">{{e.act}}</span>
 </button>
 <sc-if value="{{e.hasLecture}}" hint-placeholder-val="{{false}}">
-<div style="display: flex; align-items: center; gap: 8px; padding: 0 18px 12px 158px; margin-top: -4px; font-size: 12px; color: {{e.lectC}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{e.lectIcon}}"></path></svg><span>{{e.lecture}}</span></div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 0 18px 12px 140px; margin-top: -4px; font-size: 12px; color: {{e.lectC}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{e.lectIcon}}"></path></svg><span>{{e.lecture}}</span></div>
 </sc-if>
 <sc-if value="{{e.open}}" hint-placeholder-val="{{false}}">
-<div class="open" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; padding: 4px 18px 18px 158px">
+<div class="open" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; padding: 4px 18px 18px 140px">
 <div style="flex: 1 1 320px; min-width: 0">
 <div style="display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .06em; color: {{accent}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>POURQUOI ÇA COMPTE</div>
 <div style="font-size: 13px; line-height: 1.55; color: #C9D3E6; margin-top: 6px">{{e.sum}}</div>
@@ -229,6 +273,8 @@ button,input,select{font-family:inherit}
 <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #7BEBB9"></span>Surprise favorable à la devise</span>
 <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #FF9A8E"></span>Surprise défavorable</span>
 <span>« Forte surprise » : écart d'au moins {{forteTxt}} fois l'écart habituel de cette annonce</span>
+</div>
+</div>
 </div>
 </section>
 </sc-if>
@@ -438,7 +484,7 @@ class Component extends DCLogic {
     var nfS = null;
     try { nfS = JSON.parse(window.sessionStorage.getItem('tj.newsFiltres') || 'null'); } catch (e) {}
     this.histo = {};
-    this.state = { tab: 'cal', lv: nfS && nfS.lv ? nfS.lv : [3, 2, 1], paysOff: nfS && nfS.paysOff ? nfS.paysOff : [], fOpen: false, mine: mesActifs === '1', open: 'e3', nf: 'all', nAsset: 'all', nOpen: 0, el: 0, form: null, flash: '', alerts: this.defAlerts(), seq: 5, tlDay: 0, zAv: 15, zAp: 15, histoV: 0 };
+    this.state = { tab: 'cal', lv: nfS && nfS.lv ? nfS.lv : [3, 2, 1], paysOff: nfS && nfS.paysOff ? nfS.paysOff : [], fOpen: false, selDay: '2026-11-06', calM: 10, vue: 'jour', mine: mesActifs === '1', open: 'e3', nf: 'all', nAsset: 'all', nOpen: 0, el: 0, form: null, flash: '', alerts: this.defAlerts(), seq: 5, histoV: 0 };
   }
   defAlerts() {
     return [
@@ -490,26 +536,77 @@ class Component extends DCLogic {
     return null;
   }
   events() {
-    // d : jour (0 = ven. 6 nov.) ; t : heure de Paris ; type : clé du module de calcul
+    // j : date ; t : heure de Paris ; type : clé du module de calcul. Données d'exemple du 2 novembre au 18 décembre 2026.
     return [
-      { id: 'e1', type: 'PROD_INDUS_DE', d: 0, t: '08:00', cur: 'EUR', pays: 'Allemagne', title: 'Production industrielle Allemagne (m/m)', lvl: 1, prev: '−0,4 %', fc: '0,2 %', act: '0,5 %', good: true, mine: true, assets: 'EUR/USD · DAX', sum: "Une industrie allemande qui repart rassure sur la croissance européenne : léger soutien pour l'euro." },
-      { id: 'e2', type: 'HALIFAX', d: 0, t: '10:30', cur: 'GBP', title: 'Prix des logements Halifax (m/m)', lvl: 1, prev: '0,3 %', fc: '0,2 %', act: '−0,1 %', good: false, mine: false, assets: 'GBP/USD', sum: "Un immobilier britannique qui ralentit peut inciter la Banque d'Angleterre à baisser ses taux plus tôt, ce qui pèse sur la livre." },
-      { id: 'e3', type: 'NFP', d: 0, t: '14:30', cur: 'USD', title: 'NFP — Emplois non agricoles', lvl: 3, prev: '142 k', fc: '165 k', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Le chiffre le plus suivi du mois. Plus d'emplois que prévu = dollar plus fort et or souvent en baisse ; un chiffre faible fait l'inverse. Les premières minutes sont souvent très agitées, avec des écarts (spreads) plus larges." },
-      { id: 'e4', type: 'CHOMAGE_US', d: 0, t: '14:30', cur: 'USD', title: 'Taux de chômage', lvl: 3, prev: '4,2 %', fc: '4,2 %', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Publié en même temps que le NFP. Un chômage qui monte renforce l'idée de baisses de taux de la Fed." },
-      { id: 'e5', type: 'EMPLOI_CA', d: 0, t: '14:30', cur: 'CAD', title: 'Emploi Canada', lvl: 2, prev: '22,1 k', fc: '15,0 k', act: '', mine: false, assets: 'USD/CAD', sum: "Tombe à la même minute que le NFP : le dollar canadien peut partir dans les deux sens." },
-      { id: 'e6', type: 'MICHIGAN', d: 0, t: '16:00', cur: 'USD', title: 'Confiance des consommateurs (Michigan)', lvl: 2, prev: '70,5', fc: '71,2', act: '', mine: true, assets: 'USD · Indices US', sum: "Un moral des ménages en hausse soutient l'idée d'une consommation solide aux États-Unis, plutôt favorable au dollar." },
-      { id: 'e16', type: 'PIB_JP', d: 1, t: '00:50', cur: 'JPY', title: 'PIB Japon (t/t, estimation)', lvl: 2, prev: '0,5 %', fc: '0,1 %', act: '', mine: false, assets: 'USD/JPY · Nikkei 225', sum: "Une croissance japonaise en panne relancerait l'idée que la Banque du Japon ne montera pas ses taux de sitôt, ce qui pèse sur le yen." },
-      { id: 'e7', type: 'PIB_EZ', d: 1, t: '11:00', cur: 'EUR', title: 'PIB zone euro (estimation)', lvl: 2, prev: '0,3 %', fc: '0,2 %', act: '', mine: true, assets: 'EUR/USD · DAX · CAC 40', sum: "Une croissance plus faible que prévu pèserait sur l'euro et renforcerait les attentes de baisse de taux de la BCE." },
-      { id: 'e17', type: 'CPI_CN', d: 2, t: '02:30', cur: 'CNY', title: 'Inflation Chine (a/a)', lvl: 2, prev: '0,4 %', fc: '0,3 %', act: '', mine: false, assets: 'AUD/USD · Cuivre', sum: "Des prix qui stagnent en Chine signalent une demande faible : mauvais signe pour les matières premières et le dollar australien." },
-      { id: 'e8', type: 'CHOMAGE_UK', d: 2, t: '08:00', cur: 'GBP', title: 'Taux de chômage Royaume-Uni', lvl: 2, prev: '4,1 %', fc: '4,2 %', act: '', mine: false, assets: 'GBP/USD · FTSE 100', sum: "Deux jours avant la Banque d'Angleterre : un marché du travail plus faible rendrait une baisse de taux plus probable." },
-      { id: 'e9', type: 'ZEW_DE', d: 2, t: '11:00', cur: 'EUR', pays: 'Allemagne', title: 'Indice ZEW Allemagne', lvl: 2, prev: '13,1', fc: '14,0', act: '', mine: true, assets: 'EUR/USD · DAX', sum: "Le moral des investisseurs allemands donne le ton pour l'euro et le DAX sur la journée." },
-      { id: 'e10', type: 'CPI_US', d: 3, t: '14:30', cur: 'USD', title: 'Inflation CPI (a/a)', lvl: 3, prev: '2,6 %', fc: '2,5 %', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100 · BTC/USD', sum: "Une inflation plus haute que prévu éloigne les baisses de taux : dollar en hausse, indices et or sous pression." },
-      { id: 'e11', type: 'EIA_PETROLE', d: 3, t: '16:30', cur: 'USD', title: 'Stocks de pétrole (EIA)', lvl: 2, prev: '+2,1 M', fc: '−0,8 M', act: '', mine: false, assets: 'WTI · Brent', sum: "Des stocks qui baissent signalent une demande solide et soutiennent le prix du pétrole." },
-      { id: 'e18', type: 'EMPLOI_AU', d: 4, t: '01:30', cur: 'AUD', title: 'Emploi Australie', lvl: 2, prev: '64,1 k', fc: '25,0 k', act: '', mine: false, assets: 'AUD/USD', sum: "Un marché du travail australien solide éloigne une baisse de taux de la banque centrale et soutient le dollar australien." },
-      { id: 'e12', type: 'BOE_TAUX', d: 4, t: '13:00', cur: 'GBP', title: "Décision de taux de la Banque d'Angleterre", lvl: 3, prev: '4,75 %', fc: '4,75 %', act: '', mine: false, assets: 'GBP/USD · FTSE 100', sum: "Le marché attend un statu quo ; le ton du communiqué guidera la livre sterling." },
-      { id: 'e13', type: 'INSCRIPTIONS_US', d: 4, t: '14:30', cur: 'USD', title: 'Inscriptions hebdomadaires au chômage', lvl: 2, prev: '221 k', fc: '224 k', act: '', mine: true, assets: 'EUR/USD · NAS100', sum: "Un indicateur rapide du marché de l'emploi américain, surveillé de près après le NFP." },
-      { id: 'e14', type: 'PIB_UK', d: 5, t: '08:00', cur: 'GBP', title: 'PIB Royaume-Uni (t/t)', lvl: 2, prev: '0,2 %', fc: '0,1 %', act: '', mine: false, assets: 'GBP/USD', sum: "Une croissance proche de zéro mettrait la livre sous pression." },
-      { id: 'e15', type: 'VENTES_DETAIL_US', d: 5, t: '14:30', cur: 'USD', title: 'Ventes au détail (m/m)', lvl: 2, prev: '0,4 %', fc: '0,3 %', act: '', mine: true, assets: 'EUR/USD · NAS100', sum: "La consommation fait les deux tiers de l'économie américaine : un chiffre fort soutient le dollar et les indices." }
+      { id: 'e1', type: 'PROD_INDUS_DE', j: '2026-11-06', t: '08:00', cur: 'EUR', pays: 'Allemagne', title: 'Production industrielle Allemagne (m/m)', lvl: 1, prev: '−0,4 %', fc: '0,2 %', act: '0,5 %', good: true, mine: true, assets: 'EUR/USD · DAX', sum: "Une industrie allemande qui repart rassure sur la croissance européenne : léger soutien pour l'euro." },
+      { id: 'e2', type: 'HALIFAX', j: '2026-11-06', t: '10:30', cur: 'GBP', title: 'Prix des logements Halifax (m/m)', lvl: 1, prev: '0,3 %', fc: '0,2 %', act: '−0,1 %', good: false, mine: false, assets: 'GBP/USD', sum: "Un immobilier britannique qui ralentit peut inciter la Banque d'Angleterre à baisser ses taux plus tôt, ce qui pèse sur la livre." },
+      { id: 'e3', type: 'NFP', j: '2026-11-06', t: '14:30', cur: 'USD', title: 'NFP — Emplois non agricoles', lvl: 3, prev: '142 k', fc: '165 k', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Le chiffre le plus suivi du mois. Plus d'emplois que prévu = dollar plus fort et or souvent en baisse ; un chiffre faible fait l'inverse. Les premières minutes sont souvent très agitées, avec des écarts (spreads) plus larges." },
+      { id: 'e4', type: 'CHOMAGE_US', j: '2026-11-06', t: '14:30', cur: 'USD', title: 'Taux de chômage', lvl: 3, prev: '4,2 %', fc: '4,2 %', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100', sum: "Publié en même temps que le NFP. Un chômage qui monte renforce l'idée de baisses de taux de la Fed." },
+      { id: 'e5', type: 'EMPLOI_CA', j: '2026-11-06', t: '14:30', cur: 'CAD', title: 'Emploi Canada', lvl: 2, prev: '22,1 k', fc: '15,0 k', act: '', mine: false, assets: 'USD/CAD', sum: "Tombe à la même minute que le NFP : le dollar canadien peut partir dans les deux sens." },
+      { id: 'e6', type: 'MICHIGAN', j: '2026-11-06', t: '16:00', cur: 'USD', title: 'Confiance des consommateurs (Michigan)', lvl: 2, prev: '70,5', fc: '71,2', act: '', mine: true, assets: 'USD · Indices US', sum: "Un moral des ménages en hausse soutient l'idée d'une consommation solide aux États-Unis, plutôt favorable au dollar." },
+      { id: 'e16', type: 'PIB_JP', j: '2026-11-09', t: '00:50', cur: 'JPY', title: 'PIB Japon (t/t, estimation)', lvl: 2, prev: '0,5 %', fc: '0,1 %', act: '', mine: false, assets: 'USD/JPY · Nikkei 225', sum: "Une croissance japonaise en panne relancerait l'idée que la Banque du Japon ne montera pas ses taux de sitôt, ce qui pèse sur le yen." },
+      { id: 'e7', type: 'PIB_EZ', j: '2026-11-09', t: '11:00', cur: 'EUR', title: 'PIB zone euro (estimation)', lvl: 2, prev: '0,3 %', fc: '0,2 %', act: '', mine: true, assets: 'EUR/USD · DAX · CAC 40', sum: "Une croissance plus faible que prévu pèserait sur l'euro et renforcerait les attentes de baisse de taux de la BCE." },
+      { id: 'e17', type: 'CPI_CN', j: '2026-11-10', t: '02:30', cur: 'CNY', title: 'Inflation Chine (a/a)', lvl: 2, prev: '0,4 %', fc: '0,3 %', act: '', mine: false, assets: 'AUD/USD · Cuivre', sum: "Des prix qui stagnent en Chine signalent une demande faible : mauvais signe pour les matières premières et le dollar australien." },
+      { id: 'e8', type: 'CHOMAGE_UK', j: '2026-11-10', t: '08:00', cur: 'GBP', title: 'Taux de chômage Royaume-Uni', lvl: 2, prev: '4,1 %', fc: '4,2 %', act: '', mine: false, assets: 'GBP/USD · FTSE 100', sum: "Deux jours avant la Banque d'Angleterre : un marché du travail plus faible rendrait une baisse de taux plus probable." },
+      { id: 'e9', type: 'ZEW_DE', j: '2026-11-10', t: '11:00', cur: 'EUR', pays: 'Allemagne', title: 'Indice ZEW Allemagne', lvl: 2, prev: '13,1', fc: '14,0', act: '', mine: true, assets: 'EUR/USD · DAX', sum: "Le moral des investisseurs allemands donne le ton pour l'euro et le DAX sur la journée." },
+      { id: 'e10', type: 'CPI_US', j: '2026-11-11', t: '14:30', cur: 'USD', title: 'Inflation CPI (a/a)', lvl: 3, prev: '2,6 %', fc: '2,5 %', act: '', mine: true, assets: 'EUR/USD · XAU/USD · NAS100 · BTC/USD', sum: "Une inflation plus haute que prévu éloigne les baisses de taux : dollar en hausse, indices et or sous pression." },
+      { id: 'e11', type: 'EIA_PETROLE', j: '2026-11-11', t: '16:30', cur: 'USD', title: 'Stocks de pétrole (EIA)', lvl: 2, prev: '+2,1 M', fc: '−0,8 M', act: '', mine: false, assets: 'WTI · Brent', sum: "Des stocks qui baissent signalent une demande solide et soutiennent le prix du pétrole." },
+      { id: 'e18', type: 'EMPLOI_AU', j: '2026-11-12', t: '01:30', cur: 'AUD', title: 'Emploi Australie', lvl: 2, prev: '64,1 k', fc: '25,0 k', act: '', mine: false, assets: 'AUD/USD', sum: "Un marché du travail australien solide éloigne une baisse de taux de la banque centrale et soutient le dollar australien." },
+      { id: 'e12', type: 'BOE_TAUX', j: '2026-11-12', t: '13:00', cur: 'GBP', title: "Décision de taux de la Banque d'Angleterre", lvl: 3, prev: '4,75 %', fc: '4,75 %', act: '', mine: false, assets: 'GBP/USD · FTSE 100', sum: "Le marché attend un statu quo ; le ton du communiqué guidera la livre sterling." },
+      { id: 'e13', type: 'INSCRIPTIONS_US', j: '2026-11-12', t: '14:30', cur: 'USD', title: 'Inscriptions hebdomadaires au chômage', lvl: 2, prev: '221 k', fc: '224 k', act: '', mine: true, assets: 'EUR/USD · NAS100', sum: "Un indicateur rapide du marché de l'emploi américain, surveillé de près après le NFP." },
+      { id: 'e14', type: 'PIB_UK', j: '2026-11-13', t: '08:00', cur: 'GBP', title: 'PIB Royaume-Uni (t/t)', lvl: 2, prev: '0,2 %', fc: '0,1 %', act: '', mine: false, assets: 'GBP/USD', sum: "Une croissance proche de zéro mettrait la livre sous pression." },
+      { id: 'e15', type: 'VENTES_DETAIL_US', j: '2026-11-13', t: '14:30', cur: 'USD', title: 'Ventes au détail (m/m)', lvl: 2, prev: '0,4 %', fc: '0,3 %', act: '', mine: true, assets: 'EUR/USD · NAS100', sum: "La consommation fait les deux tiers de l'économie américaine : un chiffre fort soutient le dollar et les indices." },
+      { id: 'e19', type: 'PMI_MANUF_EZ', j: '2026-11-02', t: '10:00', cur: 'EUR', title: "PMI manufacturier zone euro (final)", lvl: 1, prev: '49,8', fc: '50,0', act: '50,1', good: true, assets: 'EUR/USD', sum: "Confirme une industrie européenne qui se stabilise autour de 50, le seuil entre contraction et expansion." },
+      { id: 'e20', type: 'ISM_MANUF_US', j: '2026-11-02', t: '16:00', cur: 'USD', title: "ISM manufacturier", lvl: 2, prev: '49,1', fc: '49,5', act: '48,7', good: false, assets: 'EUR/USD · NAS100', sum: "L'industrie américaine reste en contraction : un chiffre faible pèse plutôt sur le dollar." },
+      { id: 'e21', type: 'RBA_TAUX', j: '2026-11-03', t: '04:30', cur: 'AUD', neutre: true, title: "Décision de taux de la RBA", lvl: 3, prev: '3,60 %', fc: '3,60 %', act: '3,60 %', assets: 'AUD/USD', sum: "Taux inchangés, comme prévu. Le dollar australien réagit surtout au ton du communiqué sur les prochaines décisions." },
+      { id: 'e22', type: 'JOLTS', j: '2026-11-03', t: '16:00', cur: 'USD', title: "Offres d'emploi JOLTS", lvl: 2, prev: '7,23 M', fc: '7,10 M', act: '7,32 M', good: true, assets: 'EUR/USD · NAS100', sum: "Plus d'offres d'emploi que prévu : signe d'un marché du travail encore solide, plutôt favorable au dollar." },
+      { id: 'e23', type: 'ADP_US', j: '2026-11-04', t: '14:15', cur: 'USD', title: "Emploi privé ADP", lvl: 2, prev: '89 k', fc: '110 k', act: '118 k', good: true, assets: 'EUR/USD · XAU/USD', sum: "Donne un avant-goût du NFP de vendredi, même si les deux chiffres divergent souvent." },
+      { id: 'e24', type: 'ISM_SERVICES_US', j: '2026-11-04', t: '16:00', cur: 'USD', title: "ISM services", lvl: 2, prev: '51,6', fc: '52,0', act: '52,6', good: true, assets: 'EUR/USD · NAS100', sum: "Les services, qui pèsent lourd dans l'économie américaine, accélèrent un peu plus que prévu." },
+      { id: 'e25', type: 'EIA_PETROLE', j: '2026-11-04', t: '16:30', cur: 'USD', title: "Stocks de pétrole (EIA)", lvl: 2, prev: '−1,6 M', fc: '−0,5 M', act: '+2,1 M', good: false, assets: 'WTI · Brent', sum: "Hausse inattendue des stocks : signe d'une demande plus faible, ce qui pèse sur le prix du pétrole." },
+      { id: 'e26', type: 'VENTES_DETAIL_EZ', j: '2026-11-05', t: '11:00', cur: 'EUR', title: "Ventes au détail zone euro (m/m)", lvl: 1, prev: '0,2 %', fc: '0,1 %', act: '0,3 %', good: true, assets: 'EUR/USD', sum: "Une consommation européenne un peu plus solide que prévu." },
+      { id: 'e27', type: 'INSCRIPTIONS_US', j: '2026-11-05', t: '14:30', cur: 'USD', title: "Inscriptions hebdomadaires au chômage", lvl: 2, prev: '218 k', fc: '220 k', act: '221 k', good: false, assets: 'EUR/USD · NAS100', sum: "Chiffre proche des attentes, sans signal net avant le NFP." },
+      { id: 'e28', type: 'EMPIRE_US', j: '2026-11-16', t: '14:30', cur: 'USD', title: "Indice manufacturier Empire State", lvl: 1, prev: '10,7', fc: '6,0', act: '', assets: 'NAS100', sum: "Premier indicateur du mois sur l'industrie de la région de New York." },
+      { id: 'e29', type: 'CPI_CA', j: '2026-11-17', t: '14:30', cur: 'CAD', title: "Inflation Canada (a/a)", lvl: 2, prev: '2,4 %', fc: '2,2 %', act: '', assets: 'USD/CAD', sum: "Une inflation qui ralentit laisse de la place à une baisse de taux de la Banque du Canada, ce qui pèse sur le dollar canadien." },
+      { id: 'e30', type: 'PROD_INDUS_US', j: '2026-11-17', t: '15:15', cur: 'USD', title: "Production industrielle US (m/m)", lvl: 1, prev: '0,1 %', fc: '0,2 %', act: '', assets: 'NAS100', sum: "Mesure l'activité des usines, des mines et de l'énergie aux États-Unis." },
+      { id: 'e31', type: 'CPI_UK', j: '2026-11-18', t: '08:00', cur: 'GBP', title: "Inflation Royaume-Uni (a/a)", lvl: 3, prev: '3,8 %', fc: '3,6 %', act: '', assets: 'GBP/USD · FTSE 100', sum: "La donnée la plus suivie par la Banque d'Angleterre : une inflation plus basse que prévu rend une baisse de taux plus probable." },
+      { id: 'e32', type: 'EIA_PETROLE', j: '2026-11-18', t: '16:30', cur: 'USD', title: "Stocks de pétrole (EIA)", lvl: 2, prev: '−0,8 M', fc: '−1,2 M', act: '', assets: 'WTI · Brent', sum: "Le rapport hebdomadaire sur les stocks de brut américains." },
+      { id: 'e33', type: 'FOMC_MINUTES', j: '2026-11-18', t: '20:00', cur: 'USD', title: "Compte rendu de la Fed (minutes)", lvl: 2, prev: '—', fc: '—', act: '', assets: 'EUR/USD · XAU/USD · NAS100', sum: "Détaille les débats de la dernière réunion de la Fed. Le marché y cherche des indices sur le rythme des prochaines baisses de taux." },
+      { id: 'e34', type: 'EARN_NVDA', j: '2026-11-18', t: '22:20', cur: 'USD', title: "Résultats NVIDIA (bénéfice par action)", lvl: 3, prev: '0,81 $', fc: '0,87 $', act: '', assets: 'NAS100', sum: "Près d'un dixième du NAS100 : la réaction de l'action peut faire bouger tout l'indice. Détails dans l'onglet Résultats d'entreprises." },
+      { id: 'e35', type: 'INSCRIPTIONS_US', j: '2026-11-19', t: '14:30', cur: 'USD', title: "Inscriptions hebdomadaires au chômage", lvl: 2, prev: '224 k', fc: '223 k', act: '', assets: 'EUR/USD · NAS100', sum: "Indicateur rapide du marché de l'emploi américain." },
+      { id: 'e36', type: 'PHILLY_FED', j: '2026-11-19', t: '14:30', cur: 'USD', title: "Indice Philly Fed", lvl: 2, prev: '−3,2', fc: '1,5', act: '', assets: 'NAS100', sum: "Le moral des industriels de la région de Philadelphie, souvent lu comme un signal avancé pour l'ISM." },
+      { id: 'e37', type: 'VENTES_DETAIL_UK', j: '2026-11-20', t: '08:00', cur: 'GBP', title: "Ventes au détail Royaume-Uni (m/m)", lvl: 2, prev: '0,5 %', fc: '0,3 %', act: '', assets: 'GBP/USD', sum: "Une consommation britannique plus faible que prévu pèserait sur la livre." },
+      { id: 'e38', type: 'PMI_EZ', j: '2026-11-20', t: '10:00', cur: 'EUR', title: "PMI composite zone euro (flash)", lvl: 2, prev: '50,2', fc: '50,4', act: '', assets: 'EUR/USD · DAX · CAC 40', sum: "Première mesure de l'activité du mois : au-dessus de 50, l'économie progresse." },
+      { id: 'e39', type: 'PMI_US', j: '2026-11-20', t: '15:45', cur: 'USD', title: "PMI composite US (flash)", lvl: 2, prev: '54,1', fc: '53,8', act: '', assets: 'EUR/USD · NAS100', sum: "Le baromètre rapide de l'activité américaine, publié avant l'ISM." },
+      { id: 'e40', type: 'IFO_DE', j: '2026-11-23', t: '10:00', cur: 'EUR', pays: 'Allemagne', title: "Indice Ifo du climat des affaires", lvl: 2, prev: '87,3', fc: '87,8', act: '', assets: 'EUR/USD · DAX', sum: "Le moral des chefs d'entreprise allemands, suivi de près pour l'euro et le DAX." },
+      { id: 'e41', type: 'CONF_US', j: '2026-11-24', t: '16:00', cur: 'USD', title: "Confiance des consommateurs (Conference Board)", lvl: 2, prev: '95,0', fc: '94,5', act: '', assets: 'NAS100', sum: "Un moral des ménages en baisse peut annoncer une consommation plus faible." },
+      { id: 'e42', type: 'PIB_US', j: '2026-11-25', t: '14:30', cur: 'USD', title: "PIB US (2e estimation, t/t annualisé)", lvl: 2, prev: '2,8 %', fc: '2,7 %', act: '', assets: 'EUR/USD · NAS100', sum: "Révision de la croissance du trimestre : un écart important avec la 1re estimation peut faire bouger le dollar." },
+      { id: 'e43', type: 'BIENS_DURABLES', j: '2026-11-25', t: '14:30', cur: 'USD', title: "Commandes de biens durables (m/m)", lvl: 2, prev: '−0,3 %', fc: '0,4 %', act: '', assets: 'NAS100', sum: "Mesure les investissements des entreprises, un chiffre souvent volatil d'un mois à l'autre." },
+      { id: 'e44', type: 'PCE_US', j: '2026-11-25', t: '16:00', cur: 'USD', title: "Inflation PCE (a/a)", lvl: 3, prev: '2,4 %', fc: '2,3 %', act: '', assets: 'EUR/USD · XAU/USD · NAS100', sum: "L'indicateur d'inflation préféré de la Fed : une surprise à la hausse éloigne les baisses de taux." },
+      { id: 'e45', type: 'EIA_PETROLE', j: '2026-11-25', t: '16:30', cur: 'USD', title: "Stocks de pétrole (EIA)", lvl: 2, prev: '−1,2 M', fc: '−0,6 M', act: '', assets: 'WTI · Brent', sum: "Le rapport hebdomadaire sur les stocks de brut américains." },
+      { id: 'e46', type: 'THANKSGIVING', j: '2026-11-26', t: 'Journée', cur: 'USD', title: "Thanksgiving : marchés américains fermés", lvl: 1, prev: '—', fc: '—', act: '', assets: 'NAS100', sum: "Pas de cotation à Wall Street. Les volumes sont faibles sur le forex et les matières premières." },
+      { id: 'e47', type: 'CLOTURE_US', j: '2026-11-27', t: '19:00', cur: 'USD', title: "Fermeture anticipée de Wall Street", lvl: 1, prev: '—', fc: '—', act: '', assets: 'NAS100', sum: "Séance raccourcie au lendemain de Thanksgiving : les volumes restent faibles." },
+      { id: 'e48', type: 'PMI_CN', j: '2026-11-30', t: '02:30', cur: 'CNY', title: "PMI manufacturier officiel Chine", lvl: 2, prev: '49,8', fc: '49,9', act: '', assets: 'AUD/USD · Cuivre', sum: "Sous 50, l'industrie chinoise se contracte : un chiffre suivi pour les matières premières et le dollar australien." },
+      { id: 'e49', type: 'CPI_DE', j: '2026-11-30', t: '14:00', cur: 'EUR', pays: 'Allemagne', title: "Inflation Allemagne (flash, a/a)", lvl: 2, prev: '2,3 %', fc: '2,2 %', act: '', assets: 'EUR/USD · DAX', sum: "Donne la tendance la veille du chiffre de la zone euro." },
+      { id: 'e50', type: 'CPI_EZ', j: '2026-12-01', t: '11:00', cur: 'EUR', title: "Inflation zone euro (flash, a/a)", lvl: 3, prev: '2,1 %', fc: '2,0 %', act: '', assets: 'EUR/USD · DAX · CAC 40', sum: "Le chiffre clé pour la BCE avant sa réunion du 17 décembre." },
+      { id: 'e51', type: 'ISM_MANUF_US', j: '2026-12-01', t: '16:00', cur: 'USD', title: "ISM manufacturier", lvl: 2, prev: '48,7', fc: '49,0', act: '', assets: 'EUR/USD · NAS100', sum: "Le moral des directeurs d'achat de l'industrie américaine : sous 50, le secteur se contracte." },
+      { id: 'e52', type: 'ADP_US', j: '2026-12-02', t: '14:15', cur: 'USD', title: "Emploi privé ADP", lvl: 2, prev: '118 k', fc: '120 k', act: '', assets: 'EUR/USD · XAU/USD', sum: "Donne un avant-goût du NFP de vendredi, même si les deux chiffres divergent souvent." },
+      { id: 'e53', type: 'BOC_TAUX', j: '2026-12-02', t: '15:45', cur: 'CAD', title: "Décision de taux de la Banque du Canada", lvl: 3, prev: '2,25 %', fc: '2,25 %', act: '', assets: 'USD/CAD', sum: "Statu quo attendu ; le communiqué donnera le ton pour le dollar canadien." },
+      { id: 'e54', type: 'EIA_PETROLE', j: '2026-12-02', t: '16:30', cur: 'USD', title: "Stocks de pétrole (EIA)", lvl: 2, prev: '−0,6 M', fc: '−0,9 M', act: '', assets: 'WTI · Brent', sum: "Le rapport hebdomadaire sur les stocks de brut américains." },
+      { id: 'e55', type: 'INSCRIPTIONS_US', j: '2026-12-03', t: '14:30', cur: 'USD', title: "Inscriptions hebdomadaires au chômage", lvl: 2, prev: '223 k', fc: '222 k', act: '', assets: 'EUR/USD · NAS100', sum: "Indicateur rapide du marché de l'emploi américain, la veille du NFP." },
+      { id: 'e56', type: 'ISM_SERVICES_US', j: '2026-12-03', t: '16:00', cur: 'USD', title: "ISM services", lvl: 2, prev: '52,6', fc: '52,4', act: '', assets: 'EUR/USD · NAS100', sum: "L'activité des services américains, le plus gros secteur de l'économie." },
+      { id: 'e57', type: 'NFP', j: '2026-12-04', t: '14:30', cur: 'USD', title: "NFP — Emplois non agricoles", lvl: 3, prev: '—', fc: '150 k', act: '', assets: 'EUR/USD · XAU/USD · NAS100', sum: "Le rapport sur l'emploi de novembre. Le précédent sera connu après la publication d'aujourd'hui." },
+      { id: 'e58', type: 'CHOMAGE_US', j: '2026-12-04', t: '14:30', cur: 'USD', title: "Taux de chômage", lvl: 3, prev: '—', fc: '4,2 %', act: '', assets: 'EUR/USD · XAU/USD · NAS100', sum: "Publié en même temps que le NFP." },
+      { id: 'e59', type: 'EMPLOI_CA', j: '2026-12-04', t: '14:30', cur: 'CAD', title: "Emploi Canada", lvl: 2, prev: '—', fc: '12,0 k', act: '', assets: 'USD/CAD', sum: "Tombe à la même minute que le NFP : le dollar canadien peut partir dans les deux sens." },
+      { id: 'e60', type: 'RBA_TAUX', j: '2026-12-08', t: '04:30', cur: 'AUD', title: "Décision de taux de la RBA", lvl: 3, prev: '3,60 %', fc: '3,60 %', act: '', assets: 'AUD/USD', sum: "Dernière réunion de l'année de la banque centrale australienne." },
+      { id: 'e61', type: 'CPI_CN', j: '2026-12-09', t: '02:30', cur: 'CNY', title: "Inflation Chine (a/a)", lvl: 2, prev: '—', fc: '0,4 %', act: '', assets: 'AUD/USD · Cuivre', sum: "Des prix qui stagnent en Chine signalent une demande faible : un chiffre suivi pour les matières premières." },
+      { id: 'e62', type: 'CPI_US', j: '2026-12-10', t: '14:30', cur: 'USD', title: "Inflation CPI (a/a)", lvl: 3, prev: '—', fc: '2,5 %', act: '', assets: 'EUR/USD · XAU/USD · NAS100 · BTC/USD', sum: "Dernier chiffre d'inflation avant la réunion de la Fed du 16 décembre." },
+      { id: 'e63', type: 'PIB_UK', j: '2026-12-11', t: '08:00', cur: 'GBP', title: "PIB Royaume-Uni (m/m)", lvl: 2, prev: '—', fc: '0,1 %', act: '', assets: 'GBP/USD', sum: "Une croissance proche de zéro mettrait la livre sous pression." },
+      { id: 'e64', type: 'CHOMAGE_UK', j: '2026-12-15', t: '08:00', cur: 'GBP', title: "Taux de chômage Royaume-Uni", lvl: 2, prev: '—', fc: '4,2 %', act: '', assets: 'GBP/USD · FTSE 100', sum: "Deux jours avant la Banque d'Angleterre : un marché du travail plus faible rendrait une baisse de taux plus probable." },
+      { id: 'e65', type: 'PMI_EZ', j: '2026-12-16', t: '10:00', cur: 'EUR', title: "PMI composite zone euro (flash)", lvl: 2, prev: '—', fc: '50,5', act: '', assets: 'EUR/USD · DAX · CAC 40', sum: "Première mesure de l'activité du mois : au-dessus de 50, l'économie progresse." },
+      { id: 'e66', type: 'FOMC_TAUX', j: '2026-12-16', t: '20:00', cur: 'USD', title: "Décision de taux de la Fed", lvl: 3, prev: '3,75 %', fc: '3,50 %', act: '', assets: 'EUR/USD · XAU/USD · NAS100 · BTC/USD', sum: "La réunion la plus attendue du mois, avec les nouvelles projections de taux. Conférence de presse du président de la Fed à 20:30." },
+      { id: 'e67', type: 'BOE_TAUX', j: '2026-12-17', t: '13:00', cur: 'GBP', title: "Décision de taux de la Banque d'Angleterre", lvl: 3, prev: '4,75 %', fc: '4,50 %', act: '', assets: 'GBP/USD · FTSE 100', sum: "Une baisse de taux est attendue ; le vote des membres du comité guidera la livre sterling." },
+      { id: 'e68', type: 'BCE_TAUX', j: '2026-12-17', t: '14:15', cur: 'EUR', title: "Décision de taux de la BCE", lvl: 3, prev: '2,00 %', fc: '2,00 %', act: '', assets: 'EUR/USD · DAX · CAC 40', sum: "Statu quo attendu ; les nouvelles prévisions de croissance et d'inflation de la BCE guideront l'euro." },
+      { id: 'e69', type: 'BOJ_TAUX', j: '2026-12-18', t: '04:00', cur: 'JPY', title: "Décision de taux de la Banque du Japon", lvl: 3, prev: '0,75 %', fc: '0,75 %', act: '', assets: 'USD/JPY · Nikkei 225', sum: "Le marché guette le moindre signe d'une nouvelle hausse de taux, qui soutiendrait le yen." }
     ];
   }
   impBars(lvl) {
@@ -526,7 +623,17 @@ class Component extends DCLogic {
     var TJ = window.TJNews, F = TJ ? TJ.formats : null;
     var NOW0 = Date.UTC(2026, 10, 6, 12, 3), now = NOW0 + s.el * 1000; // ven. 6 nov. 13:03 à Paris
     var MES = TJ ? TJ.MES_ACTIFS : ['EUR/USD', 'XAU/USD', 'NAS100'];
-    var DAYS = [['Vendredi 6 novembre', 'Ven. 6', 6], ['Lundi 9 novembre', 'Lun. 9', 9], ['Mardi 10 novembre', 'Mar. 10', 10], ['Mercredi 11 novembre', 'Mer. 11', 11], ['Jeudi 12 novembre', 'Jeu. 12', 12], ['Vendredi 13 novembre', 'Ven. 13', 13]];
+    var MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    var JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'], JC = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
+    var TODAY = '2026-11-06', D_MIN = '2026-11-02', D_MAX = '2026-12-18'; // données d'exemple disponibles sur cette période
+    var p2 = function (v) { return (v < 10 ? '0' : '') + v; };
+    var kOf = function (dt) { return dt.getUTCFullYear() + '-' + p2(dt.getUTCMonth() + 1) + '-' + p2(dt.getUTCDate()); };
+    var dOf = function (k) { var q = k.split('-'); return new Date(Date.UTC(Number(q[0]), Number(q[1]) - 1, Number(q[2]))); };
+    var addD = function (k, n) { var dt = dOf(k); dt.setUTCDate(dt.getUTCDate() + n); return kOf(dt); };
+    var cap = function (t) { return t.charAt(0).toUpperCase() + t.slice(1); };
+    var dayLabel = function (k) { var dt = dOf(k); return cap(JOURS[dt.getUTCDay()]) + ' ' + dt.getUTCDate() + ' ' + MOIS[dt.getUTCMonth()]; };
+    var MC = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    var dayShort = function (k) { var dt = dOf(k); return JC[dt.getUTCDay()] + ' ' + dt.getUTCDate() + ' ' + MC[dt.getUTCMonth()]; };
     var WHEN = { pub: 'Dès la publication', avant: 'X min avant', veille: 'La veille au soir' };
     var CH = { app: 'Appli', mail: 'E-mail' };
     var pad2 = function (v) { return (v < 10 ? '0' : '') + v; };
@@ -534,8 +641,9 @@ class Component extends DCLogic {
     // ---- annonces : heure UTC, valeurs chiffrées, surprise et lecture (module commun)
     var EV = this.events();
     EV.forEach(function (e) {
-      var hm = e.t.split(':');
-      e.ts = Date.UTC(2026, 10, DAYS[e.d][2], Number(hm[0]) - 1, Number(hm[1])); // Paris = UTC+1 en novembre
+      var hm = (/^\d\d:\d\d$/.test(e.t) ? e.t : '00:00').split(':'), dj = dOf(e.j);
+      e.ts = Date.UTC(dj.getUTCFullYear(), dj.getUTCMonth(), dj.getUTCDate(), Number(hm[0]) - 1, Number(hm[1])); // Paris = UTC+1 en novembre et décembre
+      if (e.mine === undefined) e.mine = MES.some(function (a) { return (e.assets || '').indexOf(a) >= 0; });
       e.unit = (/\s(k|M|%)$/.exec(e.fc) || ['', ''])[1];
       e.unitTxt = e.unit ? ' ' + e.unit : '';
       e.fcN = self.num(e.fc);
@@ -576,30 +684,26 @@ class Component extends DCLogic {
     var saveNf = function (lv, off) { try { window.sessionStorage.setItem('tj.newsFiltres', JSON.stringify({ lv: lv, paysOff: off })); } catch (e) {} };
     var setNf = function (lv, off) { saveNf(lv, off); self.setState({ lv: lv, paysOff: off, nOpen: -1 }); };
 
-    // ---- semaine : une case par jour, news fortes et moyennes sur mes actifs
-    var week = DAYS.map(function (D, di) {
-      var mineDay = EV.filter(function (e) { return e.d === di && e.mine && paysOk(e.pays); });
-      var f = mineDay.filter(function (e) { return e.lvl === 3; }).length, m = mineDay.filter(function (e) { return e.lvl === 2; }).length;
-      var busy = TJ ? (f >= TJ.SEUILS.JOURNEE_CHARGEE_FORTES || f + m >= TJ.SEUILS.JOURNEE_CHARGEE_TOTAL) : f >= 2;
-      var on = s.tlDay === di;
-      return { l: D[1], f: f, m: m, fL: f > 1 ? 'fortes' : 'forte', mL: m > 1 ? 'moyennes' : 'moyenne', busy: busy, today: di === 0, href: '#jour-' + di, current: on ? 'true' : 'false',
-        aria: D[0] + ' : ' + f + ' news fortes et ' + m + ' moyennes sur tes actifs' + (busy ? ', journée chargée' : ''),
-        fC: f ? '#FF7A6B' : '#2A3346', mC: m ? '#F5A65B' : '#2A3346',
-        bg: on ? '#111724' : '#0E131D', bd: on ? accent : (busy ? 'rgba(255,122,107,.35)' : '#1D2433'),
-        pick: function () { self.setState({ tlDay: di }); } };
-    });
-
     // ---- calendrier
     var evOk = function (e) { return lvOk(e.lvl) && paysOk(e.pays) && (!s.mine || e.mine); };
+    var selK = s.selDay, vue = s.vue;
+    var evDay = function (k) { return EV.filter(function (e) { return e.j === k && evOk(e); }); };
+    var busyOf = function (k) {
+      var md = EV.filter(function (e) { return e.j === k && e.mine && paysOk(e.pays); });
+      var f = md.filter(function (e) { return e.lvl === 3; }).length, m = md.filter(function (e) { return e.lvl === 2; }).length;
+      return TJ ? (f >= TJ.SEUILS.JOURNEE_CHARGEE_FORTES || f + m >= TJ.SEUILS.JOURNEE_CHARGEE_TOTAL) : f >= 2;
+    };
+    var dowSel = (dOf(selK).getUTCDay() + 6) % 7, monK = addD(selK, -dowSel);
+    var keysShown = vue === 'semaine' ? [0, 1, 2, 3, 4, 5, 6].map(function (i) { return addD(monK, i); }) : [selK];
     var days = [];
-    DAYS.forEach(function (D, di) {
-      var items = EV.filter(function (e) { return e.d === di && evOk(e); }).map(function (e) {
+    keysShown.forEach(function (dk) {
+      var items = evDay(dk).map(function (e) {
         var op = s.open === e.id, past = e.reelN !== null, b = self.impBars(e.lvl), al = alerteSur(e);
         var avenir = !past && e.ts > now;
         var item = {
           t: e.t, cur: e.cur, title: e.title, mine: e.mine && !s.mine, alert: al, forte: !!e.forte, prev: e.prev, fc: e.fc,
           act: past ? e.act : (TJ ? (avenir ? F.dansCombien(e.ts, now) : 'en attente') : '—'),
-          actC: past ? (e.good ? GAINT : LOSST) : (avenir && e.ts - now < 3600000 ? '#F5B87A' : GREY), actFs: past ? '13px' : '12px', actFw: past ? '700' : '600',
+          actC: past ? (e.neutre ? '#DCE2EC' : e.good ? GAINT : LOSST) : (avenir && e.ts - now < 3600000 ? '#F5B87A' : GREY), actFs: past ? '13px' : '12px', actFw: past ? '700' : '600',
           c1: b.c1, c2: b.c2, c3: b.c3, aria: b.aria, op: past ? '0.8' : '1',
           hasLecture: !!e.lecture, lecture: e.lecture || '', lectC: e.good ? GAINT : LOSST, lectIcon: e.good ? 'M4 17l6-6 4 4 6-7M14 8h6v6' : 'M4 7l6 6 4-4 6 7M14 16h6v-6',
           open: op, expanded: op ? 'true' : 'false', bg: op ? '#111724' : 'transparent', sum: e.sum, assets: e.assets,
@@ -628,8 +732,63 @@ class Component extends DCLogic {
         }
         return item;
       });
-      if (items.length) days.push({ label: D[0], today: di === 0, items: items, anchor: 'jour-' + di, bd: s.tlDay === di ? aLine : '#1D2433', count: items.length + ' annonce' + (items.length > 1 ? 's' : '') });
+      if (items.length) days.push({ label: dayLabel(dk), head: vue === 'semaine', today: dk === TODAY, busy: busyOf(dk), items: items, anchor: 'jour-' + dk, bd: vue === 'semaine' && dk === selK ? aLine : '#1D2433', count: items.length + ' annonce' + (items.length > 1 ? 's' : '') });
     });
+
+    // ---- calendrier du mois : choisir un jour
+    var DOT = { 3: '#FF7A6B', 2: '#F5A65B', 1: '#5B6577' };
+    var goDay = function (k, extra) { var o = Object.assign({ selDay: k, calM: dOf(k).getUTCMonth() }, extra || {}); self.setState(o); };
+    var cy = 2026, cm = s.calM, first = new Date(Date.UTC(cy, cm, 1)), lead = (first.getUTCDay() + 6) % 7;
+    var nDays = new Date(Date.UTC(cy, cm + 1, 0)).getUTCDate(), rows = Math.ceil((lead + nDays) / 7);
+    var cells = [];
+    for (var ci = 0; ci < rows * 7; ci++) {
+      (function (ci) {
+        var dt = new Date(Date.UTC(cy, cm, 1 - lead + ci)), k = kOf(dt), inM = dt.getUTCMonth() === cm, we = ci % 7 >= 5;
+        var L = evDay(k).sort(function (a, b) { return b.lvl - a.lvl; }), sel = k === selK, td = k === TODAY, past = k < TODAY;
+        var nF = L.filter(function (e) { return e.lvl === 3; }).length;
+        cells.push({ n: dt.getUTCDate(), sel: sel ? 'true' : 'false', today: td,
+          dots: L.slice(0, 3).map(function (e) { return { c: DOT[e.lvl] }; }), more: L.length > 3 ? '+' + (L.length - 3) : '',
+          bg: sel ? soft : td ? '#111724' : 'transparent', bd: sel ? accent : td ? '#2A3346' : 'transparent',
+          fg: sel ? '#FFFFFF' : !inM ? '#3A4458' : td ? '#C9D3FF' : we ? '#5B6577' : past ? '#8A95AA' : '#DCE2EC', fw: sel || td ? '700' : '500',
+          aria: dayLabel(k) + (td ? ", aujourd'hui" : '') + ' : ' + (L.length ? L.length + ' annonce' + (L.length > 1 ? 's' : '') + (nF ? ', dont ' + nF + ' à impact fort' : '') : 'aucune annonce'),
+          pick: function () { goDay(k, { vue: 'jour' }); } });
+      })(ci);
+    }
+    var upcoming = EV.filter(function (e) { return e.ts > now && e.lvl === 3 && paysOk(e.pays) && (!s.mine || e.mine); }).sort(function (a, b) { return a.ts - b.ts; }).slice(0, 5);
+    var nbSel = evDay(selK), nbF = nbSel.filter(function (e) { return e.lvl === 3; }).length, nbM = nbSel.filter(function (e) { return e.mine; }).length;
+    var wkN = 0; keysShown.forEach(function (k) { wkN += evDay(k).length; });
+    var nextWith = null;
+    for (var nk = addD(selK, 1); nk <= D_MAX; nk = addD(nk, 1)) { if (evDay(nk).length) { nextWith = nk; break; } }
+    var outRange = selK < D_MIN || selK > D_MAX;
+    var friK = addD(monK, 4), monD = dOf(monK), friD = dOf(friK);
+    var cal = {
+      title: cap(MOIS[cm]) + ' ' + cy, wd: ['L', 'M', 'M', 'J', 'V', 'S', 'D'].map(function (l) { return { l: l }; }), cells: cells,
+      prevOp: cm > 10 ? '1' : '.35', nextOp: cm < 11 ? '1' : '.35', prevDis: cm > 10 ? 'false' : 'true', nextDis: cm < 11 ? 'false' : 'true',
+      prevM: function () { if (self.state.calM > 10) self.setState({ calM: self.state.calM - 1 }); },
+      nextM: function () { if (self.state.calM < 11) self.setState({ calM: self.state.calM + 1 }); },
+      next: upcoming.map(function (e) {
+        var on = e.j === selK;
+        return { d: dayShort(e.j), t: e.t, cur: e.cur, title: e.title, bg: on ? '#111724' : 'transparent', bd: on ? '#2A3346' : 'transparent',
+          aria: dayLabel(e.j) + ' à ' + e.t + ' : ' + e.title, pick: function () { goDay(e.j, { vue: 'jour', open: e.id }); } };
+      }),
+      nextEmpty: upcoming.length === 0,
+      isToday: vue === 'jour' && selK === TODAY, busy: vue === 'jour' && busyOf(selK),
+      rangeL: vue === 'semaine' ? 'Semaine du ' + monD.getUTCDate() + (monD.getUTCMonth() !== friD.getUTCMonth() ? ' ' + MOIS[monD.getUTCMonth()] : '') + ' au ' + friD.getUTCDate() + ' ' + MOIS[friD.getUTCMonth()] : dayLabel(selK),
+      rangeS: (vue === 'semaine' ? (wkN ? wkN + ' annonce' + (wkN > 1 ? 's' : '') : 'Aucune annonce') : (nbSel.length ? nbSel.length + ' annonce' + (nbSel.length > 1 ? 's' : '') : 'Aucune annonce') + (nbF ? ' · ' + nbF + ' à impact fort' : '') + (nbM && !s.mine ? ' · ' + nbM + ' sur tes actifs' : '')) + ' · heures de Paris',
+      back: function () { goDay(addD(selK, vue === 'semaine' ? -7 : -1)); },
+      fwd: function () { goDay(addD(selK, vue === 'semaine' ? 7 : 1)); },
+      backL: vue === 'semaine' ? 'Semaine précédente' : 'Jour précédent', fwdL: vue === 'semaine' ? 'Semaine suivante' : 'Jour suivant',
+      today: function () { goDay(TODAY); },
+      vues: [['jour', 'Jour'], ['semaine', 'Semaine']].map(function (v) {
+        var on = vue === v[0];
+        return { l: v[1], pressed: on ? 'true' : 'false', bg: on ? '#1A2130' : 'transparent', fg: on ? '#EEF1F6' : '#8A95AA', pick: function () { self.setState({ vue: v[0] }); } };
+      }),
+      emptyMsg: outRange ? 'Les données d’exemple couvrent la période du 2 novembre au 18 décembre.'
+        : vue === 'semaine' ? 'Aucune annonce cette semaine avec tes filtres.'
+        : 'Aucune annonce le ' + dayLabel(selK).toLowerCase() + (s.lv.length < 3 || s.paysOff.length || s.mine ? ' avec tes filtres.' : '.'),
+      hasNext: !!nextWith && !outRange, nextL: nextWith ? 'Voir le ' + dayLabel(nextWith).toLowerCase() : '',
+      goNext: function () { if (nextWith) goDay(nextWith, { vue: 'jour' }); }
+    };
 
     // ---- résultats d'entreprises, vus depuis le NAS100 (poids approximatifs, données d'exemple)
     var EARN = [
@@ -785,16 +944,7 @@ class Component extends DCLogic {
     var restant = Math.round((nfp.ts - now) / 1000);
     var cd = restant > 0 ? pad2(Math.floor(restant / 3600)) + ':' + pad2(Math.floor((restant % 3600) / 60)) + ':' + pad2(restant % 60) : 'en cours';
 
-    var hiToday = EV.filter(function (e) { return e.d === 0 && e.lvl === 3; }).length;
-    var mineWeek = EV.filter(function (e) { return e.mine && e.reelN === null && e.ts > now; }).length;
     var onCount = s.alerts.filter(function (a) { return a.on; }).length;
-    var busyDays = week.filter(function (w) { return w.busy; }).map(function (w) { return w.l.toLowerCase(); });
-    var kpis = [
-      { l: "Impact fort aujourd'hui", v: String(hiToday), s: 'NFP et chômage à 14:30', c: '#FF9A8E' },
-      { l: 'Annonces à venir sur tes actifs', v: String(mineWeek), s: busyDays.length ? 'journées chargées : ' + busyDays.join(', ') : "d'ici vendredi prochain", c: '#EEF1F6' },
-      { l: 'Résultats à suivre (NAS100)', v: String(EARN.length), s: 'NVIDIA le 18 nov. : ≈ 9 % de l’indice', c: '#EEF1F6' },
-      { l: 'Alertes actives', v: String(onCount), s: onCount ? 'sur ' + s.alerts.length + ' créée' + (s.alerts.length > 1 ? 's' : '') : 'aucune pour l’instant', c: onCount ? '#EEF1F6' : '#8A95AA' }
-    ];
     var tabs = [['cal', 'Calendrier économique', 'M4 5h16v15H4zM4 9h16M9 3v4M15 3v4', ''], ['earn', "Résultats d'entreprises", 'M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6', String(EARN.length)], ['news', 'Actualités', 'M5 4h12v16H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1M17 8h3v10a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3', ''], ['alerts', 'Alertes', 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0', String(onCount)]].map(function (x) {
       var on = s.tab === x[0];
       return { label: x[1], icon: x[2], count: x[3], sel: on ? 'true' : 'false', fg: on ? '#EEF1F6' : '#8A95AA', bar: on ? accent : 'transparent', pick: function () { self.setState({ tab: x[0] }); } };
@@ -858,9 +1008,9 @@ class Component extends DCLogic {
 
     return {
       accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
-      cd: cd, nfpAlert: nfpAlert, kpis: kpis, flash: s.flash, tabs: tabs, mine: mine, showMine: s.tab !== 'alerts',
+      cd: cd, nfpAlert: nfpAlert, flash: s.flash, tabs: tabs, mine: mine, showMine: s.tab !== 'alerts',
       isCal: s.tab === 'cal', isEarn: s.tab === 'earn', isNews: s.tab === 'news', isAlerts: s.tab === 'alerts',
-      week: week, nfp: nfp, days: days, calEmpty: days.length === 0,
+      cal: cal, nfp: nfp, days: days, calEmpty: days.length === 0,
       forteTxt: TJ ? F.nombre(TJ.SEUILS.FORTE_SURPRISE_Z, 1) : '1,5',
       earnUp: earnUp, earnDone: earnDone,
       nfChips: nfChips, feed: feed, newsEmpty: feed.length === 0, nAsset: nAsset, assetOpts: assetOpts,
