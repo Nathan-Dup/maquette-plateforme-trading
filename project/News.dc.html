@@ -78,6 +78,7 @@ button,input,select{font-family:inherit}
 </div>
 </div>
 
+<sc-if value="{{showBanner}}" hint-placeholder-val="{{true}}">
 <div class="fu d1" style="display: flex; align-items: center; gap: 16px; padding: 16px 18px; border-radius: 16px; background: rgba(245,166,91,.08); border: 1px solid rgba(245,166,91,.32); flex-wrap: wrap">
 <div style="flex: 1 1 280px; min-width: 0">
 <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: #F5B87A"><span class="puo" style="width: 7px; height: 7px; border-radius: 4px; background: #F5A65B"></span>PROCHAINE ANNONCE · AUJOURD'HUI 14:30 · USD · IMPACT FORT</div>
@@ -86,7 +87,9 @@ button,input,select{font-family:inherit}
 </div>
 <div style="text-align: right"><div style="font-size: 11px; color: #F5B87A">dans</div><div class="h num" style="font-size: 26px; font-weight: 600; color: #F5C28F">{{cd}}</div></div>
 <button class="ghost" type="button" onClick="{{nfpAlert.pick}}" aria-pressed="{{nfpAlert.pressed}}" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid {{nfpAlert.bd}}; background: {{nfpAlert.bg}}; color: {{nfpAlert.fg}}; font-size: 13px; font-weight: 600; padding: 0 14px; height: 40px; border-radius: 10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg>{{nfpAlert.l}}</button>
+<button class="ghost" type="button" onClick="{{hideBanner}}" aria-label="Masquer ce bandeau jusqu’à la prochaine annonce" title="Masquer jusqu’à la prochaine annonce" style="cursor: pointer; flex: none; align-self: flex-start; width: 30px; height: 30px; margin: -6px -8px 0 -6px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 0; background: transparent; color: #A3AEC2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
 </div>
+</sc-if>
 
 <sc-if value="{{flash}}" hint-placeholder-val="{{false}}">
 <div role="status" class="open" style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(61,220,151,.08); border: 1px solid rgba(61,220,151,.3); font-size: 13px; color: #BDF5DC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC97" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><span style="flex: 1">{{flash}}</span></div>
@@ -507,10 +510,11 @@ class Component extends DCLogic {
     super(props);
     var mesActifs = null;
     try { mesActifs = window.sessionStorage.getItem('tj.mesActifs'); } catch (e) {}
-    var nfS = null;
+    var nfS = null, banOff = null;
+    try { banOff = window.sessionStorage.getItem('tj.newsBandeau'); } catch (e) {}
     try { nfS = JSON.parse(window.sessionStorage.getItem('tj.newsFiltres') || 'null'); } catch (e) {}
     this.histo = {};
-    this.state = { tab: 'cal', lv: nfS && nfS.lv ? nfS.lv : [3, 2, 1], paysOff: nfS && nfS.paysOff ? nfS.paysOff : [], fOpen: false, selDay: '2026-11-06', calM: 10, vue: 'jour', mine: mesActifs === '1', open: 'e3', nf: 'all', nAsset: 'all', nOpen: 0, el: 0, form: null, flash: '', alerts: this.defAlerts(), seq: 5, histoV: 0 };
+    this.state = { tab: 'cal', lv: nfS && nfS.lv ? nfS.lv : [3, 2, 1], paysOff: nfS && nfS.paysOff ? nfS.paysOff : [], fOpen: false, banOff: banOff, selDay: '2026-11-06', calM: 10, vue: 'jour', mine: mesActifs === '1', open: 'e3', nf: 'all', nAsset: 'all', nOpen: 0, el: 0, form: null, flash: '', alerts: this.defAlerts(), seq: 5, histoV: 0 };
   }
   defAlerts() {
     return [
@@ -977,7 +981,7 @@ class Component extends DCLogic {
 
     // ---- bandeau NFP, chiffres clés, onglets
     var nfp = EV.filter(function (e) { return e.id === 'e3'; })[0];
-    var nfpOn = alerteSur(nfp);
+    var nfpOn = alerteSur(nfp), banId = nfp.id;
     var nfpAlert = { l: nfpOn ? 'Alerte active' : 'Me prévenir 15 min avant', pressed: nfpOn ? 'true' : 'false', bd: nfpOn ? 'rgba(245,166,91,.5)' : '#2A3346', bg: nfpOn ? 'rgba(245,166,91,.12)' : 'transparent', fg: nfpOn ? '#F5C28F' : '#EEF1F6',
       pick: function () {
         if (nfpOn) { self.setState({ tab: 'alerts' }); return; }
@@ -1050,7 +1054,8 @@ class Component extends DCLogic {
 
     return {
       accent: accent, accentSoft: soft, accentLine: aLine, rootClass: anim ? '' : 'noanim', navGroups: navGroups,
-      cd: cd, nfpAlert: nfpAlert, flash: s.flash, tabs: tabs, mine: mine, showMine: s.tab !== 'alerts',
+      cd: cd, nfpAlert: nfpAlert, showBanner: s.banOff !== banId,
+      hideBanner: function () { try { window.sessionStorage.setItem('tj.newsBandeau', banId); } catch (e) {} self.setState({ banOff: banId }); }, flash: s.flash, tabs: tabs, mine: mine, showMine: s.tab !== 'alerts',
       isCal: s.tab === 'cal', isEarn: s.tab === 'earn', isNews: s.tab === 'news', isAlerts: s.tab === 'alerts',
       cal: cal, nfp: nfp, days: days, calEmpty: days.length === 0,
       forteTxt: TJ ? F.nombre(TJ.SEUILS.FORTE_SURPRISE_Z, 1) : '1,5',
