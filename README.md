@@ -59,7 +59,7 @@ Maquette en ligne (pour la voir et cliquer dedans) : https://claude.ai/artifact/
 - Les trades de test restent séparés des statistiques réelles. Dans la maquette, les prix sont simulés ; le vrai produit aura besoin de données historiques de marché.
 
 **News**
-- Calendrier économique avec un calendrier du mois : chaque jour affiche des points de couleur selon l'importance des annonces. On clique un jour pour voir ses annonces, en vue Jour ou Semaine, avec les flèches et le bouton « Aujourd'hui ». La liste « À venir · impact fort » montre les prochaines grosses annonces.
+- Calendrier économique avec un calendrier du mois : chaque jour affiche des points de couleur selon l'importance des annonces. On clique un jour pour voir ses annonces, en vue Jour ou Semaine, avec les flèches et le bouton « Aujourd'hui ». La liste « À venir · impact fort » montre les prochaines grosses annonces. En vue Jour, le bloc « À suivre » affiche en compact les prochains jours qui ont des annonces.
 - Bouton « Filtres » : mes actifs seulement, importance (forte, moyenne, faible), pays à afficher ou masquer. Les filtres s'appliquent au calendrier et aux actualités.
 - Onglets Résultats d'entreprises, Actualités et Alertes. Données d'exemple du 2 novembre au 18 décembre 2026.
 
